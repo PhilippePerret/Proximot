@@ -12,6 +12,7 @@ class EditorClass {
     fragment.paragraphs.forEach( paragraph => {
       this.content.appendChild(paragraph.div)
     })
+    fragment.analyze()
   }
 
   get Selection(){

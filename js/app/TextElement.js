@@ -12,8 +12,17 @@
  */
 class TextElement {
 
+  static reset(){
+    this.lastId = 0
+  }
+
+  static getNewId(){
+    return this.lastId ++ 
+  }
+
   constructor(content){
     this.content = content
+    this.id = this.constructor.getNewId()
   }
 
   // --- Public Methods ---
@@ -36,6 +45,10 @@ class TextElement {
   }
 
   // --- /Public Methods ---
+
+  get domId(){
+    return this._domid || (this._domid = `${this.type}-${this.id}`)
+  }
 
   get obj(){
     return this._obj || (this._obj = this.build())

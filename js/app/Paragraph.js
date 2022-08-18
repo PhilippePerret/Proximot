@@ -13,16 +13,24 @@ class Paragraph extends TextElement {
   get div(){return this.obj}
 
   /**
+   * @return la liste des mots (et uniquement les mots) du 
+   * paragraphe
+   */
+  get mots(){
+    return this._mots || (this._mots = this.countMots().mots)
+  }
+
+  /**
    * @return nombre de mots du paragraphe
    */
-  motsCount(){
+  get motsCount(){
     return this._mcount || (this._mcount = this.countMots().nbm )
   }
 
   /**
    * @return {Number} La longueur du paragraphe
    */
-  length(){
+  get length(){
     return this._length || ( this._length = this.countMots().len )
   }
 
@@ -54,14 +62,19 @@ class Paragraph extends TextElement {
   countMots(){
     var   nombre    = 0
         , longueur  = 0
+        , ary_mots  = []
         ;
     this.content.forEach( texel => {
-      if ( texel.isMot ) nombre += 1
+      if ( texel.isMot ){ 
+        nombre += 1
+        ary_mots.push(texel)
+      }
       longueur += texel.length
     })
     // Mettre dans les propriétés
     this._length = longueur
     this._mcount = nombre
-    return {nbm: nombre, len: longueur} // pour renseignement immédiat
+    this._mots   = ary_mots
+    return {nbm: nombre, len: longueur, mots:ary_mots} // pour renseignement immédiat
   }
 }

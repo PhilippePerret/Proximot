@@ -16,7 +16,7 @@ class WhiteSpace extends TextElement {
 
 
   build(){
-    const o = DCreate('SPAN', {class:'texel wspace', text:' '})
+    const o = DCreate('SPAN', {id:this.domId, class:'texel wspace', text:' '})
     this.observe(o)
     return o
   }

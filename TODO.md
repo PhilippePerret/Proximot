@@ -2,11 +2,13 @@
 
 ## En cours
 
+* cf. bugs
 * Réfléchir et définir le format pour enregistrer le fichier proximot.pxw contenant tout le texte ainsi que toutes les corrections apportées et l'indication des ignorés. Cf. [Réflexions](#reflexion)
 * Keyboard.js Gestion des touches
 
 ## Bugs
 
+* Dans la méthode TextAnalyzer.proceedWithMots, il y a un texte vide dans les mots envoyés. Ça ne devrait JAMAIS arriver !
 * Faire fonctionner les premiers InsideTests
 
 ## Fonctionnalités

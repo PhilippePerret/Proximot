@@ -4,10 +4,21 @@
  * 
  * Méthode communes
  * 
- * version 2.1
+ * version 2.2
  * 
  */
+
 function not(v){ return ! v }
+
+/**
+ * Pour benchmarker une méthode/opération
+ */
+function benchmark(method, titre){
+  const startTime =  new Date().getMilliseconds()
+  method.call()
+  const endTime =  new Date().getMilliseconds()
+  console.info("Durée de %s : %f", titre, endTime - startTime)
+}
 
 /**
  * Pour pouvoir utiliser par exemple :

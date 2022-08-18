@@ -30,4 +30,46 @@ class TextFragment {
 
   // get isTextBeginning() { return this.pIndex == 0 }
   // get isTextEnding()    { return this.pIndex == this.itexte.paragraphs.length - 1}
+
+  /**
+   * Procède à l'analyse du fragment
+   * -------------------------------
+   * 
+   * @param params  {Hash} une table de paramètres pour savoir comment
+   *                traiter les proximités (à voir)
+   */
+  analyze(params){
+    benchmark(this.analyzer.proceedWithMots.bind(this.analyzer, this.mots), "Analyse par les mots")
+    benchmark(this.analyzer.proceedWithText.bind(this.analyzer, this.text), "Analyse par le texte")
+    // this.analyzer.proceedWithMots(this.mots)
+    // this.analyzer.proceedWithText(this.text)
+  }
+
+
+  get analyzer(){
+    return this._analyzer || (this._analyzer = new TextAnalyzer(this))
+  }
+
+  get mots(){
+    return this._mots || (this._mots = this.getMots() )
+  }
+
+  get text(){
+    return this._text || (this._text = this.getText() )
+  }
+
+  getMots(){
+    const ary_mots = []
+    this.paragraphs.forEach(parag => {
+      parag.mots.forEach(mot => ary_mots.push(mot))
+    })
+    return ary_mots
+  }
+  getText(){
+    const ary = []
+    this.paragraphs.forEach(parag => {
+      parag.content.forEach(texel => ary.push(texel.content))
+    })
+    return ary.join('')
+  }
 }

@@ -20,11 +20,6 @@ class Texte {
     return this.getFragmentFromParagraph(0)
   }
 
-
-  get analyzer(){
-    return this._analyzer || (this._analyzer = new TextAnalyzer(this))
-  }
-
   get motsCount(){
     return this.mots.length
   }
@@ -63,6 +58,7 @@ class Texte {
     while ( (parag = this.paragraphs[paragIndex++]) && nombreMots < 2000 ){
       parags.push(parag)
       nombreMots += parag.motsCount
+      console.info("nombreMots = ", nombreMots)
     }
     return parags
   }

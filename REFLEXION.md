@@ -28,11 +28,24 @@ Une autre possibilité serait d'avoir une page HTML, avec un champ de saisie et 
 - quand on supprime un mot (touche erase) on peut tout de suite en insérer un nouveau. Si on sort sans rien faire, ça supprime le champ.
 
 
-## Fragment ou Portion
+## Fragment de texte
 
 L'idée, pour accélérer le traitement, serait de fonctionner par Fragment de texte. Un *Fragment* est un texte (instance {TextFragment}) défini par un début et une fin dans le texte complet courant (instance {Texte}).
 
 La base de longueur d'un fragment pourrait être 8 pages, c'est-à-dire 8 * 250 mots = 2000 mots, sachant qu'on ne pourrait pas modifier les 250 premiers et derniers sauf en passant au fragment suivant.
 
 Le traitement serait invisible. Dès qu'on attendrait le bout d'un fragment, on passerait au suivant. Le point courant deviendrait le centre du nouveau fragment (plus compliqué que d'avoir un découpage fixe en fragment, mais plus pratique pour gérer facilement les jointures)
+
+## Première analyse
+
+La première analye consiste à marquer toutes les proximités d'un texte.
+
+Pour se faire, on avance dans les mots en gardant une table des mots en cours d'étude.
+
+Un mot est en cours d'étude lorsqu'on ne s'en est pas encore éloigné d'au moins X caractères.
+
+Si un mot identique est rencontré avant que le mot ne soit plus à l'étude, alors cela s'appelle une proximité et elle est ajoutée au mot. Elle est ajoutée en tant que proximité avant pour le mot avant et en tant que proximité arrière pour le mot après.
+
+Si une nouvelle occurence du mot est trouvé avant la fin de l'étude du premier, les deux sont marqués proches (originalité par rapport à l'ancien application, mais qui permettra de ne pas avoir à calculer le retrait d'une proximité.
+
 

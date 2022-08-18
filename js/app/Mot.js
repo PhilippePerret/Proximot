@@ -26,7 +26,7 @@ class Mot extends TextElement {
 
 
   build(){
-    const o = DCreate('SPAN', {class:'texel mot'})
+    const o = DCreate('SPAN', {id:this.domId, class:'texel mot'})
     o.innerHTML = this.mot
     this.observe(o)
     return o

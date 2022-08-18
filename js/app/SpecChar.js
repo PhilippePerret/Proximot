@@ -16,7 +16,7 @@ class SpecChar extends TextElement {
 
 
   build(){
-    const o = DCreate('SPAN', {class:'texel spec', text:this.content})
+    const o = DCreate('SPAN', {id:this.domId, class:'texel spec', text:this.content})
     this.observe(o)
     return o
   }

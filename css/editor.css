@@ -21,6 +21,11 @@
   overflow-x: hidden;
 }
 
+/* Les paragraphes */
+#editor #content div.paragraph {
+  text-indent: 1em;
+}
+
 /* Tous les éléments textuels */
 #editor #content .texel {
 }
