@@ -12,6 +12,20 @@ class Paragraph extends TextElement {
   // @note: alias de this.obj
   get div(){return this.obj}
 
+  /**
+   * @return nombre de mots du paragraphe
+   */
+  motsCount(){
+    return this._mcount || (this._mcount = this.countMots().nbm )
+  }
+
+  /**
+   * @return {Number} La longueur du paragraphe
+   */
+  length(){
+    return this._length || ( this._length = this.countMots().len )
+  }
+
   // --- /Public Methods ---
 
   // --- Listener Methods ---
@@ -33,7 +47,21 @@ class Paragraph extends TextElement {
   }
   observe(o){
     super.observe(o)
-
   }
 
+  // --- Private Methods ---
+
+  countMots(){
+    var   nombre    = 0
+        , longueur  = 0
+        ;
+    this.content.forEach( texel => {
+      if ( texel.isMot ) nombre += 1
+      longueur += texel.length
+    })
+    // Mettre dans les propriétés
+    this._length = longueur
+    this._mcount = nombre
+    return {nbm: nombre, len: longueur} // pour renseignement immédiat
+  }
 }

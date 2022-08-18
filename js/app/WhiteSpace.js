@@ -4,7 +4,7 @@ class WhiteSpace extends TextElement {
 
   constructor(char){
     super(char)
-
+    this.type = 'wspace'
   }
 
   // --- Listener Methods ---

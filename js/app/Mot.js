@@ -4,11 +4,10 @@ class Mot extends TextElement {
   constructor(mot){
     super(mot)
     this.mot = mot
+    this.type = 'mot'
   }
 
   // --- Public Methods ---
-
-  get type(){ return 'mot' }
 
   // --- /Public Methods ---
 

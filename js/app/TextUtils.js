@@ -30,7 +30,7 @@ class TextUtils {
     var currentMot = []
     text.split('').forEach(char => {
       const charType = this.getTypeOf(char)
-      // console.log("Avec '%s' de type '%s' ", char, charType)
+      console.log("Avec '%s' de type '%s' ", char, charType)
 
       if ( charType != 'alphanum' ) {
         currentPar.push( new Mot(currentMot.join('')))

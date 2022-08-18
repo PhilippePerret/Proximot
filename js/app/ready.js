@@ -6,7 +6,7 @@ $(document).ready(e => {
 
   const texteComplexe = "Ils sortiront des bocaux plus tard aujourd'hui.\nMais les bocaux sont toujours aussi beaux. Il faut toujours bien le garder en tête."
   const itexte = new Texte(texteComplexe)
-  Editor.display(itexte)
+  Editor.display(itexte.firstFragment)
 
   console.log("Mots du texte : ", itexte.mots)
   console.log("Nombre de mots: ", itexte.motsCount)

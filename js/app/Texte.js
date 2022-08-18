@@ -11,6 +11,16 @@ class Texte {
     this.content = content
   }
 
+  // --- Public Methods ---
+
+  /**
+   * @return le premier fragment
+   */
+  get firstFragment(){
+    return this.getFragmentFromParagraph(0)
+  }
+
+
   get analyzer(){
     return this._analyzer || (this._analyzer = new TextAnalyzer(this))
   }
@@ -27,6 +37,35 @@ class Texte {
     return this._parags || (this._parags = TextUtils.splitInParagraphs(this.content))
   }
 
+  // --- Private Methods ---
+
+  /**
+   * @return l'instance {TextFragment} du fragment de texte commen-
+   * çant à partir du paragraphe d'index +paragIndex+
+   *
+   */
+  getFragmentFromParagraph(paragIndex){
+    return new TextFragment(this, paragIndex, this.getParagraphsFragmentFrom(paragIndex))
+  }
+  
+  /**
+   * @return les x paragraphes du texte depuis le paragraphe d'index
+   * +paragIndex+ dans le but de former un nouveau fragment
+   *
+   * Un fragment est constitué d'au moins 2000 mots ( 8 * 250 donc
+   * 8 pages de roman avec une "marge" de 1 page au début et à la 
+   * fin)
+   */
+  getParagraphsFragmentFrom(paragIndex){
+    const parags = []
+    var   nombreMots = 0
+        , parag
+    while ( (parag = this.paragraphs[paragIndex++]) && nombreMots < 2000 ){
+      parags.push(parag)
+      nombreMots += parag.motsCount
+    }
+    return parags
+  }
 
   getMotsFromParagraphs(){
     const ary = []

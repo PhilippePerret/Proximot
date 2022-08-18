@@ -4,7 +4,7 @@ class SpecChar extends TextElement {
 
   constructor(spec){
     super(spec)
-
+    this.type = 'spec'
   }
 
   // --- Listener Methods ---

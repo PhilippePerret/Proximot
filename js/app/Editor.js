@@ -8,8 +8,8 @@ class EditorClass {
    * @param {Texte} text Instance texte
    * 
    */
-  display(text) {
-    text.paragraphs.forEach( paragraph => {
+  display(fragment) {
+    fragment.paragraphs.forEach( paragraph => {
       this.content.appendChild(paragraph.div)
     })
   }

@@ -31,6 +31,10 @@ class TextElement {
     this.obj.classList.remove('selected')
   }
 
+  get length(){
+    return this._len || (this._len = this.content.length)
+  }
+
   // --- /Public Methods ---
 
   get obj(){
