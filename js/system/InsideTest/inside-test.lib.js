@@ -402,17 +402,17 @@ export class InsideTest {
     return this; // chainage
   }
   /**
-   * Exécution sur le sujet +sujet+ avec la valeur attendu +expected+
+   * Exécution sur le sujet +sujet+ avec la valeur retournée 
+   * attendue doit être +expected+
    * 
    */
   withExpected(sujet, expected){
     this.addStack(function(sujet, expected){
       this.reset()
-      const resultat  = this.eval.call(null, sujet, expected)
-      const value     = this.eval.value
+      const resultat  = this.eval.call(null, sujet)
       this.expected   = expected
-      this.actual     = value
-      resultat == expected || this.throwError(false, sujet, expected, value)
+      this.actual     = resultat
+      resultat == expected || this.throwError(false, sujet, expected, resultat)
     }.bind(this), [ sujet, expected ])
     return this; // chainage
   }
@@ -425,10 +425,9 @@ export class InsideTest {
       this.reset()
       this.negate = true
       const resultat  = this.eval.call(null, sujet, expected)
-      const value     = this.eval.value
       this.expected   = expected
-      this.actual     = value
-      resultat != expected && this.throwError(true, sujet, expected, value)    
+      this.actual     = resultat
+      resultat != expected && this.throwError(true, sujet, expected, resultat)    
     }.bind(this), [ sujet, expected ])
     return this; // chainage
   }
@@ -479,7 +478,8 @@ export class InsideTest {
     msg = tp(msg, table_remp)
     if ( expected ) {
       msg += "\n" + 'Attendu : ' + JSON.stringify(expected)
-      if ( actual ) msg += "\n" + 'Obtenu  : ' + JSON.stringify(actual)
+      console.log("actual : ", actual)
+      msg += "\n" + 'Obtenu  : ' + JSON.stringify(actual)
     }
     // msg = prefix + msg
     // Sorti du message en console

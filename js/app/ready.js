@@ -2,14 +2,14 @@
 
 $(document).ready(e => {
   
-  const texte = "Mon tout premier texte.\nAvec des retours chariot.\nC’est l'été ça se sent !"
-  Editor.display(texte)
+  // const texte = "Mon tout premier texte.\nAvec des retours chariot.\nC’est l'été ça se sent !"
 
-  const texteComplexe = "Ils sortiront des bocaux plus tard aujourd'hui."
-  const nlp = new NLP(texteComplexe)
-  nlp.corpus = texteComplexe
-  console.log("tokenized", nlp.tokenized)
-  console.log("lemma", nlp.lemmatizer())
+  const texteComplexe = "Ils sortiront des bocaux plus tard aujourd'hui.\nMais les bocaux sont toujours aussi beaux. Il faut toujours bien le garder en tête."
+  Editor.display(new Texte(texteComplexe))
+  // const nlp = new NLP(texteComplexe)
+  // nlp.corpus = texteComplexe
+  // console.log("tokenized", nlp.tokenized)
+  // console.log("lemma", nlp.lemmatizer())
 
   console.log("Ready !")
 })

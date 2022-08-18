@@ -5,16 +5,11 @@ class EditorClass {
   /**
    * Méthode principale qui affiche le texte +text+
    * 
-   * @param {String} text Le texte absolument brut de décoffrage.
+   * @param {Texte} text Instance texte
    * 
    */
   display(text) {
-    /*
-    | Le texte sous forme d'instances de Mots
-    */
-    this.paragraphs = TextUtils.splitInParagraphs(text)
-
-    this.paragraphs.forEach( paragraph => {
+    text.paragraphs.forEach( paragraph => {
       this.content.appendChild(paragraph.div)
     })
   }
