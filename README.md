@@ -1,0 +1,3 @@
+# Proximot
+
+Travail sur la proximité des mots dans un texte. Là où Antidote pêche…

@@ -1,0 +1,41 @@
+#editor {
+  font-family: GaramondBookITC ;
+  font-size: 20pt;
+  user-select:  none;
+  -webkit-user-select: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  /*width: 100%;*/
+  height: calc(100% - 4em);
+}
+
+#editor #content {
+  padding: 2em;
+  margin: 2em;
+  border: 1px solid #CCC;
+  border-radius: 8px;
+  height: calc(100% - 8em);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Tous les éléments textuels */
+#editor #content .texel {
+}
+
+#editor #content .mot {
+
+}
+#editor #content .mot.selected {
+  background-color: #C8EFFF;
+}
+
+
+#editor #content .mot {
+  cursor: vertical-text;  
+}
+#editor #content .wspace {
+  cursor: text;
+}
