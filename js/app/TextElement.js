@@ -22,6 +22,8 @@ class TextElement {
     return this.obj
   }
 
+  get isMot(){ return this.type == 'mot'}
+
   setSelected(){
     this.obj.classList.add('selected')
   }

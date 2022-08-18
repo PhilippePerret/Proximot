@@ -8,6 +8,7 @@ class Mot extends TextElement {
 
   // --- Public Methods ---
 
+  get type(){ return 'mot' }
 
   // --- /Public Methods ---
 

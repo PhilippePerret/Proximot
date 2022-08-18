@@ -27,42 +27,12 @@ Une autre possibilité serait d'avoir une page HTML, avec un champ de saisie et 
 - quand on clique sur l'espace entre deux mots, on peut en ajouter un
 - quand on supprime un mot (touche erase) on peut tout de suite en insérer un nouveau. Si on sort sans rien faire, ça supprime le champ.
 
-## Utilisation des modules nodejs
 
-> Note : on aurait besoin de NPL.js pour traiter le texte.
+## Fragment ou Portion
 
-En se servant de [browserify](https://browserify.org), on peut transformer les modules nodejs en simple fichier javascript.
+L'idée, pour accélérer le traitement, serait de fonctionner par Fragment de texte. Un *Fragment* est un texte (instance {TextFragment}) défini par un début et une fin dans le texte complet courant (instance {Texte}).
 
-Pour résumer 
+La base de longueur d'un fragment pourrait être 8 pages, c'est-à-dire 8 * 250 mots = 2000 mots, sachant qu'on ne pourrait pas modifier les 250 premiers et derniers sauf en passant au fragment suivant.
 
-### 1. On fait le script comme dans nodejs
+Le traitement serait invisible. Dès qu'on attendrait le bout d'un fragment, on passerait au suivant. Le point courant deviendrait le centre du nouveau fragment (plus compliqué que d'avoir un découpage fixe en fragment, mais plus pratique pour gérer facilement les jointures)
 
-~~~javascript
-//in uniq.js
-
-var unique = require('uniq') // le module nodejs
-
-var data = [11,1,1,1,2]
-
-console.log(unique(data))
-//=> renvoi [11,1,2] en console
-~~~
-
-### 2. On produit le fichier static
-
-~~~bash
-$> browserify uniq.js -o bundle.js
-~~~
-
-> Note : à faire chaque fois qu'on change le code
-
-### 3. On charge le module dans le code
-
-~~~html
-<!DOCTYPE html>
-<html>
-...
-<script type="text/javascript" src="bundle.js"></script>
-...
-</html>
-~~~
