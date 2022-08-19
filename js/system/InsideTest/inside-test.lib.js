@@ -222,10 +222,10 @@ export class InsideTest {
     this.nombreFailures = 0
     this.Failures = []
     console.log('%c=== DÉBUT DES TESTS ===', 'color:green;font-weight:bold;font-size:8pt;')
-    this.startTime = new Date().getMilliseconds()
+    this.startTime = new Date().getTime()
   }
   static stopCounters(){
-    this.endTime = new Date().getMilliseconds()
+    this.endTime = new Date().getTime()
   }
 
   /**

@@ -32,11 +32,20 @@ class Mot extends TextElement {
    */
   setTooClose(){
     // TODO Un tooltip permettant d'avoir des informations et de 
-    // faire des actions sur cette proximité (l'ignore par exemple)
+    // faire des actions sur cette proximité (l'ignorer par exemple)
     this.obj.classList.add('too-close')
+    /*
+    | Construire le tooltip des informations et des opérations
+    | On le met à l'intérieur, caché.
+    */
+    this.buildProximityTooltip()
   }
   unsetTooClose(){
     this.obj.classList.remove('too-close')
+    /*
+    | On doit détruire le tootip de proximité
+    */
+    this.proxTooltip && this.proxTooltip.remove()
   }
 
   /** @return le Lemma du mot */
@@ -52,7 +61,8 @@ class Mot extends TextElement {
     return false
   }
   onMouseOver(e){
-    return super.onMouseOver(e)
+    super.onMouseOver(e)
+    return stopEvent(e)
   }
 
   // --- /Listener Methods ---
@@ -66,6 +76,22 @@ class Mot extends TextElement {
   }
   observe(o){
     o.addEventListener('click', this.onClick.bind(this))
+  }
+
+  /**
+   * Construction, en cas de proximité, d'un div contenant les 
+   * informations et les outils de proximité
+   */
+  buildProximityTooltip(){
+    const o = DCreate('DIV', {text:'Infos sur proximité', class:'prox-tooltip'})
+    this.proxTooltip = o
+    this.obj.appendChild(o)
+  }
+  /**
+   * Observation du tooltip de proximité
+   */
+  observeProxTooltip(){
+    
   }
 
   get nlp(){

@@ -11,6 +11,24 @@
 class TextUtils {
 
   /**
+   * Pour faire l'essai de tree-tagger côté server
+   */
+  static receiveLemma(data){
+    console.log("Lemma: ", data.lemma)
+    console.info('End : ', new Date().getTime())
+  }
+
+  static askForLemma(){
+    const mots = ['ils', 'diront', 'leurs', 'prières']
+
+
+    mots.forEach( mot => {
+      console.info('START', new Date().getTime())
+      WAA.send({class:'Proximot::App',method:'check',data:{text:mot}})
+    })
+  }
+
+  /**
    * Prend le texte +text+ {String} et en fait 
    * des instances {Paragraphs} qui contient les sous-classes
    * de {TextElements} ({Mot}, {WhiteSpace}, etc.)

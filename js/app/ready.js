@@ -10,6 +10,10 @@ $(document).ready(e => {
   const itexte = new Texte(texteComplexe)
   Editor.display(itexte.firstFragment)
 
+  // Test
+  TextUtils.askForLemma()
+
+
   console.log("Ready !")
 })
 

@@ -2,6 +2,11 @@
 
 ## En cours
 
+* Mettre en place l'utilisation la plus rapide possible de tree-tagger côté serveur :
+  - toujours envoyer une liste de mots
+  - côté serveur, la liste est transformée en string avant d'être soumise par echo à bin/tree-tagger
+  - on retourne la liste après avoir remplacé les tabulations
+
 * Les premières proximités sont indiquées de façon grossière. Il faut :
   - faire une différence de couleur avec l'éloignement
   - faire des tooltips indiquant les informations d'éloignement

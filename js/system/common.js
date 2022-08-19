@@ -14,9 +14,9 @@ function not(v){ return ! v }
  * Pour benchmarker une méthode/opération
  */
 function benchmark(method, titre){
-  const startTime =  new Date().getMilliseconds()
+  const startTime =  new Date().getTime()
   method.call()
-  const endTime =  new Date().getMilliseconds()
+  const endTime =  new Date().getTime()
   console.info("Durée de %s : %f", titre, endTime - startTime)
 }
 
