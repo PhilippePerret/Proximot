@@ -33,8 +33,17 @@
 #editor #content .mot {
 
 }
+
 #editor #content .mot.selected {
   background-color: #C8EFFF;
+}
+
+#editor #content .mot.too-close {
+  background-color: #F9A3A3;
+}
+/* UN mot en même temps en proximité et sélectionné */
+#editor #content .mot.too-close.selected {
+  background-color: #A3F9A3;
 }
 
 

@@ -33,8 +33,10 @@ class TextUtils {
       // console.log("Avec '%s' de type '%s' ", char, charType)
 
       if ( charType != 'alphanum' ) {
-        currentPar.push( new Mot(currentMot.join('')))
-        currentMot = []
+        if ( currentMot.length ) {
+          currentPar.push( new Mot(currentMot.join('')))
+          currentMot = []
+        }
       }
       switch(charType){
         case 'alphanum': 

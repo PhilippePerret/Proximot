@@ -51,7 +51,7 @@ class TextElement {
   }
 
   get obj(){
-    return this._obj || (this._obj = this.build())
+    return this._obj || (this._obj = DGet(`#${this.domId}`) || this.build() )
   }
 
   observe(o){
@@ -61,7 +61,9 @@ class TextElement {
 
   // --- à redéfinir par les classes filles ---
   onClick(e){
-    Editor.Selection.toggle(this, e.shiftKey)
+    if ( this.isMot ) {
+      Editor.Selection.toggle(this, e.shiftKey)
+    }
     return stopEvent(e)
   }
   onMouseOver(e){

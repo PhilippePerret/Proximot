@@ -28,8 +28,8 @@ class TextFragment {
     this.paragraphs = paragraphs
   }
 
-  // get isTextBeginning() { return this.pIndex == 0 }
-  // get isTextEnding()    { return this.pIndex == this.itexte.paragraphs.length - 1}
+
+  // --- Public Methods ---
 
   /**
    * Procède à l'analyse du fragment
@@ -39,11 +39,40 @@ class TextFragment {
    *                traiter les proximités (à voir)
    */
   analyze(params){
-    benchmark(this.analyzer.proceedWithMots.bind(this.analyzer, this.mots), "Analyse par les mots")
-    benchmark(this.analyzer.proceedWithText.bind(this.analyzer, this.text), "Analyse par le texte")
-    // this.analyzer.proceedWithMots(this.mots)
-    // this.analyzer.proceedWithText(this.text)
+    benchmark(this.analyzer.proceed.bind(this.analyzer), "Analyse des mots du fragment")
+    console.log("TextFragment.lemmas", this.lemmas)
   }
+
+  /**
+   * Affichage des proximités du fragment
+   * 
+   */
+  showProximites(){
+    this.mots.forEach( mot => {
+      console.log("[showProximites] Étude du mot ", mot)
+      mot[mot.isTooClose(this)?'setTooClose':'unsetTooClose'].call(mot)
+    })
+  }
+
+  /**
+   * @return le groupe de Lemmas {Lemmas} de lemma +lemma+
+   * L'instancie si nécessaire.
+   */
+  getLemma(lemma) {
+    return this.lemmas.get(lemma)
+  }
+
+  // --- /Public Methods ---
+
+
+  /**
+   * Gestion des Lemmas du fragment de texte
+   * (voir les classes Lemmas et Lemma)
+   */
+  get lemmas(){
+    return this._lemmas || (this._lemmas = new Lemmas(this))
+  }
+
 
 
   get analyzer(){
@@ -57,6 +86,9 @@ class TextFragment {
   get text(){
     return this._text || (this._text = this.getText() )
   }
+
+
+  // --- Private Methods ---
 
   getMots(){
     const ary_mots = []

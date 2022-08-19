@@ -35,7 +35,7 @@ class SelectionManager {
     } else if ( keep ) { 
       this.add(sel)
     } else {
-      this.set(sel)
+      this.set([sel])
     }
   }
 

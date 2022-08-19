@@ -40,7 +40,7 @@ class Paragraph extends TextElement {
 
   onClick(e){
     console.log("J'ai cliqué le paragraphe", this.content)
-    return stopEvent(e)
+    // return stopEvent(e)
   }
   onMouseOver(e){return stopEvent(e)}
 

@@ -9,10 +9,20 @@ class EditorClass {
    * 
    */
   display(fragment) {
+    /*
+    | On commence par analyser les mots du fragment de texte
+    */
+    fragment.analyze()
+    /*
+    | Ensuite on affiche les éléments de texte (dont les mots)
+    */
     fragment.paragraphs.forEach( paragraph => {
       this.content.appendChild(paragraph.div)
     })
-    fragment.analyze()
+    /*
+    | Et enfin on marque les proximités
+    */
+    fragment.showProximites()
   }
 
   get Selection(){
