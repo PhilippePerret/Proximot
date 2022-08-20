@@ -44,5 +44,88 @@
  */
 
 class Keyboard {
-  
+  on_Key_Down_Hors_Edition(e){
+    switch(e.key){
+    case 'ArrowRight':
+      // Sélectionner le mot suivant ou le premier
+      // Si dernier : signaler
+      // SI touche MAJ => ajouter à la sélection
+      // SINON Mettre à la sélection
+      break
+    case 'ArrowLeft':
+      // Sélectionner le mot précédent ou le dernier
+      // Si premier : signaler
+      // SI la touche MAJ est appuyée => ajouter à la sélection
+      // SINON : mettre la sélection à ce mot
+      break
+    case 'ArrowDown':
+      // Faire défiler le texte vers le haut (voir le bas)
+      break
+    case 'ArrowUp':
+      // Faire défiler le texte vers le bas (voir le haut)
+      break
+    default:
+      console.log("-> onkeydown", {key:e.key, shift:e.shiftKey, alt:e.altKey, cmd:e.metaKey, ctrl:e.ctrlKey})
+    }
+  } 
+  on_Key_Down_Edition(e){
+    switch(e.key){
+    case 'Enter': case 'Tab':
+      // Si édition de mot => enregistrer et calculer
+      // SI pas édition de mot => appeler fonction onOK
+      break
+    case 'Tab':
+      // SI édition d'un mot => cf. 'Enter' ci-dessus
+      break
+    default:
+      console.log("-> onkeydown", {key:e.key, shift:e.shiftKey, alt:e.altKey, cmd:e.metaKey, ctrl:e.ctrlKey})
+    }
+  }
+
+  on_Key_Up_Hors_Edition(e){
+    switch(e.key){
+    case 'Enter':
+      // SI sélection unique => mettre le mot en édition
+      // SI sélection multiple => mettre le dernier mot en édition (ou tout ?)
+      // SI pas de sélection ?
+    default:
+      console.log("-> onkeydown", {key:e.key, shift:e.shiftKey, alt:e.altKey, cmd:e.metaKey, ctrl:e.ctrlKey})
+    }
+  }
+
+  on_Keypress_Hors_Edition(e){
+
+  }
+
 }
+
+/**
+ * Les touches modifiers envoient toutes (même la touche Maj et
+ * CapsLock) des keyDown et keyUp
+ * 
+ * Enter          passe par les trois
+ * CMD + Enter    ne passe que par onkeydown
+ * ALT + Enter    passe par les trois
+ * CTRL + Enter   passe par les trois
+ * 
+ * Les flèches    passent par Down et Up
+ *                mais pour les répétitions, il faut utiliser Down
+ * 
+ * TAB            passe par Down seulement (si ça focus ailleurs)
+ * ALT + TAB      passe par Down et Up
+ * CTRL + TAB     ne passe que par Up
+ * 
+ * Backspace        Seulement Down et Up
+ * ALT + Backspace  Idem
+ * CTRL+ Backspace Idem
+ * MAJ + Backspace  Idem
+ * 
+ * Toutes les
+ * touches        passent par les trois.
+ * 
+ */
+window.onkeydown = Keyboard.on_Key_Down_Hors_Edition.bind(Keyboard)
+
+window.onkeyup = Keyboard.on_Key_Up_Hors_Edition.bind(Keyboard)
+
+window.onkeypress = Keyboard.on_Keypress_Hors_Edition.bind(Keyboard)
