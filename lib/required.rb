@@ -1,9 +1,7 @@
 # encoding: UTF-8
 
+require_relative 'required/constants'
 
-
-APP_FOLDER = File.dirname(__dir__)
-LIB_FOLDER = __dir__
 
 def require_folder(path)
   Dir["#{path}/**/*.rb"].each{|m|require(m)}
