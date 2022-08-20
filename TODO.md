@@ -16,6 +16,9 @@
 
 ## Bugs
 
+## Préférence
+
+* le minimum de longueur pour que le mot soit traité
 
 ## Fonctionnalités
 

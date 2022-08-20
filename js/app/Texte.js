@@ -41,7 +41,9 @@ class Texte {
    *
    */
   getFragmentFromParagraph(paragIndex){
-    return new TextFragment(this, paragIndex, this.getParagraphsFragmentFrom(paragIndex))
+    const fragment = new TextFragment(this, paragIndex, this.getParagraphsFragmentFrom(paragIndex))
+    fragment.analyze()
+    return fragment
   }
   
   /**

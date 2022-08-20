@@ -39,7 +39,42 @@ class TextFragment {
   showProximites(){
     this.mots.forEach( mot => {
       console.log("[showProximites] Étude du mot ", mot)
-      mot[mot.isTooClose(this)?'setTooClose':'unsetTooClose'].call(mot)
+      const css = mot.isTooClose.call(mot, this)
+      if ( css ) {
+        mot.setTooClose(css)
+      } else {
+        mot.unsetTooClose()
+      }
+    })
+  }
+
+  /**
+   * Analyse du fragment
+   * -------------------
+   * Cela consiste principalement à définir la propriété @lemmas qui
+   * contient les @{lemma}s du fragment qui permettron de définir les
+   * proximité.
+   * 
+   */
+  analyze(){
+    // console.log("Preferences : ", Preferences)
+    // return 
+    console.info("Preferences.get('min_word_length') = ", Preferences.get('min_word_length'), typeof Preferences.get('min_word_length'))
+    delete this._lemma
+    var cursor = 0
+    this.mots.forEach( mot => {
+      mot.relPos = cursor
+      /*
+      | Le mot doit être assez long pour être analysé
+      */
+      if ( mot.length >= Preferences.get('min_word_length') ) {
+        /*
+        | Le fragment a-t-il déjà un lemma pour ce mot ? Si ce n'est 
+        | pas le cas, on le crée
+        */
+        this.lemmas.get(mot.lemma).addMot(mot)
+      }
+      cursor += mot.length
     })
   }
 
@@ -60,12 +95,6 @@ class TextFragment {
    */
   get lemmas(){
     return this._lemmas || (this._lemmas = new Lemmas(this))
-  }
-
-
-
-  get analyzer(){
-    return this._analyzer || (this._analyzer = new TextAnalyzer(this))
   }
 
   get mots(){

@@ -106,12 +106,87 @@ class Lemma {
     Object.assign(this.table, {[mot.relPos]: {mot:mot, index:index}})
     /*
     | Actualiser si nécessaire les propriétés index
+    |
     */
     if ( resetIndexes ) {
       for(var ipos in this.positions ) {
         this.table[this.positions[ipos]].index = parseInt(ipos,10)
       }
     }
+  }
+
+  /**
+   * @return true si le mot +mot+ {Mot} est trop prêt de son précédent
+   * ou de son suivant
+   * 
+   * Note : pour le moment, on ne retourne que les proximités directes
+   */
+  defineProximitiesOf(mot){
+    console.log("*** Recherche de la proximité de %s", mot.mot)
+    const minDist = this.constructor.MinProximityDistance
+    const indexInLemma = this.table[mot.relPos].index
+    console.log("   indexInLemma = ", indexInLemma)
+    const proximites = []
+    if ( mot.proxAvant || mot.proxAvant === null ) {
+      mot.proxAvant && proximites.push(mot.proxAvant)
+    } else {
+      /*
+      | Calcul de la proximité avant
+      */
+      const prox = this.calcProximityAvant(mot, indexInLemma)
+      prox && proximites.push(prox)
+    }
+    if ( mot.proxApres || mot.proxApres === null ) {
+      mot.proxApres && proximites.push(mot.proxApres)
+    } else {
+      /*
+      | Calcul de la proximité après
+      */
+      const prox = this.calcProximityApres(mot, indexInLemma)
+      prox && proximites.push(prox)
+    }
+    console.log("proximites de '%s'", mot.mot, proximites)
+    return proximites;
+  }
+
+  /**
+   * Calcule la proximité avant du mot +mot+ et la retourne
+   */
+  calcProximityAvant(mot, indexInLemma){
+    console.log("   this.table[mot.relPos] = this.table[%i] = ", mot.relPos, this.table[mot.relPos])
+    if ( indexInLemma > 0 ) {
+      console.log("   indexInLemma > 0")
+      const previousPos = this.positions[indexInLemma - 1]
+      console.log("previousPos = ", previousPos)
+      if ( previousPos + Lemma.MinProximityDistance > mot.relPos) {
+        /*
+        | Proximité avec le mot d'avant
+        */
+        const previousMot = this.table[previousPos].mot
+        console.log("   PROXIMITÉ AVANT TROUVÉE AVEC ", previousMot)
+        return new Proximity(previousMot, mot)
+      }
+    }
+  }
+  calcProximityApres(mot, indexInLemma){
+    this.proxApres = null
+    if ( indexInLemma < this.positions.length - 1) {
+      console.log("   indexInLemma n'est pas le dernier index")
+      const nextPos = this.positions[indexInLemma + 1]
+      console.log("   nextPos = %i (Lemmas.MinProximityDistance = %i, mot.relPos = %i)", nextPos, Lemma.MinProximityDistance, mot.relPos)
+      if ( mot.relPos + Lemma.MinProximityDistance > nextPos ) {
+        /*
+        | Proximité avec le mot d'après
+        */
+        const nextMot = this.table[nextPos].mot
+        console.log("   PROXIMITÉ APRÈS TROUVÉE AVEC ", nextMot)
+        return new Proximity(mot, nextMot)
+      }
+    }    
+  }
+
+  static get MinProximityDistance(){
+    return this._minproxdist || (this._minproxdist = Preferences.get('min_dist_proximity'))
   }
 
   /** @return TRUE si le Lemma possède déjà des mots */

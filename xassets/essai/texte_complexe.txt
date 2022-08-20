@@ -1,2 +1,2 @@
 Un second texte plus complexe.
-Déjà, il utilise plusieurs paragraphes.
+Déjà, il utilise plusieurs paragraphes. Et même un paragraphe avec des espaces insécables !

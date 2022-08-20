@@ -19,26 +19,42 @@ class Mot extends TextElement {
    *              texte.
    */
   isTooClose(frag){
+    if ( this.isTooShort ) return false
     const lemma = frag.getLemma(this.lemma)
     if ( lemma.hasOnlyOneMot ) {
       return false
     } else {
-      return true
+      lemma.defineProximitiesOf(this) // => .proxAvant et .proxApres
+      if ( this.proxAvant || this.proxApres ) {
+        if ( not(this.proxAvant) ) {
+          return this.proxApres.eloignement
+        } else if ( not(this.proxApres) ) {
+          return this.proxAvant.eloignement
+        } else if ( this.proxAvant.distance > this.proxApres.distance ) {
+          return this.proxApres.eloignement
+        } else {
+          return this.proxAvant.eloignement
+        }
+      } else {
+        return false
+      }
     }
   }
 
   /**
    * Marque/démarque le mot comme trop proche d'un autre
    * 
+   * @param cssEloignement {String} 'far', 'mid' ou 'near'
    */
-  setTooClose(){
-    // TODO Un tooltip permettant d'avoir des informations et de 
-    // faire des actions sur cette proximité (l'ignorer par exemple)
+  setTooClose(cssEloignement){
     this.obj.classList.add('too-close')
+    this.obj.classList.add(cssEloignement)
     /*
     | Construire le tooltip des informations et des opérations
     | On le met à l'intérieur, caché.
     */
+    // TODO Un tooltip permettant d'avoir des informations et de 
+    // faire des actions sur cette proximité (l'ignorer par exemple)
     this.buildProximityTooltip()
   }
   unsetTooClose(){
@@ -93,4 +109,10 @@ class Mot extends TextElement {
   }
   // --- Private Methods ---
 
+  get isTooShort(){
+    return this.content.length < this.constructor.minLengthWord
+  }
+  static get minLengthWord(){
+    return this._minlenword || (this._minlenword = Preferences.get('min_word_length'))
+  }
 }

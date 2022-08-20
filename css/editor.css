@@ -30,6 +30,10 @@
 #editor #content .texel {
   position: relative;
   z-index: 1;
+  margin-left: 8pt;
+}
+#editor #content .texel.ponct:not(.ponct-is) {
+  margin-left: 0pt;
 }
 
 
@@ -39,26 +43,41 @@
   width: 200px;
   font-size: 12pt;
   cursor: pointer;
+  background-color: #F0F0F0;
+  z-index: 100;
 }
 #editor #content .texel:hover span.prox-tooltip, 
 #editor #content .texel:hover span.prox-tooltip:hover {
   display: inline-block;
   top: -10px;
   left: 0;
-  z-index: 100;
+  z-index: 1000;
 }
 
 #editor #content .mot {
-
+  z-index: 1;
 }
 
 #editor #content .mot.selected {
   background-color: #C8EFFF;
+  z-index: 1;
 }
 
+/* 
+  --- Les mots en trop grande proximité ---
+  Il existe pour le moment 3 sortes de proximité :
+    .near    très proche
+    .mid     moyennement proche
+    .far     assez loin
+ */
 #editor #content .mot.too-close {
   background-color: #F9A3A3;
+  z-index: 1;
 }
+#editor #content .mot.too-close.near  { background-color: #FF0000 }
+#editor #content .mot.too-close.mid   { background-color: #FF7777 }
+#editor #content .mot.too-close.far   { background-color: #FFEEEE }
+
 /* UN mot en même temps en proximité et sélectionné */
 #editor #content .mot.too-close.selected {
   background-color: #A3F9A3;
