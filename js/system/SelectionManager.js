@@ -22,9 +22,18 @@ class SelectionManager {
     return this.liste[this.index]
   }
 
+  /** @return Le dernier élément sélectionné */
+  get last() {
+    this.index = this.liste.length - 1
+    return this.get()
+  }
+
+  get isEmpty(){ return this.liste.length == 0 }
+  get isUniq() { return this.liste.length == 1 }
+
   set(newListe){
     this.deselectAll()
-    if ( not(newListe.length) ){ newListe = [newListe] }
+    if ( not(Array.isArray(newListe)) ){ newListe = [newListe] }
     newListe.forEach( sel => this.add(sel) )
     this.index = 0
   }

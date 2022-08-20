@@ -21,15 +21,19 @@ class TextElement {
   }
 
   constructor(data){
-    console.info("Instanciation de text-element avec : ", data)
+    // console.info("Instanciation de text-element avec : ", data)
     this.content = data[0]
-    console.info("this.content = ", this.content)
+    // console.info("this.content = ", this.content)
     this.ttTag   = data[1] // NAM, VER:pres, etc.
     this.lemma   = data[2]
     this.id = this.constructor.getNewId()
   }
 
   // --- Public Methods ---
+
+  get inspect(){
+    return this._inspect || (this._inspect = `<<<${this.type} #${this.id} ${this.content.substring(0,20)}...>>>`)
+  }
 
   get span(){
     return this.obj

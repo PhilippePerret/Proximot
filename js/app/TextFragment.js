@@ -38,7 +38,7 @@ class TextFragment {
    */
   showProximites(){
     this.mots.forEach( mot => {
-      console.log("[showProximites] Étude du mot ", mot)
+      // console.log("[showProximites] Étude du mot ", mot)
       const css = mot.isTooClose.call(mot, this)
       if ( css ) {
         mot.setTooClose(css)
@@ -57,13 +57,13 @@ class TextFragment {
    * 
    */
   analyze(){
-    // console.log("Preferences : ", Preferences)
-    // return 
-    console.info("Preferences.get('min_word_length') = ", Preferences.get('min_word_length'), typeof Preferences.get('min_word_length'))
+    // console.info("Preferences.get('min_word_length') = ", Preferences.get('min_word_length'), typeof Preferences.get('min_word_length'))
     delete this._lemma
-    var cursor = 0
+    var cursor    = 0
+    var indexMot  = 0
     this.mots.forEach( mot => {
       mot.relPos = cursor
+      mot.index  = indexMot++
       /*
       | Le mot doit être assez long pour être analysé
       */

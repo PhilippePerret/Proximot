@@ -10,11 +10,13 @@ class EditorClass {
    */
   display(fragment) {
     /*
+    | Pour le garder
+    */
+    this.fragment = fragment
+    /*
     | Ensuite on affiche les éléments de texte (dont les mots)
     */
     fragment.paragraphs.forEach( paragraph => {
-      // console.log("Paragraphe = ", paragraph)
-      // console.log("paragraph.div = ", paragraph.div)
       this.content.appendChild(paragraph.div)
     })
     /*
@@ -22,6 +24,25 @@ class EditorClass {
     */
     fragment.showProximites()
   }
+
+ /**
+   * Sélectionner un élément textuel par son index
+   * 
+   */
+  selectMotByIndex(texelIndex){
+    console.log("Mot à sélectionner (index %i) = ", texelIndex, this.mots[texelIndex])
+    this.Selection.set(this.mots[texelIndex])
+  }
+
+  /** @return le dernier index possible */
+  get lastAvailableIndex(){
+    return this.mots.length - 1
+  }
+
+  get mots(){
+    return this.fragment.mots
+  }
+
 
   get Selection(){
     return this._sel || (this._sel = new SelectionManager(this))

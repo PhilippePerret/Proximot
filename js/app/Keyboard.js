@@ -44,19 +44,68 @@
  */
 
 class Keyboard {
-  on_Key_Down_Hors_Edition(e){
+
+  /**
+   * Méthode appelée quand un champ est mis en édition (pour le
+   * moment, seulement les mots du texte)
+   * 
+   * @param params {Hash}
+   *    obj:    DOM Element en édition
+   * 
+   */
+  static setEdition(params){
+    this.editionParams = params
+    window.onkeyup    = this.on_Key_Up_Edition.bind(this)
+    window.onkeydown  = this.on_Key_Down_Edition.bind(this)
+    window.onkeypress = this.on_Keypress_Edition.bind(this)
+  }
+
+  static unsetEdition(e, withOk){
+    if ( withOk ) {
+      // Touche ou bouton OK
+      this.editionParams.onOk(true)
+    } else {
+      // Annulation de l'édition
+      const method = this.editionParams.onCancel || this.editionParams.onOk
+      method.call(null, false) 
+    }
+    stopEvent(e)
+    window.onkeyup    = this.on_Key_Up_Hors_Edition.bind(this)
+    window.onkeydown  = this.on_Key_Down_Hors_Edition.bind(this)
+    window.onkeypress = this.on_Keypress_Hors_Edition.bind(this)
+    return false
+  }
+
+
+  static on_Key_Down_Hors_Edition(e){
     switch(e.key){
     case 'ArrowRight':
       // Sélectionner le mot suivant ou le premier
       // Si dernier : signaler
       // SI touche MAJ => ajouter à la sélection
       // SINON Mettre à la sélection
+      if ( Editor.Selection.isEmpty ) {
+        // Aucune sélection => sélectionner le premier mot
+        Editor.selectMotByIndex(0)
+      } else if ( Editor.Selection.last.index < Editor.lastAvailableIndex ) {
+        Editor.selectMotByIndex(Editor.Selection.last.index + 1)
+      } else {
+        message("C'est le dernier mot !")
+      }
       break
     case 'ArrowLeft':
       // Sélectionner le mot précédent ou le dernier
       // Si premier : signaler
       // SI la touche MAJ est appuyée => ajouter à la sélection
       // SINON : mettre la sélection à ce mot
+      if ( Editor.Selection.isEmpty ) {
+        // Aucune sélection => sélection le premier mot
+        Editor.selectMotByIndex(0)
+      } else if (Editor.Selection.last.index > 0) {
+        Editor.selectMotByIndex(Editor.Selection.last.index - 1)
+      } else {
+        message("C'est le premier mot !")
+      }
       break
     case 'ArrowDown':
       // Faire défiler le texte vers le haut (voir le bas)
@@ -68,33 +117,61 @@ class Keyboard {
       console.log("-> onkeydown", {key:e.key, shift:e.shiftKey, alt:e.altKey, cmd:e.metaKey, ctrl:e.ctrlKey})
     }
   } 
-  on_Key_Down_Edition(e){
+  static on_Key_Down_Edition(e){
+    switch(e.key){
+    default:
+      console.log("-> onkeydown", {key:e.key, shift:e.shiftKey, alt:e.altKey, cmd:e.metaKey, ctrl:e.ctrlKey})
+    }
+  }
+
+  static on_Key_Up_Hors_Edition(e){
+    switch(e.key){
+    case 'Enter':
+      // SI sélection unique => mettre le mot en édition
+      // SI sélection multiple => mettre le dernier mot en édition (ou tout ?)
+      // SI pas de sélection ?
+      if ( Editor.Selection.isEmpty ){
+        message("Pour éditer un mot, sélecionnez-le")
+      } else if ( Editor.Selection.isUniq ) {
+        Editor.Selection.get().edit()
+      } else {
+        Editor.Selection.last.edit()
+      }
+    default:
+      console.log("-> onkeydown", {key:e.key, shift:e.shiftKey, alt:e.altKey, cmd:e.metaKey, ctrl:e.ctrlKey})
+    }
+  }
+
+  static on_Key_Up_Edition(e){
     switch(e.key){
     case 'Enter': case 'Tab':
-      // Si édition de mot => enregistrer et calculer
-      // SI pas édition de mot => appeler fonction onOK
-      break
+      /*
+      | Touche Enter pressée en cours d'édition
+      */
+      if ( e.metaKey ) {
+        erreur("Je dois apprendre à créer un nouveau paragraphe.")
+      } else {
+        // Touche Return seule => finir l'édition
+        return this.unsetEdition(e, true)
+      }
+    case 'Escape':
+      // Annuler l'édition
+      return this.unsetEdition(e, false)
     case 'Tab':
       // SI édition d'un mot => cf. 'Enter' ci-dessus
       break
     default:
       console.log("-> onkeydown", {key:e.key, shift:e.shiftKey, alt:e.altKey, cmd:e.metaKey, ctrl:e.ctrlKey})
     }
+    return true
   }
 
-  on_Key_Up_Hors_Edition(e){
-    switch(e.key){
-    case 'Enter':
-      // SI sélection unique => mettre le mot en édition
-      // SI sélection multiple => mettre le dernier mot en édition (ou tout ?)
-      // SI pas de sélection ?
-    default:
-      console.log("-> onkeydown", {key:e.key, shift:e.shiftKey, alt:e.altKey, cmd:e.metaKey, ctrl:e.ctrlKey})
-    }
+  static on_Keypress_Hors_Edition(e){
+    return true
   }
 
-  on_Keypress_Hors_Edition(e){
-
+  static on_Keypress_Edition(e){
+    return true
   }
 
 }

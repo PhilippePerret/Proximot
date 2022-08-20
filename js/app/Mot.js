@@ -10,6 +10,29 @@ class Mot extends TextElement {
 
   // --- Public Methods ---
 
+  /**
+   * Mettre le mot en édition
+   * 
+   */
+  edit(){
+    console.log("Je dois mettre " + this.inspect + " en édition")
+    this.obj.contentEditable = true
+    this.obj.focus()
+    Keyboard.setEdition({obj:this.obj, onOk: this.onEndEdit.bind(this)})
+  }
+  onEndEdit(withOk){
+    console.log("Je dois apprendre à finir l'édition")
+    console.log("C'est une %s", withOk ? 'confirmation' : 'annulation')
+    let newContent = this.obj.innerText.trim()
+    console.log("Nouvelle valeur = ", newContent)
+    if ( newContent.endsWith("\n") ){
+      newContent = newContent.trim()
+    }
+    this.obj.blur()
+    this.obj.contentEditable = false
+    this.obj.innerText = newContent
+    this.obj.focus()
+  }
 
   /**
    * @return true si le mot est en proximité avec un autre dans le
