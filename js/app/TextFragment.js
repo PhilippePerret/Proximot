@@ -26,23 +26,12 @@ class TextFragment {
     this.itexte     = itexte
     this.pIndex     = paragIndex
     this.paragraphs = paragraphs
+    this.Klass      = 'TextFragment'
   }
 
 
   // --- Public Methods ---
-
-  /**
-   * Procède à l'analyse du fragment
-   * -------------------------------
-   * 
-   * @param params  {Hash} une table de paramètres pour savoir comment
-   *                traiter les proximités (à voir)
-   */
-  analyze(params){
-    benchmark(this.analyzer.proceed.bind(this.analyzer), "Analyse des mots du fragment")
-    console.log("TextFragment.lemmas", this.lemmas)
-  }
-
+  
   /**
    * Affichage des proximités du fragment
    * 

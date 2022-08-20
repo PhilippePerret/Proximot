@@ -20,8 +20,12 @@ class TextElement {
     return this.lastId ++ 
   }
 
-  constructor(content){
-    this.content = content
+  constructor(data){
+    console.info("Instanciation de text-element avec : ", data)
+    this.content = data[0]
+    console.info("this.content = ", this.content)
+    this.ttTag   = data[1] // NAM, VER:pres, etc.
+    this.lemma   = data[2]
     this.id = this.constructor.getNewId()
   }
 

@@ -112,7 +112,7 @@ class TTAnalyzer
       nil
     end
 
-    puts "\n\n<<<<< Première liste :\n#{premiere_liste}\n>>>>>>>>>>>>"
+    # puts "\n\n<<<<< Première liste :\n#{premiere_liste}\n>>>>>>>>>>>>"
 
     if to_retreate.empty?
       liste_finale = premiere_liste
@@ -141,7 +141,7 @@ class TTAnalyzer
       end
     end
 
-    puts "\n\n<<<<<< liste_finale:\n#{liste_finale}\n>>>>>>>>>>>>>>"
+    # puts "\n\n<<<<<< liste_finale:\n#{liste_finale}\n>>>>>>>>>>>>>>"
 
     return liste_finale
   end
@@ -153,7 +153,7 @@ class TTAnalyzer
       File.exist?(options[:lexicon]) || raise("Impossible de trouver le lexicon #{options[:lexicon].inspect}")
       opts << "-lex \"#{options[:lexicon]}\""
     end
-    puts "options : #{opts.join(' ')}"
+    # puts "options : #{opts.join(' ')}"
     `echo "#{texte_pret}" | #{TT_COMMAND} #{opts.join(' ')}`
   end
 
@@ -193,7 +193,6 @@ class TTAnalyzer
     # commence un inconnu et où il finit
     # 
     res = parse_retour_tree_tagger(res)
-    puts "res: #{res.inspect}"
     # 
     # On va faire une table avec en clé l'indice de l'inconnu et
     # en valeur ses tokens (en fait, c'est simplement un array)
@@ -213,7 +212,7 @@ class TTAnalyzer
       end
     end
 
-    puts "\n\n<<<<< tokens_per_unknowns:\n#{tokens_per_unknowns}\n>>>>>>>>>>>>>>>>>"
+    # puts "\n\n<<<<< tokens_per_unknowns:\n#{tokens_per_unknowns}\n>>>>>>>>>>>>>>>>>"
 
     return tokens_per_unknowns
   end
@@ -283,7 +282,6 @@ if $0 == __FILE__
   require 'minitest/autorun'
   require 'minitest/color'
 
-  puts File.expand_path('.')
   require_relative './../constants'
 
 
@@ -347,7 +345,7 @@ if $0 == __FILE__
       [
         [   "Premier paragraphe\nDeuxième paragraphe",  [["Premier", "NUM", "premier"], ["paragraphe", "NOM", "paragraphe"], ["BREAK", "BREAK", "BREAK"], ["Deuxième", "NAM", "Deuxième"], ["paragraphe", "NOM", "paragraphe"]]  ]
       ].each do |sujet, expected|
-        puts "\n\n\nTEST - TRAITEMENT SUJET #{sujet.inspect}"
+        # puts "\n\n\nTEST - TRAITEMENT SUJET #{sujet.inspect}"
         assert_equal(expected, @a.tokenize(sujet))
       end
     end

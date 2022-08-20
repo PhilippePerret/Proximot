@@ -8,7 +8,8 @@
 class Texte {
 
   constructor(content){
-    this.content = content
+    this.content  = content
+    this.Klass    = 'Texte'
   }
 
   // --- Public Methods ---
@@ -29,7 +30,7 @@ class Texte {
   }
 
   get paragraphs(){
-    return this._parags || (this._parags = TextUtils.splitInParagraphs(this.content))
+    return this._parags || (this._parags = this.content)
   }
 
   // --- Private Methods ---

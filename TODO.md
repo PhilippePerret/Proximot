@@ -2,11 +2,8 @@
 
 ## En cours
 
-* Mettre en place l'utilisation la plus rapide possible de tree-tagger côté serveur :
-  - toujours envoyer une liste de mots
-  - côté serveur, la liste est transformée en string avant d'être soumise par echo à bin/tree-tagger
-  - on retourne la liste après avoir remplacé les tabulations
-
+* Quand c'est un long texte (non encore travaillé), ne traiter d'abord qu'une portion (de 2000 mots environ, donc de 15000 signes environ)
+* Implémenter le bon traitement de 'est-ce' dans TTAnalyzer
 * Les premières proximités sont indiquées de façon grossière. Il faut :
   - faire une différence de couleur avec l'éloignement
   - faire des tooltips indiquant les informations d'éloignement

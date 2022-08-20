@@ -9,6 +9,8 @@ class App {
    * 
    */
   static onReceiveText(data){
-    console.log(data)
+    const texte = TextUtils.makeTexteFromTokens(data.tokens)
+    console.log("texte = ", texte)
+    Editor.display(texte.firstFragment)
   }
 }

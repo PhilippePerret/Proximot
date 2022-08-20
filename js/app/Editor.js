@@ -10,13 +10,11 @@ class EditorClass {
    */
   display(fragment) {
     /*
-    | On commence par analyser les mots du fragment de texte
-    */
-    fragment.analyze()
-    /*
     | Ensuite on affiche les éléments de texte (dont les mots)
     */
     fragment.paragraphs.forEach( paragraph => {
+      // console.log("Paragraphe = ", paragraph)
+      // console.log("paragraph.div = ", paragraph.div)
       this.content.appendChild(paragraph.div)
     })
     /*

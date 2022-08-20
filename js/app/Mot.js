@@ -1,10 +1,11 @@
 'use strict';
 class Mot extends TextElement {
 
-  constructor(mot){
-    super(mot)
-    this.mot = mot
-    this.type = 'mot'
+  constructor(dmot){
+    super(dmot)
+    this.mot    = this.content
+    this.type   = 'mot'
+    this.Klass  = 'Mot'
   }
 
   // --- Public Methods ---
@@ -48,9 +49,6 @@ class Mot extends TextElement {
     this.proxTooltip && this.proxTooltip.remove()
   }
 
-  /** @return le Lemma du mot */
-  get lemma(){return this._lemma||(this._lemma = this.getLemma())}
-
   // --- /Public Methods ---
 
   // --- Listener Methods ---
@@ -83,7 +81,7 @@ class Mot extends TextElement {
    * informations et les outils de proximité
    */
   buildProximityTooltip(){
-    const o = DCreate('DIV', {text:'Infos sur proximité', class:'prox-tooltip'})
+    const o = DCreate('span', {text:'Infos sur proximité', class:'prox-tooltip'})
     this.proxTooltip = o
     this.obj.appendChild(o)
   }
@@ -93,22 +91,6 @@ class Mot extends TextElement {
   observeProxTooltip(){
     
   }
-
-  get nlp(){
-    return this._nlp || (this._nlp = new NLP(this.mot))
-  }
-
   // --- Private Methods ---
 
-  /**
-   * @return le mot canonique du mot (sachant que NLP.lemmatizer()
-   * retourne une liste des possibilités)
-   * 
-   */
-  getLemma(){
-    const lems = this.nlp.lemmatizer()
-    // TODO voir pour certains mots le lem qu'il faut prendre
-    const lem = lems[0]
-    return lem.lemma
-  }
 }

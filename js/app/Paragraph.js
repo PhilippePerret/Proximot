@@ -1,16 +1,17 @@
 'use strict';
 
-class Paragraph extends TextElement {
+class Paragraph {
 
   constructor(texelList){
-    super(texelList)
+    this.content = texelList
+    this.Klass   = 'Paragraph'
   }
 
   // --- Public Methods ---
 
   // @return le DIV (DOM Element) du paragraphe
   // @note: alias de this.obj
-  get div(){return this.obj}
+  get div(){return this.obj || (this.obj = this.build())}
 
   /**
    * @return la liste des mots (et uniquement les mots) du 
@@ -54,7 +55,7 @@ class Paragraph extends TextElement {
     return o
   }
   observe(o){
-    super.observe(o)
+
   }
 
   // --- Private Methods ---

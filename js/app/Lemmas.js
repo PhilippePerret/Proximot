@@ -12,6 +12,7 @@
 class Lemmas {
 
   constructor(textfrag){
+    this.Klass = 'Lemmas'
     this.textfragment = textfrag
     /*
     | Table qui contient en clé le lemma (le mot canonique) et en
@@ -19,6 +20,7 @@ class Lemmas {
     */
     this.table = {}
   }
+
 
   /**
    * @return le {Lemma} de lemma +lemma+ ou l'instancie s'il 
@@ -66,6 +68,9 @@ class Lemma {
     */
     this.table      = {}
   }
+
+  get Klass(){return 'Lemma'}
+
 
   addMot(mot){
     var   index = null

@@ -61,7 +61,7 @@ class << self
       # 
       # Un seul fichier texte dans le dossier
       # 
-      return paths_text
+      return paths_text.first
     elsif paths_text.count > 1
       # 
       # Il faut choisir parmi plusieurs textes
