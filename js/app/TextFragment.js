@@ -56,14 +56,10 @@ class TextFragment {
    *            plusieurs paragraphes. 
    */
   checkProximityFor(mot, options) {
-    const defaultOptions = {
-        around:     Pref('nb_mots_around')
-      , poursuivre: this.analyzeAround.bind(this)
-      , indexMot:   mot.index
-    }
-    options = Object.assign(defaultOptions, options || {})
-    TextUtils.analyze(mot.content, options)
+    this.curMot = mot
+    Mot.getLemmaOf(mot.content, this.analyzeAround.bind(this) )
   }
+
   /**
    * Méthode qui procède à l'analyse d'un extrait du fragment (après
    * changement du texte par exemple). Les options permettent de
@@ -77,8 +73,58 @@ class TextFragment {
    *                      mot.
    */
   analyzeAround( data ) {
-    const mot = this.mots[parseInt(data.indexMot,10)]
-    console.warn("Cette méthode est à poursuivre", mot)
+    /*
+    | Le nombre de mots à checker autour
+    */
+    const around = Pref('nb_mots_around')
+    /*
+    | Le mot courant (instance {Mot})
+    */
+    const mot = this.curMot
+    console.log("Le mot : ", mot)
+    console.warn("La méthode d'analyse de la proximité est à poursuivre, avec les données : ", data)
+
+    const motsTooClose = []
+    /*
+    | Les mots avant
+    */
+    for(var idxMot = mot.index -  1, min = mot.index - around; idxMot > min ; --idxMot){
+      const cmot = this.mots[idxMot]
+      if ( undefined == cmot ) break
+      if ( mot.lemma == cmot.lemma ) {
+        if ( mot.toCloseTo(cmot) ) {
+          console.warn("Mot trop proche de :", cmot)
+          motsTooClose.push(cmot)
+        } else {
+          break; // il ne peut y en avoir de plus près (dans ce sens)
+        }
+      } 
+    }
+    /*
+    | Les mots après
+    */
+    const max = mot.index + around ;
+    for(idxMot = mot.index + 1; idxMot < max; ++ idxMot ){
+      const cmot = this.mots[idxMot]
+      if ( undefined == cmot ) {
+        break
+      } else if ( mot.lemma == cmot.lemma ) {
+        if ( mot.toCloseTo(cmot) ) {
+          console.warn("Mot trop proche de :", cmot)
+          motsTooClose.push(cmot)
+        } else {
+          break; // il ne peut y en avoir de plus près (dans ce sens)
+        }
+      } 
+    }
+
+    if ( motsTooClose.length ) {
+      message("Ce mot est trop proche d'autres mots semblables")
+      console.info("Ce mot est trop proche d'autres mots semblables")
+    } else {
+      message("Ce mot est à bonne distance.")
+      console.info("Ce mot est à bonne distance.")
+    }
   }
 
   /**

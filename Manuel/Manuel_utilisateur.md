@@ -1,7 +1,73 @@
 <style type="text/css">
+  .inlineb {display:inline-block;}
   span.warning {color: red; font-weight: bold;}
 </style>
+
 # Proximot - Manuel utilisateur
+
+**Proximot** est une application pour travailler les proximités dans un texte. Partant du principe qu’en bon français les répétitions détruisent le style, cette application permet de traquer les répétitions et de les supprimer.
+
+---
+
+## Principes
+
+* Tout clavier
+* Sélection par mot. Entendu que ce sont des mots qui doivent être modifiés, la sélection se fait toujours par mot entier (les modifications aussi). La console, à la manière de Vim, permet une grande agilité dans les déplacements et les sélections.
+
+### Tout clavier
+
+On gère entièrement le texte au clavier, à la façon de Vim, avec une console en bas de page qui permet d’entrer toutes les commandes.
+
+---
+
+## Commandes console
+
+### Commandes Éditions
+
+| <span style="width:280px;display:inline-block;">Opération</span> | <span style="display:inline-block;width:120px;">Com</span> | Mnémo          | Commandes et paramètres                                      |      |
+| ------------------------------------------------------------ | ---------------------------------------------------------- | -------------- | ------------------------------------------------------------ | ---- |
+| Remplacement la sélection par ce mot (en faisant tous les checks nécessaires) | **`r <remp>`**                                             | next proximité | Sélectionne la proximité suivante dans le texte, ou la première |      |
+|                                                              |                                                            |                |                                                              |      |
+|                                                              |                                                            |                |                                                              |      |
+|                                                              |                                                            |                |                                                              |      |
+
+### Commandes Déplacements
+
+| <span style="width:280px;display:inline-block;">Opération</span> | <span style="display:inline-block;width:120px;">Com</span> | Mnémo | Commandes et paramètres |
+| ------------------------------------------------------------ | ---------------------------------------------------------- | ----- | ----------------------- |
+| Déplacer la sélection vers la droite                         | ⌘ ➡️                                                        |       |                         |
+| Déplacer la sélection vers la gauche                         | ⌘ ⬅️                                                        |       |                         |
+|                                                              |                                                            |       |                         |
+|                                                              |                                                            |       |                         |
+
+### Commandes Proximités
+
+| <span style="width:280px;display:inline-block;">Opération</span> | <span style="display:inline-block;width:120px;">Com</span> | Mnémo          | Commandes et paramètres                                      |
+| ------------------------------------------------------------ | ---------------------------------------------------------- | -------------- | ------------------------------------------------------------ |
+| Aller à la prochaine proximité                               | **`np`**                                                   | next proximity | Sélectionne la proximité suivante dans le texte, ou la première |
+| Prochaine proximité de la sélection                          | **`n`**                                                    | next           |                                                              |
+| Précédente proximité de la sélection                         | **`p`**                                                    | previous       |                                                              |
+| Information sur sélection                                    | **`i`**                                                    | information    | Affiche à l’écran les informations sur la sélection (à commencer par les proximités) |
+
+
+### Commandes Sélection
+
+| <span style="width:280px;display:inline-block;">Opération</span> | <span style="display:inline-block;width:120px;">Com</span> | Mnémo          | Commandes et paramètres                                      |      |
+| ------------------------------------------------------------ | ---------------------------------------------------------- | -------------- | ------------------------------------------------------------ | ---- |
+| Sélectionner le mot suivant (ou le premier)                  | ⌥ ➡️                                                        |                | On peut aussi l’obtenir en jouant la command `s <index mot>`, par exemple `s 1` pour sélectionner le premier mot. |      |
+| Sélectionner le mot précédent (ou le premier)                | ⌥ ⬅️                                                        |                |                                                              |      |
+| Aller à la prochaine proximité                               | **`np`**                                                   | next proximité | Sélectionne la proximité suivante dans le texte, ou la première |      |
+| Prochaine proximité de la sélection                          | **`n`**                                                    | next           |                                                              |      |
+| Précédente proximité de la sélection                         | **`p`**                                                    | previous       |                                                              |      |
+| Information sur sélection                                    | **`i`**                                                    | information    | Affiche à l’écran les informations sur la sélection (à commencer par les proximités) |      |
+| Sélectionner le nième mot du fragment                        | **`s <index>`**                                            | “S”élection    | L’index est un entier 1-start (premier mot = 1)              |      |
+| Sélectionner les mots de `n`à `m`                            | **`s <n-m>`**                                              | Idem           | Les index sont des entiers 1-start (premier mot = 1)         |      |
+| Sélectionne le nième mot après la sélection                  | **`s +<n>`**                                               | Idem           | `n` est un entier.                                           |      |
+| Sélectionne le nième mot avant la sélection                  | **`s -<n>`**                                               | Idem           | `n` est un entier.                                           |      |
+|                                                              |                                                            |                |                                                              |      |
+|                                                              |                                                            |                |                                                              |      |
+
+
 
 ---
 

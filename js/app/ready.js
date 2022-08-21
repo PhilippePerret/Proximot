@@ -4,10 +4,11 @@ $(document).ready(e => {
   
   // const texte = "Mon tout premier texte.\nAvec des retours chariot.\nC’est l'été ça se sent !"
 
-  const texteComplexe = "Ils sortiront des bocaux plus tard aujourd'hui.\nMais une des étiquettes de bocal est toujours aussi belle. Il faut toujours bel et bien le garder en tête, parce que c'est beau."
   
+  Console.prepare()
   TextElement.reset()
 
+  // const texteComplexe = "Ils sortiront des bocaux plus tard aujourd'hui.\nMais une des étiquettes de bocal est toujours aussi belle. Il faut toujours bel et bien le garder en tête, parce que c'est beau."
   // const itexte = new Texte(texteComplexe)
   // Editor.display(itexte.firstFragment)
 

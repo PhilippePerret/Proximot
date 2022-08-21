@@ -32,6 +32,28 @@ class EditorClass {
     this.Selection.set(this.mots[texelIndex])
   }
 
+  /**
+   * Pour déplacement le mot avant ou après (et en tirer toutes les
+   * conséquences au niveau des proximités)
+   * 
+   * @param texel {TextElement} Le text-element à déplacer (souvent un mot)
+   * @param direc {String} La direction ('left' ou 'right')
+   * 
+   */
+  moveTexel(texel, direc){
+    const o = texel.obj
+    if ( direc == 'left' ) {
+      o.parentNode.insertBefore(o, o.previousSibling)
+    } else {
+      if ( o.nextSibling.nextSibling ) {
+        o.parentNode.insertBefore(o, o.nextSibling.nextSibling)
+      } else {
+        console.warn("Apprendre à traiter le passage au paragraphe suivant.")
+      }
+    }
+    console.warn("Apprendre à traiter les proximités après un déplacement.")
+  }
+
   /** @return le dernier index possible */
   get lastAvailableIndex(){
     return this.mots.length - 1

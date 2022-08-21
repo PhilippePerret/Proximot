@@ -2,11 +2,12 @@
 
 ## En cours
 
+* Voir le bug
 * Mettre en place le système d'annulation
+* Mémoriser chaque ligne de console (comme le Terminal)
 * Quand c'est un long texte (non encore travaillé), ne traiter d'abord qu'une portion (de 2000 mots environ, donc de 15000 signes environ)
 * Implémenter le bon traitement de 'est-ce' dans TTAnalyzer
 * Les premières proximités sont indiquées de façon grossière. Il faut :
-  - faire une différence de couleur avec l'éloignement
   - faire des tooltips indiquant les informations d'éloignement
   - pouvoir agir sur la proximité (ignorer)
   - avoir des listes d'exclusion (commencer par mettre les verbes être et avoir)
@@ -17,12 +18,19 @@
 
 ## Bugs
 
+* [bug] Sur la recherche de proximité. L'ensemble du check se passe à peu près bien mais :
+  - l'app fait un appel serveur pour avoir le lemma du mot, même lorsqu'il est connu
+  - l'app ne semble pas voir les autres mots semblables.
+
 ## Préférence
 
 * le minimum de longueur pour que le mot soit traité
 
 ## Fonctionnalités
 
+* Déplacement dans mot (Editor.moveMot())
+  -> Traitement des proximités à chaque déplacement (pour ce mot et les mots concernés)
+* Application intelligente : elle mémorise toutes les substitutions qu'on fait (remplacement d'un mot par un autre) et les repropose à la prochaine modification du même mot.
 * après l'édition d'un mot, voir s'il ne s'est pas transformé en plusieurs mots (le repasser par la moulinette de 'TextUtils')
 * quand on remplace un mot par un autre, demander si on doit le considérer comme un synonyme (=> machine qui apprend).
   + possibilité d'aller chercher des synonymes sur le web

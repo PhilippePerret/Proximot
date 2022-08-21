@@ -1,0 +1,24 @@
+section#section-console {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0 1em;
+  width: calc(100% - 4.5em);
+}
+section#section-console input#console {
+  position: absolute;
+  display: block;
+  bottom: 16pt;
+  background-color: black;
+  color: white;
+  font-family: monospace;
+  font-size: 16pt;
+  width: calc(100% - 4em);
+  padding: 1em;
+}
+section#section-console div#console-status {
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+}
