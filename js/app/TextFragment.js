@@ -74,6 +74,11 @@ class TextFragment {
    */
   analyzeAround( data ) {
     /*
+    | Le lemme à rechercher/comparer
+    */
+    const lemma = data[0][2]
+    console.info("Lemme à comparer '%s'", lemma)
+    /*
     | Le nombre de mots à checker autour
     */
     const around = Pref('nb_mots_around')
@@ -90,8 +95,10 @@ class TextFragment {
     */
     for(var idxMot = mot.index -  1, min = mot.index - around; idxMot > min ; --idxMot){
       const cmot = this.mots[idxMot]
+      console.log("cmot = ", cmot)
       if ( undefined == cmot ) break
-      if ( mot.lemma == cmot.lemma ) {
+      if ( lemma == cmot.lemma ) {
+        console.log(" Même lemme")
         if ( mot.toCloseTo(cmot) ) {
           console.warn("Mot trop proche de :", cmot)
           motsTooClose.push(cmot)
@@ -106,9 +113,11 @@ class TextFragment {
     const max = mot.index + around ;
     for(idxMot = mot.index + 1; idxMot < max; ++ idxMot ){
       const cmot = this.mots[idxMot]
+      console.log("cmot = ", cmot)
       if ( undefined == cmot ) {
         break
-      } else if ( mot.lemma == cmot.lemma ) {
+      } else if ( lemma == cmot.lemma ) {
+        console.log(" Même lemme")
         if ( mot.toCloseTo(cmot) ) {
           console.warn("Mot trop proche de :", cmot)
           motsTooClose.push(cmot)

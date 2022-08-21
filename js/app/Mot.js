@@ -40,8 +40,9 @@ class Mot extends TextElement {
    * Rappel : appeler la méthode Mot.getLemmaOf(mot) pour obtenir à
    * tous les coups ce lemme.
    */
-  static getCountAndLemma(str_mot){
-    this.byCountAndLemmas[str_mot]
+  static getCountAndLemma(strMot){
+    console.info("this.byCountAndLemmas=", this.byCountAndLemmas)
+    return this.byCountAndLemmas[strMot]
   }
 
   /**
@@ -63,7 +64,7 @@ class Mot extends TextElement {
     Object.assign(this.table, {[mot.id]: mot})
     if ( undefined == this.byCountAndLemmas[mot.mot] ) {
       Object.assign(this.byCountAndLemmas, {[mot.mot]: {
-        count: 0, type: mot.ttType, lemma:mot.lemma
+        count: 0, type: mot.ttTag, lemma:mot.lemma
       }})
     }
     /*
@@ -153,6 +154,7 @@ class Mot extends TextElement {
    * 
    */
   toCloseTo(cmot) {
+    console.log("[toCloseTo] cmot.relPos (%i) - this.relPos (%i) < Lemma.MinProximityDistance (%i)", cmot.relPos, this.relPos, Lemma.MinProximityDistance)
     return Math.abs(cmot.relPos - this.relPos) < Lemma.MinProximityDistance
   }
 

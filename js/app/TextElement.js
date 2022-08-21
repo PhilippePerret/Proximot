@@ -55,6 +55,7 @@ class TextElement {
   // --- /Public Methods ---
 
   get domId(){
+    console.log("[domId] type, id, this = ", this.type, this.id, this)
     return this._domid || (this._domid = `${this.type}-${this.id}`)
   }
 
