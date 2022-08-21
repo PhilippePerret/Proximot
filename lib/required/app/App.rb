@@ -23,7 +23,39 @@ class << self
   end
 
   ##
+  # Procède à l'analyse du texte +text+ (en général pas très long, 
+  # environ 500 mots dont 3000 caractères)
   #
+  # @param data {Hash}
+  #             Donnée envoyée par le client, contenant la clé :text
+  #             qui définit le texte à analyser.
+  def analyze_text(data)
+    text = data['text']
+    puts "Analyse demandée du texte : #{text.inspect}".bleu
+    options = {}
+    #
+    # S'il existe un fichier lexicon.lex, il faut le prendre en 
+    # compte.
+    # 
+    lexicon_path = File.join(CURRENT_FOLDER,'lexicon.lex')
+    if File.exist?(lexicon_path)
+      options.merge!(lexicon: lexicon_path)
+    end
+    # 
+    # On procède à l'analyse
+    # 
+    data = TTAnalyzer.new.analyze(text, options)
+    # 
+    # On la retourne au client
+    # 
+    WAA.send(class:'TextUtils', method:'receiveAnalyze', data:data)
+  end
+
+  ##
+  # Procède à l'analyse du texte contenu dans le fichier de chemin
+  # +path+
+  # 
+  # @return L'analyse
   def analyze_text_path(path)
     options = {}
     #

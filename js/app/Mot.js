@@ -21,17 +21,77 @@ class Mot extends TextElement {
     Keyboard.setEdition({obj:this.obj, onOk: this.onEndEdit.bind(this)})
   }
   onEndEdit(withOk){
-    console.log("Je dois apprendre à finir l'édition")
-    console.log("C'est une %s", withOk ? 'confirmation' : 'annulation')
-    let newContent = this.obj.innerText.trim()
-    console.log("Nouvelle valeur = ", newContent)
-    if ( newContent.endsWith("\n") ){
-      newContent = newContent.trim()
-    }
+    console.log(withOk ? 'Confirmation' : 'Annulation')
+    /*
+    | On remet le span du mot dans son état normal
+    */
     this.obj.blur()
     this.obj.contentEditable = false
-    this.obj.innerText = newContent
     this.obj.focus()
+
+    if ( withOk ) {
+      /*
+      | Contenu actuel du champ
+      */
+      let newContent = this.obj.innerText.trim()
+      /*
+      | Si le contenu est le même, on peut s'arrêter là
+      */
+      if ( newContent == this.content ) {
+        console.log("Contenu identique. Je renonce.")
+        return false
+      }
+      console.log("Contenu différent ('%s' ≠ '%s'), je poursuis", newContent, this.content)
+      /*
+      |   On mémorise le content actuel pour le remettre en cas 
+      |   d'annulation
+      */
+      const oldContent = this.content
+      /*
+      |   On consigne le nouveau contenu pour qu'il soit pris en 
+      |   compte par la relève de l'extrait à checker.
+      */
+      this.content = newContent
+      
+      /*
+      |   Check de proximité
+      |
+      | On prend les 250 mots autour (index ± 2500) pour
+      | créer un texte qu'on envoie à l'analyse
+      |
+      | Mais en fait, le plus simple serait d'envoyer le ou les mots
+      | à l'analyse de texte pour obtenir leur lemma, puis de voir
+      | s'il n'y pas de problème de proximité.
+      |
+      */
+      this.fragment.checkProximityFor(this, {cancelable: true})
+      /*
+      | Il peut y avoir trois sortes de contenu différents :
+      | 1.  Un simple mot comme le mot précédent.
+      |     => traitement normal
+      | 2.  Plusieurs mots (séparés ou non par des espaces, on le
+      |     sait à l'analyse).
+      |     => On crée autant de mots que nécessaire
+      |     => On actualise toutes les listes
+      | 3.  Un nouveau paragraphe (et au moins 2 mots)
+      |     => On crée le paragraphe et les mots
+
+      /*
+      |   On met le mot à son nouveau contenu (cela met aussi le
+      |   mot dans le champ)
+      */
+      this.content = newContent
+      /*
+      |   Enregistrement dans l'historique d'annulation
+      */
+    }
+    this.obj.innerText = newContent
+    // TODO Changement in CancelingManagement
+  }
+  get content(){ return this._content}
+  set content(v) {
+    this._content       = v
+    this.obj.innerText  = v
   }
 
   /**

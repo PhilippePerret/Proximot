@@ -49,14 +49,19 @@ class Paragraph {
   build(){
     const o = DCreate('DIV', {class:'paragraph'})
     this.content.forEach(texel => {
+      texel.fragment = this.fragment
       o.appendChild( texel.span)
     })
     this.observe(o)
     return o
   }
+  
   observe(o){
 
   }
+
+  get fragment() { return this._fragment }
+  set fragment(frag){ this._fragment = frag }
 
   // --- Private Methods ---
 

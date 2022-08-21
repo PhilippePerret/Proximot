@@ -1,4 +1,15 @@
 'use strict';
+/**
+ * class Preferences
+ * -----------------
+ * Gestion des préférences
+ * 
+ * 
+ * @usage (le plus court) pour récupérer une valeur de préférence
+ * 
+ *    const maPreference = Pref(key)
+ * 
+ */
 
 const BTN_SWITCH = '<button id="btn-%s" class="switch">♺</button>'
 const BTN_EDIT   = '<button id="btn-%s" class="edit">✎</button>'
@@ -17,6 +28,12 @@ const PREFERENCES_DATA = {
       , defaultValue:   1000
       , typeValue:      'integer'
       , button:         tp(BTN_EDIT,['min_dist_proximity']) 
+    }
+  , 'nb_mots_around': {
+        text:           "Nombre de mots autour à considérer"
+      , defaultValue:   250
+      , typeValue:      'integer'
+      , button:         tp(BTN_EDIT,['nb_mots_around']) 
     }
   // , 'show_timeline_ruler':{
   //       text:           'Afficher la règle graduée de la timeline'
@@ -272,3 +289,5 @@ class Preferences {
   }
 
 } // class Preference
+
+const Pref = Preferences.get.bind(Preferences)

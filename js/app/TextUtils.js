@@ -13,12 +13,19 @@ class TextUtils {
   /**
    * Pour analyser le texte +text+ côté serveur et remonter (dans la
    * méthode suivante) les tokens.
+   * 
+   * @param options {Hash}
+   *            options.poursuivre    Méthode pour suivre.
    */
-  static analyze(text){
-    WAA.send({class:'Proximot::App',method:'analyze_text',data:{text:text}})
+  static analyze(text, options){
+    const data = {text: text}
+    this.analyzeOptions = options
+    WAA.send({class:'Proximot::App',method:'analyze_text',data:data})
   }
-  static receiveLemma(data){
-    console.log("[receiveLemma] data = ", data)
+  static receiveAnalyze(data){
+    console.log("this.analyzeOptions = ", this.analyzeOptions)
+    console.log("[receiveAnalyze] data = ", data)
+    this.analyzeOptions.poursuivre(data)
   }
 
   /**

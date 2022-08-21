@@ -55,6 +55,18 @@ class Keyboard {
    */
   static setEdition(params){
     this.editionParams = params
+    /*
+    |   On doit "stopper" l'évènement sur l'objet, pour que le retour
+    |   chariot ne s'écrive pas dans le champ
+    */
+    params.obj.addEventListener('keydown', (e) => {
+      /*
+      | Dans un champ d'édition tels que ceux-là, on ne permet pas
+      | l'utilisation de la touche retour seule.
+      */
+      if ( e.key == 'Enter' && not(e.metaKey) ) { return stopEvent(e) }
+    })
+
     window.onkeyup    = this.on_Key_Up_Edition.bind(this)
     window.onkeydown  = this.on_Key_Down_Edition.bind(this)
     window.onkeypress = this.on_Keypress_Edition.bind(this)
@@ -119,6 +131,7 @@ class Keyboard {
   } 
   static on_Key_Down_Edition(e){
     switch(e.key){
+    case 'Enter': return stopEvent()
     default:
       console.log("-> onkeydown", {key:e.key, shift:e.shiftKey, alt:e.altKey, cmd:e.metaKey, ctrl:e.ctrlKey})
     }
@@ -152,8 +165,10 @@ class Keyboard {
         erreur("Je dois apprendre à créer un nouveau paragraphe.")
       } else {
         // Touche Return seule => finir l'édition
+        e.preventDefault()
         return this.unsetEdition(e, true)
       }
+      break
     case 'Escape':
       // Annuler l'édition
       return this.unsetEdition(e, false)
@@ -171,7 +186,11 @@ class Keyboard {
   }
 
   static on_Keypress_Edition(e){
-    return true
+    switch(e.key){
+    case 'Enter': return stopEvent()
+    default:
+      console.log("-> onkeypress", {key:e.key, shift:e.shiftKey, alt:e.altKey, cmd:e.metaKey, ctrl:e.ctrlKey})
+    }
   }
 
 }

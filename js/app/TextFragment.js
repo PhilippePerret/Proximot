@@ -33,6 +33,88 @@ class TextFragment {
   // --- Public Methods ---
   
   /**
+   * Affichage du fragment dans le conteneur +container+
+   * (c'est normalement l'éditeur, mais ça pourrait être aussi une
+   *  autre fenêtre quand on veut visualiser une autre partie).
+   * 
+   * Cette méthode en profite aussi pour définir la propriété @fragment
+   * des mots.
+   */
+  display(container){
+    this.paragraphs.forEach( paragraph => {
+      paragraph.fragment = this;
+      container.appendChild(paragraph.div)
+    })    
+  }
+
+  /**
+   * Méthode qui checke la proximité du +mot+ {Mot}
+   *
+   * @param mot {Mot} Instance du mot à checker
+   *            Noter qu'à ce moment du check, le contenu de ce mot
+   *            peut être composé de plusieurs mots et même de 
+   *            plusieurs paragraphes. 
+   */
+  checkProximityFor(mot, options) {
+    const defaultOptions = {
+        around:     Pref('nb_mots_around')
+      , poursuivre: this.analyzeAround.bind(this)
+      , indexMot:   mot.index
+    }
+    options = Object.assign(defaultOptions, options || {})
+    TextUtils.analyze(mot.content, options)
+  }
+  /**
+   * Méthode qui procède à l'analyse d'un extrait du fragment (après
+   * changement du texte par exemple). Les options permettent de
+   * définir différents comportement, par exemple pour savoir s'il
+   * faut un bouton pour annuler le changement en cas de proximité.
+   * 
+   * @params data {Hash} Table de données remontée par le serveur
+   *    data.around       Nombre de mots autour à prendre en considération
+   *    data.indexMot     Index du mot subissant le check
+   *    data.cancelable   Si true, on peut annuler le changement du
+   *                      mot.
+   */
+  analyzeAround( data ) {
+    const mot = this.mots[parseInt(data.indexMot,10)]
+    console.warn("Cette méthode est à poursuivre", mot)
+  }
+
+  /**
+   * Méthode qui retourne les texels (seulement leur contenu) en
+   * prenant comme référence l'index +index+ et la marge (avant et
+   * arrière) +nombreAutour+
+   */
+  getEnviron(index, nombreAutour){
+    const firstIndex = index - nombreAutour;
+    if ( firstIndex < 0 ) { firstIndex == 0 }
+    const lastIndex  = index + nombreAutour
+    return this.getExtrait({from:firstIndex,to:lastIndex,as:'text'})
+  }
+
+  /**
+   * @return {Any} Un extrait des mots du fragment dans le format
+   *         voulu (un texte, une liste des instances {Mot}s, etc.).
+   * 
+   * @params params {Hash} Définition de l'extrait
+   *    from:     Depuis cet indice
+   *    to:       Jusqu'à cet indice
+   *    as:       Type du retour ('text' => un text, 'instances' =>
+   *              liste d'instances {Mot})
+   * 
+   */
+  getExtrait(params){
+    const extrait = this.mots.slice(params.from, params.to + 1)
+    switch(params.as){
+    case 'text':
+      return extrait.map(mot => {return mot.content}).join(' ')
+    default:
+      return extrait
+    }
+  }
+
+  /**
    * Affichage des proximités du fragment
    * 
    */

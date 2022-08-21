@@ -16,13 +16,11 @@ class EditorClass {
     /*
     | Ensuite on affiche les éléments de texte (dont les mots)
     */
-    fragment.paragraphs.forEach( paragraph => {
-      this.content.appendChild(paragraph.div)
-    })
+    this.fragment.display(this.content)
     /*
     | Et enfin on marque les proximités
     */
-    fragment.showProximites()
+    this.fragment.showProximites()
   }
 
  /**

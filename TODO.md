@@ -2,6 +2,7 @@
 
 ## En cours
 
+* Mettre en place le système d'annulation
 * Quand c'est un long texte (non encore travaillé), ne traiter d'abord qu'une portion (de 2000 mots environ, donc de 15000 signes environ)
 * Implémenter le bon traitement de 'est-ce' dans TTAnalyzer
 * Les premières proximités sont indiquées de façon grossière. Il faut :
