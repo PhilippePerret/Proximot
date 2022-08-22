@@ -10,7 +10,6 @@ class App {
    */
   static onReceiveText(data){
     const texte = TextUtils.makeTexteFromTokens(data.tokens)
-    console.log("texte = ", texte)
     Editor.display(texte.firstFragment)
   }
 }

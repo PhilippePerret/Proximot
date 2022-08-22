@@ -50,7 +50,7 @@ class Paragraph {
     const o = DCreate('DIV', {class:'paragraph'})
     this.content.forEach(texel => {
       texel.fragment = this.fragment
-      o.appendChild( texel.span)
+      o.appendChild( texel.span )
     })
     this.observe(o)
     return o

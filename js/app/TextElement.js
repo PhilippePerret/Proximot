@@ -21,7 +21,6 @@ class TextElement {
   }
 
   constructor(data){
-    // console.info("Instanciation de text-element avec : ", data)
     this.id       = this.constructor.getNewId()
     this._content = data[0]
     // console.info("this.content = ", this.content)
@@ -32,6 +31,7 @@ class TextElement {
   // --- Public Methods ---
 
   get content() { return this._content }
+  
   set content(v){ this._content = v    }
 
   get inspect(){
@@ -52,6 +52,10 @@ class TextElement {
   }
 
   get length(){
+    if ( undefined == this.content ) {
+      console.error("Texel sans content : ", this)
+      return 4
+    }
     return this._len || (this._len = this.content.length)
   }
 

@@ -84,11 +84,6 @@ class Mot extends TextElement {
 
   // --- Public Methods ---
 
-  /**
-   * Mettre le mot en édition
-   * (ça n'existe plus)
-   */
-
   replaceContentWith(newContent){
     /*
     | Si le contenu est le même, on peut s'arrêter là
@@ -144,6 +139,7 @@ class Mot extends TextElement {
    * texte.
    * 
    */
+  get content() { return this._content }
   set content(v) {
     this._content       = v
     this.obj.innerText  = v
@@ -261,7 +257,7 @@ class Mot extends TextElement {
   // --- Private Methods ---
 
   get isTooShort(){
-    return this.content.length < this.constructor.minLengthWord
+    return this.content.length < Mot.minLengthWord
   }
   static get minLengthWord(){
     return this._minlenword || (this._minlenword = Pref('min_word_length'))
