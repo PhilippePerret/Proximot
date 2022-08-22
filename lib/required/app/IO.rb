@@ -11,16 +11,21 @@ module Proximot
 class IO
 class << self
 
-  # L'instance Proximot::IO gérant l'enregistrement
+  # L'instance Proximot::IO gérant l'enregistrement ou la lecture
   attr_reader :io
+
+  ##
+  # Charge séquentiellement les données du fichier Proximot (.pxw)
+  # 
+  def load_from_current(options = nil)
+    
+  end
 
   ##
   # Sauver séquentiellement les données dans le texte courant
   #
   def save_in_current(data)
     result = {ok:true, error:nil}
-
-
     data_name   = data['dataName']
     donnees     = data['data']
     type_donnes = data['dataType']
@@ -32,6 +37,10 @@ class << self
       # TODO Confirmation du bon enregistrement
       @io.end_file
       @io.close
+    elsif data_name == 'start_section'
+      @io.start_section(donnees)
+    elsif data_name == 'end_section'
+      @io.end_section(donnees)
     else
       puts "Data pour la sauvegarde de : #{data_name} (type #{type_donnes}) :\n#{donnees.pretty_inspect}"
       method = case type_donnes
@@ -41,6 +50,8 @@ class << self
           :add_as_list
         when 'list_of_objects'
           :add_as_list_with_objects
+        when 'complex'
+          :add_as_complex
         end
       @io.send(method, data_name, donnees)
     end
@@ -68,9 +79,91 @@ def end_file
   fref.puts '</proximot>'
 end
 
+def start_section(section_name)
+  fref.puts "\t<#{section_name}>"
+  @added_indent = 1
+end
+def end_section(section_name)
+  fref.puts "\t</#{section_name}>"
+  @added_indent = 0
+end
+
 def close
   fref.close
 end
+
+def added_indent
+  @added_indent ||= 0
+end
+
+##
+# Pour l'enregistrement de données complexe
+# Note : peut-être que cette méthode sera utilisable pour toutes les
+# données.
+def add_as_complex(dname, data, indent = 1)
+  indent += added_indent
+  fref.puts "#{"\t" * indent}<#{dname}>"
+  case data
+  when Array
+    #
+    # Liste de données
+    #
+    add_as_array(data, indent + 1)
+
+  when Hash
+    #
+    # Objet
+    #
+    add_as_object(data, indent + 1)
+
+  end
+  fref.puts "#{"\t" * indent}</#{dname}>"
+end
+
+def add_as_array(data, indent, params = nil)
+  params ||= {}
+  sous_element_name = if params.key?(:sous_element_name)
+      params[:sous_element_name]
+    else
+      'item'
+    end
+  data.each_with_index do |sdata, idx|
+    fref.puts "#{"\t" * indent}<#{sous_element_name} index=\"#{idx}\">"
+    case sdata
+    when Hash   then add_as_object(sdata, indent + 1)
+    when Array  then add_as_array(sdata, indent + 1)
+    else
+      puts "Je ne sais pas comment traiter une donnée de type #{sdata.class} dans add_as_array"
+    end
+    fref.puts "#{"\t" * indent}</#{sous_element_name}>"
+  end
+end
+def add_as_object(data, indent)
+  data.each do |key, value|
+    case value
+    when Hash   then
+      fref.puts "#{"\t" * indent}<#{key}>"
+      add_as_object(value, indent + 1)
+      fref.puts "#{"\t" * indent}</#{key}>"
+    when Array  then
+      fref.puts "#{"\t" * indent}<#{key}>"
+      if key.end_with?('s')
+        params = {sous_element_name: key[0..-2]}
+      else
+        params = nil
+      end
+      add_as_array(value, indent + 1, params)
+      fref.puts "#{"\t" * indent}</#{key}>"
+    else add_as_key_value(key, value, indent + 1)
+    end
+  end
+end
+def add_as_key_value(key, value, indent)
+  fref.puts "#{"\t" * indent}<#{key}>#{value}</#{key}>"
+end
+
+
+
 
 ##
 # Pour l'enregistrement de données à double niveau

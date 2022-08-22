@@ -40,7 +40,7 @@ class IO {
     // // Enregistrement des proximités
     this.addToStack('proximities', Proximity.getData2save(), 'list_of_objects')
 
-    // this.saveMotsOf(texte)
+    this.saveMotsOf(texte)
 
     this.addToStack('end', null, null)
 
@@ -87,29 +87,35 @@ class IO {
   static saveMotsOf(texte) {
     var iCountMots = 0
 
+    this.addToStack('start_section', 'fragments', null)
+
     var firstParagIndex = null
       , lastParagIndex  = null
       , dataParags = [] // les données DES paragraphes
-      , dataParag  = [] // les données DU paragraphe
+      , dataParag  = {id:null, mots:[]} // les données DU paragraphe
     texte.paragraphs.forEach( paragraph => {
       if ( firstParagIndex === null ) firstParagIndex = paragraph.index
-      lastParagIndex = paragraph.index // toujours
+      lastParagIndex  = paragraph.index // toujours
+      dataParag.id    = paragraph.index
       paragraph.mots.forEach( mot => {
-        dataParag.push(mot.data2save)
+        dataParag.mots.push(mot.data2save)
         ++iCountMots
       })
       dataParags.push(dataParag)
-      dataParag = []
+      dataParag = {id: null, mots:[]}
       if ( iCountMots > 5000 ) {
-        this.addToStack(`paragraphs-${firstParagIndex}-${lastParagIndex}`, dataParags)
+        this.addToStack('fragment', {id: `${firstParagIndex}-${lastParagIndex}`, paragraphs:dataParags}, 'complex')
         dataParags  = []
-        iCountMots   = 0
+        iCountMots  = 0
       }
     })
-    if ( dataParag.length  ) { dataParags.push(dataParag) }
+    if ( dataParag.mots.length  ) { dataParags.push(dataParag) }
     if ( dataParags.length ) {
-      this.addToStack(`paragraphs-${firstParagIndex}-${lastParagIndex}`, dataParags)
+      this.addToStack('fragment', {id:`${firstParagIndex}-${lastParagIndex}`, paragraphs:dataParags}, 'complex')
     }
+
+    this.addToStack('end_section', 'fragments', null)
+
   }
 
 
