@@ -131,13 +131,44 @@ class ConsoleClass {
     }
 
     switch(command){
+
+    // --- COMMANDES FICHIER ---
+    case 'f': // Donne des informations sur le fichier
+      console.warn("Je dois apprendre à donner des informations sur le fichier.")
+      break
+    case 'fo': // ouvrir un fichier texte
+      console.warn("Je dois apprendre à ouvrir un fichier Proximot (ou autre).")
+      break
+    case 'fw': // enregistrer le fichier courant
+      console.warn("Je dois apprendre à enregistrer le fichier.")
+      break
+    case 'fwt': // enregistrer seulement le texte dans un fichier
+      console.warn("Je dois apprendre à enregistrer le texte dans un fichier.")
+      break
+
+    case 'i': // information
+      console.warn("Je dois apprendre à afficher les informations sur le mot.")
+      break
+
+    case 'ig': case 'ignore': // ignorer la proximité courante
+      console.warn("Je dois apprendre à ignorer la proximité courante")
+      break
+
+    case 'ig*': case 'ignore*': // ignorer toutes les proximités
+      console.warn("Je dois apprendre à ignorer toutes les proximités de même type")
+      break
     
     case 'n': // prochaine proximité du mot courant
       Editor.Selection.set(this.curMot.proxAfter.motAfter)
       break
     
     case 'r': // remplacement
-      return this.curMot.replaceContentWith(value)
+      this.curMot.replaceContentWith(value)
+      break
+
+    case 'r*': // remplacer tous
+      console.warn("Je dois apprendre à “remplacer tous”")
+      break
     
     case 's': // sélection
       const index = parseInt(value,10)
@@ -151,8 +182,17 @@ class ConsoleClass {
         indexMot = index
       }
       Editor.Selection.set( Editor.mots[indexMot] )
+      break
     
-    }//switch(command)
+    case '/': // recherche et sélectionne
+      Editor.selectFirstWordWith({text:value})
+      break
+
+    case '/*': // recherche tous
+      console.warn("Je dois apprendre à sélectionner tous les mots d'une recherche.")
+      break
+
+    } // switch(command)
 
     /*
     | La commande a pu être jouée, on la mémorise et on l'efface

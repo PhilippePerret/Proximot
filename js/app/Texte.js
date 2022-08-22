@@ -10,6 +10,7 @@ class Texte {
   constructor(content){
     this.content  = content
     this.Klass    = 'Texte'
+    Texte.current = this
   }
 
   // --- Public Methods ---
@@ -24,6 +25,27 @@ class Texte {
   get motsCount(){
     return this.mots.length
   }
+
+  /**
+   * Pour enregistrer le document Proximot
+   * 
+   * @param newPath {String} Éventuellement, un nouveau path (pour
+   *                un "enregistrer sous…")
+   */
+  saveAsProximot(newPath){
+    console.warn("Je dois apprendre à enregistrer un fichier Proximot.")
+  }
+
+  /**
+   * Pour enregistrer le texte seulement
+   * 
+   * @param withPath {String} Éventuellement, le chemin d'accès précis
+   */
+  saveAsText(withPath){
+    console.warn("Je dois apprendre à enregistrer le texte dans un fichier.")
+  }
+  
+  // --- /Public Methods ---
 
   get mots(){
     return this._mots || (this._mots = this.getMotsFromParagraphs())

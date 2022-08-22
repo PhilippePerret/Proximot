@@ -22,14 +22,27 @@ On gère entièrement le texte au clavier, à la façon de Vim, avec une console
 
 ## Commandes console
 
+* L’étoile à la fin d’une commande signifie toujours “ALL”, donc “Tous”.
+
 ### Commandes Éditions
 
-| <span style="width:280px;display:inline-block;">Opération</span> | <span style="display:inline-block;width:120px;">Com</span> | Mnémo          | Commandes et paramètres                                      |      |
-| ------------------------------------------------------------ | ---------------------------------------------------------- | -------------- | ------------------------------------------------------------ | ---- |
-| Remplacement la sélection par ce mot (en faisant tous les checks nécessaires) | **`r <remp>`**                                             | next proximité | Sélectionne la proximité suivante dans le texte, ou la première |      |
-|                                                              |                                                            |                |                                                              |      |
-|                                                              |                                                            |                |                                                              |      |
-|                                                              |                                                            |                |                                                              |      |
+| <span style="width:280px;display:inline-block;">Opération</span> | <span style="display:inline-block;width:120px;">Com</span> | Mnémo                | Commandes et paramètres                                      |
+| ------------------------------------------------------------ | ---------------------------------------------------------- | -------------------- | ------------------------------------------------------------ |
+| Remplacement la sélection par ce mot (en faisant tous les checks nécessaires) | **`r <remp>`**                                             | [R]emplace           | Remplace la sélection par le mot donné (et recalculé tout)   |
+| Remplacer tous les mots identiques par le mot donné          | **`r* <remp>`**                                            | [R]emplace [*] = all | Remplace tous les mots identiques à la sélection par le mot donné. |
+|                                                              |                                                            |                      |                                                              |
+|                                                              |                                                            |                      |                                                              |
+
+### Commandes Fichiers
+
+| <span style="width:280px;display:inline-block;">Opération</span> | <span style="display:inline-block;width:120px;">Com</span> | Mnémo                 | Commandes et paramètres                                |
+| ------------------------------------------------------------ | ---------------------------------------------------------- | --------------------- | ------------------------------------------------------ |
+| Affiche les informations sur le fichier courant.             | **`f`**                                                    | [F]ile                |                                                        |
+| Ouvre un fichier proximot ou texte                           | **`fo <path/to>`**                                         | [F]ile [O]pen         |                                                        |
+| Enregistrer le fichier courant                               | **`fw [path/to>]`**                                        | [F]ile [W]rite        | Si le chemin n’est pas fourni, c’est le chemin normal. |
+| Enregistre le texte du fichier courant                       | **`fwt [path/to>]`**                                       | [F]ile [W]rite [T]ext | Il sera enregistré dans un fichier `.txt`              |
+
+
 
 ### Commandes Déplacements
 
@@ -42,30 +55,34 @@ On gère entièrement le texte au clavier, à la façon de Vim, avec une console
 
 ### Commandes Proximités
 
-| <span style="width:280px;display:inline-block;">Opération</span> | <span style="display:inline-block;width:120px;">Com</span> | Mnémo          | Commandes et paramètres                                      |
-| ------------------------------------------------------------ | ---------------------------------------------------------- | -------------- | ------------------------------------------------------------ |
-| Aller à la prochaine proximité                               | **`np`**                                                   | next proximity | Sélectionne la proximité suivante dans le texte, ou la première |
-| Prochaine proximité de la sélection                          | **`n`**                                                    | next           |                                                              |
-| Précédente proximité de la sélection                         | **`p`**                                                    | previous       |                                                              |
-| Information sur sélection                                    | **`i`**                                                    | information    | Affiche à l’écran les informations sur la sélection (à commencer par les proximités) |
+| <span style="width:280px;display:inline-block;">Opération</span> | <span style="display:inline-block;width:120px;">Com</span> | Mnémo               | Commandes et paramètres                                      |
+| ------------------------------------------------------------ | ---------------------------------------------------------- | ------------------- | ------------------------------------------------------------ |
+| Aller à la prochaine proximité                               | **`np`**                                                   | next proximity      | Sélectionne la proximité suivante dans le texte, ou la première |
+| Prochaine proximité de la sélection                          | **`n`**                                                    | next                |                                                              |
+| Précédente proximité de la sélection                         | **`p`**                                                    | previous            |                                                              |
+| Information sur sélection                                    | **`i`**                                                    | information         | Affiche à l’écran les informations sur la sélection (à commencer par les proximités) |
+| Ignorer la proximité courante                                | **`ig[nore]`**                                             |                     |                                                              |
+| Ignorer toutes les proximités de ce type                     | **`ig[nore]*`**                                            | `ig*<br />`ignore*` | Donc soit `ig a` soit `ignore all`.                          |
+
+
 
 
 ### Commandes Sélection
 
-| <span style="width:280px;display:inline-block;">Opération</span> | <span style="display:inline-block;width:120px;">Com</span> | Mnémo          | Commandes et paramètres                                      |      |
-| ------------------------------------------------------------ | ---------------------------------------------------------- | -------------- | ------------------------------------------------------------ | ---- |
-| Sélectionner le mot suivant (ou le premier)                  | ⌘ ➡️                                                        |                | On peut aussi l’obtenir en jouant la command `s <index mot>`, par exemple `s 1` pour sélectionner le premier mot. |      |
-| Sélectionner le mot précédent (ou le premier)                | ⌘ ⬅️                                                        |                |                                                              |      |
-| Aller à la prochaine proximité                               | **`np`**                                                   | next proximité | Sélectionne la proximité suivante dans le texte, ou la première |      |
-| Prochaine proximité de la sélection                          | **`n`**                                                    | next           |                                                              |      |
-| Précédente proximité de la sélection                         | **`p`**                                                    | previous       |                                                              |      |
-| Information sur sélection                                    | **`i`**                                                    | information    | Affiche à l’écran les informations sur la sélection (à commencer par les proximités) |      |
-| Sélectionner le nième mot du fragment                        | **`s <index>`**                                            | “S”élection    | L’index est un entier 1-start (premier mot = 1)              |      |
-| Sélectionner les mots de `n`à `m`                            | **`s <n-m>`**                                              | Idem           | Les index sont des entiers 1-start (premier mot = 1)         |      |
-| Sélectionne le nième mot après la sélection                  | **`s +<n>`**                                               | Idem           | `n` est un entier.                                           |      |
-| Sélectionne le nième mot avant la sélection                  | **`s -<n>`**                                               | Idem           | `n` est un entier.                                           |      |
-|                                                              |                                                            |                |                                                              |      |
-|                                                              |                                                            |                |                                                              |      |
+| <span style="width:280px;display:inline-block;">Opération</span> | <span style="display:inline-block;width:120px;">Com</span> | Mnémo          | Commandes et paramètres                                      |
+| ------------------------------------------------------------ | ---------------------------------------------------------- | -------------- | ------------------------------------------------------------ |
+| Sélectionner le mot suivant (ou le premier)                  | ⌘ ➡️                                                        |                | On peut aussi l’obtenir en jouant la command `s <index mot>`, par exemple `s 1` pour sélectionner le premier mot. |
+| Sélectionner le mot précédent (ou le premier)                | ⌘ ⬅️                                                        |                |                                                              |
+| Aller à la prochaine proximité                               | **`np`**                                                   | next proximité | Sélectionne la proximité suivante dans le texte, ou la première |
+| Prochaine proximité de la sélection                          | **`n`**                                                    | next           |                                                              |
+| Précédente proximité de la sélection                         | **`p`**                                                    | previous       |                                                              |
+| Information sur sélection                                    | **`i`**                                                    | information    | Affiche à l’écran les informations sur la sélection (à commencer par les proximités) |
+| Sélectionner le nième mot du fragment                        | **`s <index>`**                                            | “S”élection    | L’index est un entier 1-start (premier mot = 1)              |
+| Sélectionner les mots de `n`à `m`                            | **`s <n-m>`**                                              | Idem           | Les index sont des entiers 1-start (premier mot = 1)         |
+| Sélectionne le nième mot après la sélection                  | **`s +<n>`**                                               | Idem           | `n` est un entier.                                           |
+| Sélectionne le nième mot avant la sélection                  | **`s -<n>`**                                               | Idem           | `n` est un entier.                                           |
+| Sélectionner par recherche                                   | **`/ <texte>`**                                            |                | Sélectionne le premier mot matchant avec `<texte>`. Si c’est une expression régulière, ajouter `/` au début et à la fin du texte. |
+|                                                              |                                                            |                |                                                              |
 
 
 

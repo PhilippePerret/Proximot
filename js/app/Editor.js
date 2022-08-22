@@ -28,8 +28,55 @@ class EditorClass {
    * 
    */
   selectMotByIndex(texelIndex){
-    console.log("Mot à sélectionner (index %i) = ", texelIndex, this.mots[texelIndex])
     this.Selection.set(this.mots[texelIndex])
+  }
+
+  /**
+   * Rechercher et sélectionner le premier mot répondant aux 
+   * paramètres +params+
+   * 
+   * @param params {Hash} Paramètres de la recherche :
+   *          params.text     Doit contenir ce texte
+   *          params.type     Doit être de ce type (ttTag)
+   * 
+   */
+  selectFirstWordWith(params){
+    /*
+    | Préparation de la recherche 
+    */
+    if ( params.text ) {
+      if ( 'string' == typeof params.text && params.text.substring(0,1) == '/' && params.text.endsWith('/')){
+        params.text = new RegExp(params.text.substring(1, params.text.length - 2))
+      }
+    }
+    /*
+    | On procède à la recherche mot à mot
+    */
+    var index ;
+    for (var idx = this.currentIndex; idx < this.maxIndex; ++ idx){
+      const mot = this.mots[idx]
+      if ( params.text && not(mot.mot.match(params.text)) ) continue ;
+      if ( params.type && not(mot.ttTag == params.type) )   continue ;
+      /*
+      | Le premier mot a été trouvé
+      */
+      index = parseInt(idx,10)
+      break
+    }
+    not( index == undefined ) && this.selectMotByIndex(index)
+  }
+
+  get currentIndex(){
+    var indexMot = 0;
+    if ( this.Selection.last ) {
+      indexMot = this.Selection.last.index
+    }
+    return indexMot
+  }
+
+  /** @return l'index de mot maximal */
+  get maxIndex(){
+    return this.mots.length - 1
   }
 
   /**
