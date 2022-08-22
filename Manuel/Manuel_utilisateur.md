@@ -35,8 +35,8 @@ On gère entièrement le texte au clavier, à la façon de Vim, avec une console
 
 | <span style="width:280px;display:inline-block;">Opération</span> | <span style="display:inline-block;width:120px;">Com</span> | Mnémo | Commandes et paramètres |
 | ------------------------------------------------------------ | ---------------------------------------------------------- | ----- | ----------------------- |
-| Déplacer la sélection vers la droite                         | ⌘ ➡️                                                        |       |                         |
-| Déplacer la sélection vers la gauche                         | ⌘ ⬅️                                                        |       |                         |
+| Déplacer la sélection vers la droite                         | ⌃ ➡️                                                        |       |                         |
+| Déplacer la sélection vers la gauche                         | ⌃ ⬅️                                                        |       |                         |
 |                                                              |                                                            |       |                         |
 |                                                              |                                                            |       |                         |
 
@@ -54,8 +54,8 @@ On gère entièrement le texte au clavier, à la façon de Vim, avec une console
 
 | <span style="width:280px;display:inline-block;">Opération</span> | <span style="display:inline-block;width:120px;">Com</span> | Mnémo          | Commandes et paramètres                                      |      |
 | ------------------------------------------------------------ | ---------------------------------------------------------- | -------------- | ------------------------------------------------------------ | ---- |
-| Sélectionner le mot suivant (ou le premier)                  | ⌥ ➡️                                                        |                | On peut aussi l’obtenir en jouant la command `s <index mot>`, par exemple `s 1` pour sélectionner le premier mot. |      |
-| Sélectionner le mot précédent (ou le premier)                | ⌥ ⬅️                                                        |                |                                                              |      |
+| Sélectionner le mot suivant (ou le premier)                  | ⌘ ➡️                                                        |                | On peut aussi l’obtenir en jouant la command `s <index mot>`, par exemple `s 1` pour sélectionner le premier mot. |      |
+| Sélectionner le mot précédent (ou le premier)                | ⌘ ⬅️                                                        |                |                                                              |      |
 | Aller à la prochaine proximité                               | **`np`**                                                   | next proximité | Sélectionne la proximité suivante dans le texte, ou la première |      |
 | Prochaine proximité de la sélection                          | **`n`**                                                    | next           |                                                              |      |
 | Précédente proximité de la sélection                         | **`p`**                                                    | previous       |                                                              |      |

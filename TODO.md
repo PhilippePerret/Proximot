@@ -3,8 +3,6 @@
 ## En cours
 
 * Voir les bugs
-* Pour changer de sélection, utiliser CTRL-<-/-> plutôt que ALT-flèches
-  -> modifier le manuel
 * Mettre en place le système d'annulation
 * Mémoriser chaque ligne de console (comme le Terminal)
 * Quand c'est un long texte (non encore travaillé), ne traiter d'abord qu'une portion (de 2000 mots environ, donc de 15000 signes environ)
@@ -22,7 +20,6 @@
 
 * Le domId des mots est "undefined-undefined" alors que leur id et leur type sont bien définis…
 * [bug] Sur la recherche de proximité. L'ensemble du check se passe à peu près bien mais :
-  - l'app fait un appel serveur pour avoir le lemma du mot, même lorsqu'il est connu
   - l'app ne semble pas voir les autres mots semblables.
 
 ## Préférence

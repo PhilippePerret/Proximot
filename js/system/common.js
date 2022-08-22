@@ -21,6 +21,18 @@ function benchmark(method, titre){
 }
 
 /**
+ * Pour écrire en console le backtrace
+ * 
+ */
+function trace(){
+  try {
+    throw new Error("Trace")
+  } catch(err) {
+    console.error(err.stack)
+  }
+}
+
+/**
  * Pour pouvoir utiliser par exemple :
  * 
  * try {

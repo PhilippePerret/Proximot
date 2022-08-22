@@ -41,13 +41,9 @@ class ConsoleClass {
       return stopEvent(e)
     }
   }
-  /* ALT + -> */
-  treateAltRightArrow(e){
+  /* Sélectionner mot suivant ou premier */
+  selectNextWordOrFirst(e){
     e.preventDefault()
-    // Sélectionner le mot suivant ou le premier
-    // Si dernier : signaler
-    // SI touche MAJ => ajouter à la sélection
-    // SINON Mettre à la sélection
     if ( Editor.Selection.isEmpty ) {
       // Aucune sélection => sélectionner le premier mot
       Editor.selectMotByIndex(0)
@@ -58,8 +54,8 @@ class ConsoleClass {
     }
     return stopEvent(e)
   }
-  /* ALT + <- */
-  treateAltLeftArrow(e){
+  /* Sélectionner mot précédent ou premier */
+  selectPreviousWordOrFirst(e){
     e.preventDefault()
     if ( Editor.Selection.isEmpty ) {
       // Aucune sélection => sélection le premier mot
@@ -73,15 +69,15 @@ class ConsoleClass {
     }
     return stopEvent(e)
   }
-  /* CMD + <- */
-  treateCmdLeftArrow(e){
+  /* Déplacer la sélection vers la gauche */
+  moveWordToLeft(e){
     e.preventDefault()
     if ( this.curMot ) { Editor.moveTexel(this.curMot, 'left') }
     else { erreur("Il faut choisir le mot à déplacer.") }
     return stopEvent(e)
   }
-  /* CMD + -> */
-  treateCmdRightArrow(e){
+  /* Déplacer la sélection vers la droite */
+  moveWordToRight(e){
     e.preventDefault()
     if ( this.curMot ) { Editor.moveTexel(this.curMot, 'right') }
     else { erreur("Il faut choisir le mot à déplacer.") }
@@ -91,11 +87,13 @@ class ConsoleClass {
   onKeyDown(e){
     switch(e.key){
     case 'ArrowRight':
-      if ( e.altKey ) return this.treateAltRightArrow(e)
-      else if ( e.metaKey ) return this.treateCmdRightArrow(e)
+      if      ( e.ctrlKey ) return this.moveWordToRight(e)
+      else if ( e.metaKey ) return this.selectNextWordOrFirst(e)
+      break
     case 'ArrowLeft':
-      if ( e.altKey ) return this.treateAltLeftArrow(e) 
-      else if ( e.metaKey ) return this.treateCmdLeftArrow(e)
+      if      ( e.ctrlKey ) return this.moveWordToLeft(e) 
+      else if ( e.metaKey ) return this.selectPreviousWordOrFirst(e)
+      break
     case 'ArrowTop':
       e.preventDefault()
       this.BackwardCommandHistory()
@@ -193,7 +191,7 @@ class ConsoleClass {
     this.setCurrentCommandHistory()
   }
   setCurrentCommandHistory(){
-    this.value = this.history[this.historyIndex]
+    this.value = this.history[this.historyIndex] || ''
   }
 
   /*

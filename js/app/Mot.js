@@ -139,7 +139,11 @@ class Mot extends TextElement {
     // TODO Changement in CancelingManagement
   }
 
-  get content(){ return this._content}
+  /**
+   * Surclasse la méthode TextElement pour écrire le mot dans le
+   * texte.
+   * 
+   */
   set content(v) {
     this._content       = v
     this.obj.innerText  = v
