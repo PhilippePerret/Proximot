@@ -2,7 +2,8 @@
 
 ## En cours
 
-* Voir les bugs
+* Poursuivre l'enregistrement (il reste les mots à faire)
+* Passer ensuite à la lecture du fichier
 * Mettre en place le système d'annulation
 * Mémoriser chaque ligne de console (comme le Terminal)
 * Quand c'est un long texte (non encore travaillé), ne traiter d'abord qu'une portion (de 2000 mots environ, donc de 15000 signes environ)
@@ -18,16 +19,15 @@
 
 ## Bugs
 
-* Le domId des mots est "undefined-undefined" alors que leur id et leur type sont bien définis…
-* [bug] Sur la recherche de proximité. L'ensemble du check se passe à peu près bien mais :
-  - l'app ne semble pas voir les autres mots semblables.
+* Voir les bugs sur Github avec `ghi list -L bug`
 
 ## Préférence
 
-* le minimum de longueur pour que le mot soit traité
+* Les mettre en place pour l'édition
 
 ## Fonctionnalités
 
+* Pouvoir obtenir la liste des commandes/raccourcis clavier
 * Déplacement dans mot (Editor.moveMot())
   -> Traitement des proximités à chaque déplacement (pour ce mot et les mots concernés)
 * Application intelligente : elle mémorise toutes les substitutions qu'on fait (remplacement d'un mot par un autre) et les repropose à la prochaine modification du même mot.
