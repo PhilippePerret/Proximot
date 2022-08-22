@@ -35,12 +35,12 @@ On gère entièrement le texte au clavier, à la façon de Vim, avec une console
 
 ### Commandes Fichiers
 
-| <span style="width:280px;display:inline-block;">Opération</span> | <span style="display:inline-block;width:120px;">Com</span> | Mnémo                 | Commandes et paramètres                                |
-| ------------------------------------------------------------ | ---------------------------------------------------------- | --------------------- | ------------------------------------------------------ |
-| Affiche les informations sur le fichier courant.             | **`f`**                                                    | [F]ile                |                                                        |
-| Ouvre un fichier proximot ou texte                           | **`fo <path/to>`**                                         | [F]ile [O]pen         |                                                        |
-| Enregistrer le fichier courant                               | **`fw [path/to>]`**                                        | [F]ile [W]rite        | Si le chemin n’est pas fourni, c’est le chemin normal. |
-| Enregistre le texte du fichier courant                       | **`fwt [path/to>]`**                                       | [F]ile [W]rite [T]ext | Il sera enregistré dans un fichier `.txt`              |
+| <span style="width:280px;display:inline-block;">Opération</span> | <span style="display:inline-block;width:120px;">Com</span> | Mnémo                 | Commandes et paramètres                                      |
+| ------------------------------------------------------------ | ---------------------------------------------------------- | --------------------- | ------------------------------------------------------------ |
+| Affiche les informations sur le fichier courant.             | **`f`**                                                    | [F]ile                |                                                              |
+| Ouvre un fichier proximot ou texte                           | **`fo <path/to>`**                                         | [F]ile [O]pen         |                                                              |
+| Enregistrer le fichier courant                               | **`fw [path/to>]`**<br />**`w`**                           | [F]ile [W]rite        | Si le chemin n’est pas fourni, c’est le chemin normal. Avec `w` seul, on peut aussi spécifier un chemin |
+| Enregistre le texte du fichier courant                       | **`fwt [path/to>]`**<br />**`wt`**                         | [F]ile [W]rite [T]ext | Il sera enregistré dans un fichier `.txt`                    |
 
 
 

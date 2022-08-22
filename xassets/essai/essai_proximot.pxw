@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<proximot>
+	<app_state>
+		<last_open>22/08/2022 11:05:27</last_open>
+		<saved_at>22/08/2022 11:05:31</saved_at>
+		<fragment_first_parag_index>0</fragment_first_parag_index>
+	</app_state>
+	<preferences>
+		<min_word_length>3</min_word_length>
+		<min_dist_proximity>1000</min_dist_proximity>
+	</preferences>
+	<console_history>
+		<item Index="0">w</item>
+	</console_history>
+	<proximities>
+		<item Index="0">
+			<id>1</id>
+			<motAvant>{"index"=>9, "id"=>9}</motAvant>
+			<motApres>{"index"=>13, "id"=>13}</motApres>
+			<distance>19</distance>
+			<eloignement>near</eloignement>
+			<state>1</state>
+		</item>
+	</proximities>
+</proximot>

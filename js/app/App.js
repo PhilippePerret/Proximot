@@ -9,7 +9,21 @@ class App {
    * 
    */
   static onReceiveText(data){
+    this.lastOpenDate = new Date()
     const texte = TextUtils.makeTexteFromTokens(data.tokens)
     Editor.display(texte.firstFragment)
+  }
+
+  /**
+   * @return la table des données d'état à sauvegarder dans le 
+   * fichier.
+   * 
+   */
+  static state2save(texte){
+    return {
+        last_open: hdateFor(this.lastOpenDate)
+      , saved_at:  hdateFor(new Date())
+      , fragment_first_parag_index: texte.fragmentFirstParagraphIndex
+    }
   }
 }

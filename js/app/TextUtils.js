@@ -63,7 +63,7 @@ class TextUtils {
         texel = new NomPropre(trinome)
         break
       case 'BREAK':
-        paragraphs.push(new Paragraph(currentMotsParag))
+        paragraphs.push(new Paragraph(paragraphs.length, currentMotsParag))
         currentMotsParag = []
         break
       default:
@@ -76,7 +76,7 @@ class TextUtils {
     | On traite les mots restants
     */
     if ( currentMotsParag.length ) {
-      paragraphs.push(new Paragraph(currentMotsParag))
+      paragraphs.push(new Paragraph(paragraphs.length, currentMotsParag))
     }
 
     /*

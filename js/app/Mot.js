@@ -84,6 +84,21 @@ class Mot extends TextElement {
 
   // --- Public Methods ---
 
+  /**
+   * @return {Hash} Table des données à sauvegarder
+   * 
+   */
+  get data2save(){
+    const table = super.data2save
+    Object.assign(table, {
+        type:           'mot'
+      , markProximity:  this.markProximity
+      , proxAvant:      this.proxAvant && this.proxAvant.id
+      , proxApres:      this.proxApres && this.proxApres.id
+    })
+    return table
+  }
+
   replaceContentWith(newContent){
     /*
     | Si le contenu est le même, on peut s'arrêter là
@@ -158,15 +173,32 @@ class Mot extends TextElement {
     return Math.abs(cmot.relPos - this.relPos) < Lemma.MinProximityDistance
   }
 
+  get markProximty(){
+    if ( undefined === this._markproxi ) {
+      this._markproxi = this.calcMarkProximity(this.fragment)
+    }
+    return this._markproxi
+  }
+  set markProximty(v) { this._markproxi = v /* false ou class CSS */  }
+
   /**
-   * @return true si le mot est en proximité avec un autre dans le
-   * fragment de texte affiché
+   * @return {String} class CSS de l'éloignement si le mot est en 
+   * proximité avec un autre dans le fragment de texte affiché
+   * 
+   * Si l'étude a déjà été menée (this.markProximty défini), on 
+   * prend directement la valeur là. C'est le cas par exemple lorsque
+   * l'on recharge un fichier.
    * 
    * @param frag  {TextFragment} L'instance du fragment de
-   *              texte.
+   *              texte. Pour savoir quels mots sont après ou avant.
    */
   isTooClose(frag){
     if ( this.isTooShort ) return false
+    this.fragment = frag
+    return this.markProximty // false si aucune
+  }
+
+  calcMarkProximity(frag){
     const lemma = frag.getLemma(this.lemma)
     if ( lemma.hasOnlyOneMot ) {
       return false

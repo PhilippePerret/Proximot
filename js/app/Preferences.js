@@ -20,12 +20,14 @@ const PREFERENCES_DATA = {
     'min_word_length': {
         text:           "Longueur minimumale des mots traités"
       , defaultValue:   3
+      , value:          3
       , typeValue:      'integer'
       , button:         tp(BTN_EDIT,['min_word_length'])
     }
   , 'min_dist_proximity':{
         text:           "Distance minimale d'éloignement"
       , defaultValue:   1000
+      , value:          1000
       , typeValue:      'integer'
       , button:         tp(BTN_EDIT,['min_dist_proximity']) 
     }
@@ -125,18 +127,9 @@ class Preferences {
   // --- MÉTHODES D'APPLICATION DES CHOIX ---
 
 
-  static onToggleTimeline(tlId, value){
-    // console.log("-> onToggleTimeline", tlId, value)
-    Timeline.toggleTimeline(Timeline.getTimeline(tlId), value === true || value == 'true')
-    Timeline.setHeightTimelinesAndTops()
-  }
-
-
   // --- MÉTHODES DE CHECK ---
 
 
-  checkColor(value, curValue){
-  }
 
   // --- FIN DES MÉTHODES DE CHECK ---
 

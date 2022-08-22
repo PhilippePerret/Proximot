@@ -123,6 +123,7 @@ class ConsoleClass {
   */
   execCommand(command){
     var value ;
+    const init_command = command
 
     if ( command.match(' ') ) {
       value = command.split(' ')
@@ -139,11 +140,11 @@ class ConsoleClass {
     case 'fo': // ouvrir un fichier texte
       console.warn("Je dois apprendre à ouvrir un fichier Proximot (ou autre).")
       break
-    case 'fw': // enregistrer le fichier courant
-      console.warn("Je dois apprendre à enregistrer le fichier.")
+    case 'fw': case 'w': // enregistrer le fichier courant
+      Texte.current.saveAsProximot(value)
       break
     case 'fwt': // enregistrer seulement le texte dans un fichier
-      console.warn("Je dois apprendre à enregistrer le texte dans un fichier.")
+      Texte.current.saveAsText(value)
       break
 
     case 'i': // information
@@ -196,9 +197,10 @@ class ConsoleClass {
 
     /*
     | La commande a pu être jouée, on la mémorise et on l'efface
+    | dans la console.
     */
     this.value = ''
-    this.addToCommandHistory(command)
+    this.addToCommandHistory(init_command)
   }
 
   /*
@@ -234,8 +236,17 @@ class ConsoleClass {
     this.value = this.history[this.historyIndex] || ''
   }
 
+  /**
+   * @return les données de l'historique des commandes à enregistrer
+   * 
+   */
+  history2save(){
+    console.info("[history2save] this.history = ", this.history)
+    return this.history || []
+  }
+
   /*
-  | ############    TOUTES LES PROPRIÉTÉS #################
+  | ############    TOUTES LES PROPRIÉTÉS    #################
   */
   /** @return le contenu de la console ou le définit */
   get value(){ return this.field.value }

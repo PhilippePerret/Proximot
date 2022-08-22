@@ -2,9 +2,10 @@
 
 class Paragraph {
 
-  constructor(texelList){
+  constructor(index, texelList){
     this.content = texelList
     this.Klass   = 'Paragraph'
+    this.index   = index
   }
 
   // --- Public Methods ---

@@ -1,4 +1,5 @@
 # encoding: UTF-8
+require 'nokogiri'
 
 require_relative 'required/constants'
 

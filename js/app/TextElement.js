@@ -31,11 +31,21 @@ class TextElement {
   // --- Public Methods ---
 
   get content() { return this._content }
-  
   set content(v){ this._content = v    }
 
   get inspect(){
     return this._inspect || (this._inspect = `<<<${this.type} #${this.id} ${this.content.substring(0,20)}...>>>`)
+  }
+
+  /** @return les données à sauver, pour tout text-element */
+  get data2save(){
+    return {
+        id:         this.id
+      , content:    this.content
+      , ttTag:      this.ttTag
+      , lemma:      this.lemma
+      , selected:   this.isSelected
+    }
   }
 
   get span(){
@@ -44,6 +54,9 @@ class TextElement {
 
   get isMot(){ return this.type == 'mot'}
 
+  get isSelected(){ return this._isselected  }
+  set isSelected(v) { this._isselected = v }
+  
   setSelected(){
     this.obj.classList.add('selected')
   }

@@ -4,7 +4,7 @@
  * 
  * Méthode communes
  * 
- * version 2.2
+ * version 2.3
  * 
  */
 
@@ -30,6 +30,15 @@ function trace(){
   } catch(err) {
     console.error(err.stack)
   }
+}
+
+/**
+ * @return la date au format humain, sous forme de :
+ * "JJ/MM/AAAA H:MM:SS"
+ * 
+ */
+function hdateFor(date){
+  return date.toLocaleString()
 }
 
 /**

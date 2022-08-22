@@ -33,7 +33,8 @@ class Texte {
    *                un "enregistrer sous…")
    */
   saveAsProximot(newPath){
-    console.warn("Je dois apprendre à enregistrer un fichier Proximot.")
+    console.log("-> saveAsProximot")
+    IO.saveAll(this)
   }
 
   /**
@@ -44,7 +45,7 @@ class Texte {
   saveAsText(withPath){
     console.warn("Je dois apprendre à enregistrer le texte dans un fichier.")
   }
-  
+
   // --- /Public Methods ---
 
   get mots(){
@@ -55,6 +56,14 @@ class Texte {
     return this._parags || (this._parags = this.content)
   }
 
+  /** @return l'index du premier paragraphe du fragment courant */
+  get fragmentFirstParagraphIndex(){
+    return this._fragfirstparagidx
+  }
+  set fragmentFirstParagraphIndex(v){
+    this._fragfirstparagidx = v
+  }
+
   // --- Private Methods ---
 
   /**
@@ -63,6 +72,7 @@ class Texte {
    *
    */
   getFragmentFromParagraph(paragIndex){
+    this.fragmentFirstParagraphIndex = paragIndex
     const fragment = new TextFragment(this, paragIndex, this.getParagraphsFragmentFrom(paragIndex))
     fragment.analyze()
     return fragment
