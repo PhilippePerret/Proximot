@@ -1,5 +1,7 @@
 # encoding: UTF-8
-require 'nokogiri'
+# require 'nokogiri'
+require 'libxml'
+require 'pretty_inspect'
 
 require_relative 'required/constants'
 

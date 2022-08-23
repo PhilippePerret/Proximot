@@ -8,7 +8,34 @@
 
 =end
 module Proximot
+class Document
+  attr_reader :path
+  def initialize(path)
+    @path = path
+  end
+
+  def app_state
+    IO.load_from_current(path, 'app_state')
+  end
+
+  def preferences
+    IO.load_from_current(path, 'preferences')
+  end
+
+  def console_history
+    IO.load_from_current(path, 'console_history').values
+  end
+
+  def proximities
+    IO.load_from_current(path, 'proximities/item')
+  end
+end
+
 class IO
+
+  TYPE_END_ELEMENT  = LibXML::XML::Reader::TYPE_END_ELEMENT
+  TYPE_TEXT         = LibXML::XML::Reader::TYPE_TEXT
+
 class << self
 
   # L'instance Proximot::IO gérant l'enregistrement ou la lecture
@@ -17,8 +44,58 @@ class << self
   ##
   # Charge séquentiellement les données du fichier Proximot (.pxw)
   # 
-  def load_from_current(options = nil)
-    
+  # @param px_path {String} Chemin d'accès au fichier
+  #
+  def load_from_current(px_path, xpath)
+    level1_searched, level2_searched = xpath.split('/')
+
+    xml = LibXML::XML::Reader.file(px_path, :options => LibXML::XML::Parser::Options::NOBLANKS)
+
+    # 
+    # La table finale qui sera retournée
+    # 
+    table = {}
+
+    # 
+    # On boucle sur tous les noeuds du document
+    # 
+    begin
+      while xml.read
+          # next if xml.node_type == TYPE_TEXT
+          # next if xml.node_type == TYPE_END_ELEMENT
+          next if xml.node_type == TYPE_END_ELEMENT|TYPE_TEXT
+
+          case xml.depth
+          when 0 
+            xml.name == 'proximot' || raise("Ce n'est pas un document Proximot !")
+          when 1
+            @level1 = xml.name # pe 'preferences' in '/proximot/preferences'
+            if @level1 == level1_searched
+              xml.expand.children.each do |node|
+                # puts "Le noeud #{node.name} vaut #{node.content.inspect}"
+                if level2_searched.nil?
+                  table.merge!(node.name.to_sym => node.content)
+                else
+                  table.merge!(node.name => [])
+                end
+              end
+            # *- output -*
+              return table if level2_searched.nil?
+            end
+          when 2
+            next if @level1 != level1_searched
+            @level2 = xml.name
+            # *- output -*
+            return table if @level2 != level2_searched && table.any?
+            next if level2_searched != '*' && @level2 != level2_searched
+            table['item'] << xml.expand
+          end
+          # puts "Node de nom #{xml.name.inspect} et de depth #{xml.depth}"
+        # end
+      end
+    ensure
+      xml.close
+    end
   end
 
   ##
@@ -49,7 +126,8 @@ class << self
         when 'simple_list'
           :add_as_list
         when 'list_of_objects'
-          :add_as_list_with_objects
+          # :add_as_list_with_objects
+          :add_as_array
         when 'complex'
           :add_as_complex
         end

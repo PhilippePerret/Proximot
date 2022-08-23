@@ -4,22 +4,51 @@ class App
 class << self
 
   ##
+  # = main point d'entrée =
+  #
+  def load
+    clear
+    # return if test 
+    begin
+      WAA.goto File.join(APP_FOLDER,'MAIN.HTML')
+      WAA.run
+    ensure
+      WAA.driver.quit
+    end
+  end
+
+  def test
+    pxpath = File.join(CURRENT_FOLDER,'essai_proximot.pxw')
+    prox = Proximot::Document.new(pxpath)
+    # puts "App state : #{prox.app_state.pretty_inspect}"
+    # puts "Préférences : #{prox.preferences.pretty_inspect}"
+    # puts "Console history : #{prox.console_history.pretty_inspect}"
+    puts "Proximités : #{prox.proximities.pretty_inspect}"
+  rescue Exception => e
+    puts e.message.rouge
+    puts e.backtrace.join("\n").rouge  
+  ensure
+    return true # mettre false pour lancer l'application
+  end
+
+  ##
   # Pour charger le texte à analyser/travailler
   # 
   def load_texte(data)
     text_path = search_text_path
-    if File.extname(text_path) == '.pxw'
+    if false # File.extname(text_path) == '.pxw'
       # 
       # Un fichier XML proximot
       # 
-      raise "Je ne sais pas encore traiter les fichier .pxw"
+      IO.load_from_current(text_path)
     else
       # 
       # Un fichier texte normal
       # 
       tokens = analyze_text_path(text_path)
+
+      WAA.send(class:'App',method:'onReceiveText',data:{tokens:tokens})
     end
-    WAA.send(class:'App',method:'onReceiveText',data:{tokens:tokens})
   end
 
   ##
@@ -89,6 +118,11 @@ class << self
       # Par chemin relatif dans le dossier courant
       # 
       return File.join(CURRENT_FOLDER,ARGV[0])
+    elsif (paths_pxw  = Dir["#{CURRENT_FOLDER}/*.pxw"]).count > 0
+      # 
+      # Pour le moment on prend le premier fichier pxw
+      # 
+      return paths_pxw.first
     elsif (paths_text = Dir["#{CURRENT_FOLDER}/*.{text,txt}"]).count == 1
       # 
       # Un seul fichier texte dans le dossier
@@ -126,13 +160,6 @@ class << self
     WAA.send(class:'TextUtils',method:'receiveLemma', data:{lemma:res})
   end
 
-  def load
-    clear
-    WAA.goto File.join(APP_FOLDER,'MAIN.HTML')
-    WAA.run
-  ensure
-    WAA.driver.quit
-  end
 
 end #/<< self
 end #/class App

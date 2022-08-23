@@ -47,12 +47,13 @@ module Proximot
 class TTAnalyzer
   WS = Regexp.new('[[:blank:]]+')
   private_constant :WS
-  TREE_TAGGER_BIN = File.join('/Applications','Tree-tagger','bin','tree-tagger')
-  private_constant :TREE_TAGGER_BIN
-  TT_PARAM_FILE = File.join('/Applications','Tree-tagger','lib','french.par') 
-  private_constant :TT_PARAM_FILE
-
+  # TREE_TAGGER_BIN = File.join('/Applications','Tree-tagger','bin','tree-tagger')
+  # TT_PARAM_FILE = File.join('/Applications','Tree-tagger','lib','french.par') 
+  TREE_TAGGER_FOLDER = File.join(LIB_FOLDER,'third-party','tree-tagger')
+  TREE_TAGGER_BIN = File.join(TREE_TAGGER_FOLDER,'bin','tree-tagger')
+  TT_PARAM_FILE   = File.join(TREE_TAGGER_FOLDER,'french.par')
   TT_COMMAND = "#{TREE_TAGGER_BIN} #{TT_PARAM_FILE}"
+  
   private_constant :TT_COMMAND
 
   def analyze(text, options = nil)
@@ -154,7 +155,8 @@ class TTAnalyzer
       opts << "-lex \"#{options[:lexicon]}\""
     end
     # puts "options : #{opts.join(' ')}"
-    `echo "#{texte_pret}" | #{TT_COMMAND} #{opts.join(' ')}`
+    puts "Commande : echo \"#{texte_pret}\" | #{TT_COMMAND} #{opts.join(' ')} 2>&1"
+    `echo "#{texte_pret}" | #{TT_COMMAND} #{opts.join(' ')} 2>&1`
   end
 
 
@@ -201,6 +203,7 @@ class TTAnalyzer
     current_unknown     = [] # pour mettre les tokens de l'inconnu
     res.each do |trinome|
       sujet,type,lemme = trinome
+      raise "Un problème est survenu" if sujet.nil?
       if sujet.start_with?('<UNK')
         # <= début d'un unknown
         current_unknown = []
