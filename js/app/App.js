@@ -24,6 +24,7 @@ class App {
         last_open: hdateFor(this.lastOpenDate)
       , saved_at:  hdateFor(new Date())
       , fragment_first_parag_index: texte.fragmentFirstParagraphIndex
+      , fragment_index: texte.fragmentIndex
     }
   }
 }

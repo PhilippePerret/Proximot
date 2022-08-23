@@ -1,10 +1,9 @@
 <?xml version="1.0"?>
 <proximot>
 	<app_state>
-		<last_open>23/08/2022 08:41:43</last_open>
-		<saved_at>23/08/2022 08:41:46</saved_at>
+		<last_open>22/08/2022 16:33:58</last_open>
+		<saved_at>22/08/2022 16:34:01</saved_at>
 		<fragment_first_parag_index>0</fragment_first_parag_index>
-		<fragment_index>0</fragment_index>
 	</app_state>
 	<preferences>
 		<min_word_length>3</min_word_length>
@@ -14,22 +13,14 @@
 		<item Index="0">w</item>
 	</console_history>
 	<proximities>
-		<proximity index="0">
-				<id>1</id>
-				<motAvantId>11</motAvantId>
-				<motApresId>16</motApresId>
-				<distance>19</distance>
-				<eloignement>near</eloignement>
-				<state>1</state>
-		</proximity>
-		<proximity index="1">
-				<id>2</id>
-				<motAvantId>13</motAvantId>
-				<motApresId>17</motApresId>
-				<distance>20</distance>
-				<eloignement>far</eloignement>
-				<state>2</state>
-		</proximity>
+		<item Index="0">
+			<id>1</id>
+			<motAvantId>9</motAvantId>
+			<motApresId>13</motApresId>
+			<distance>19</distance>
+			<eloignement>near</eloignement>
+			<state>1</state>
+		</item>
 	</proximities>
 	<fragments>
 		<fragment>
@@ -40,48 +31,34 @@
 					<mots>
 						<mot index="0">
 								<id>0</id>
-								<content></content>
-								<ttTag>reading parameters ...</ttTag>
-								<lemma></lemma>
-								<type>mot</type>
-						</mot>
-						<mot index="1">
-								<id>1</id>
-								<content></content>
-								<ttTag>tagging ...</ttTag>
-								<lemma></lemma>
-								<type>mot</type>
-						</mot>
-						<mot index="2">
-								<id>2</id>
 								<content>Un</content>
 								<ttTag>DET:ART</ttTag>
 								<lemma>un</lemma>
 								<type>mot</type>
 						</mot>
-						<mot index="3">
-								<id>3</id>
+						<mot index="1">
+								<id>1</id>
 								<content>second</content>
 								<ttTag>NUM</ttTag>
 								<lemma>second</lemma>
 								<type>mot</type>
 						</mot>
-						<mot index="4">
-								<id>4</id>
+						<mot index="2">
+								<id>2</id>
 								<content>texte</content>
 								<ttTag>NOM</ttTag>
 								<lemma>texte</lemma>
 								<type>mot</type>
 						</mot>
-						<mot index="5">
-								<id>5</id>
+						<mot index="3">
+								<id>3</id>
 								<content>plus</content>
 								<ttTag>ADV</ttTag>
 								<lemma>plus</lemma>
 								<type>mot</type>
 						</mot>
-						<mot index="6">
-								<id>6</id>
+						<mot index="4">
+								<id>4</id>
 								<content>complexe</content>
 								<ttTag>ADJ</ttTag>
 								<lemma>complexe</lemma>
@@ -93,35 +70,35 @@
 						<id>1</id>
 					<mots>
 						<mot index="0">
-								<id>7</id>
+								<id>5</id>
 								<content>Déjà</content>
 								<ttTag>ADV</ttTag>
 								<lemma>déjà</lemma>
 								<type>mot</type>
 						</mot>
 						<mot index="1">
-								<id>8</id>
+								<id>6</id>
 								<content>il</content>
 								<ttTag>PRO:PER</ttTag>
 								<lemma>il</lemma>
 								<type>mot</type>
 						</mot>
 						<mot index="2">
-								<id>9</id>
+								<id>7</id>
 								<content>utilise</content>
 								<ttTag>VER:pres</ttTag>
 								<lemma>utiliser</lemma>
 								<type>mot</type>
 						</mot>
 						<mot index="3">
-								<id>10</id>
+								<id>8</id>
 								<content>plusieurs</content>
 								<ttTag>PRO:IND</ttTag>
 								<lemma>plusieurs</lemma>
 								<type>mot</type>
 						</mot>
 						<mot index="4">
-								<id>11</id>
+								<id>9</id>
 								<content>paragraphes</content>
 								<ttTag>NOM</ttTag>
 								<lemma>paragraphe</lemma>
@@ -129,73 +106,60 @@
 								<proxApres>1</proxApres>
 						</mot>
 						<mot index="5">
-								<id>12</id>
-								<content></content>
-								<ttTag> finished.</ttTag>
-								<type>mot</type>
-						</mot>
-						<mot index="6">
-								<id>13</id>
+								<id>10</id>
 								<content>Et</content>
 								<ttTag>KON</ttTag>
 								<lemma>et</lemma>
 								<type>mot</type>
 						</mot>
-						<mot index="7">
-								<id>14</id>
+						<mot index="6">
+								<id>11</id>
 								<content>même</content>
 								<ttTag>ADV</ttTag>
 								<lemma>même</lemma>
 								<type>mot</type>
 						</mot>
-						<mot index="8">
-								<id>15</id>
+						<mot index="7">
+								<id>12</id>
 								<content>un</content>
 								<ttTag>DET:ART</ttTag>
 								<lemma>un</lemma>
 								<type>mot</type>
 						</mot>
-						<mot index="9">
-								<id>16</id>
+						<mot index="8">
+								<id>13</id>
 								<content>paragraphe</content>
 								<ttTag>NOM</ttTag>
 								<lemma>paragraphe</lemma>
 								<type>mot</type>
 								<proxAvant>1</proxAvant>
 						</mot>
-						<mot index="10">
-								<id>17</id>
+						<mot index="9">
+								<id>14</id>
 								<content>avec</content>
 								<ttTag>PRP</ttTag>
 								<lemma>avec</lemma>
 								<type>mot</type>
 						</mot>
-						<mot index="11">
-								<id>18</id>
+						<mot index="10">
+								<id>15</id>
 								<content>des</content>
 								<ttTag>PRP:det</ttTag>
 								<lemma>du</lemma>
 								<type>mot</type>
 						</mot>
-						<mot index="12">
-								<id>19</id>
+						<mot index="11">
+								<id>16</id>
 								<content>espaces</content>
 								<ttTag>NOM</ttTag>
 								<lemma>espace</lemma>
 								<type>mot</type>
 						</mot>
-						<mot index="13">
-								<id>20</id>
+						<mot index="12">
+								<id>17</id>
 								<content>insécables</content>
 								<ttTag>ADJ</ttTag>
 								<lemma>insécable</lemma>
-								<type>mot</type>
-						</mot>
-						<mot index="14">
-								<id>21</id>
-								<content></content>
-								<ttTag> finished.</ttTag>
-								<lemma></lemma>
 								<type>mot</type>
 						</mot>
 					</mots>

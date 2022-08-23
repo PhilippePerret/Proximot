@@ -19,6 +19,7 @@ class Texte {
    * @return le premier fragment
    */
   get firstFragment(){
+    this.fragment_index = 0 // TODO LE GÉRER (plutôt que le numéro de paragraphe)
     return this.getFragmentFromParagraph(0)
   }
 

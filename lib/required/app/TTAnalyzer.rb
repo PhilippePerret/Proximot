@@ -53,7 +53,7 @@ class TTAnalyzer
   TREE_TAGGER_BIN = File.join(TREE_TAGGER_FOLDER,'bin','tree-tagger')
   TT_PARAM_FILE   = File.join(TREE_TAGGER_FOLDER,'french.par')
   TT_COMMAND = "#{TREE_TAGGER_BIN} #{TT_PARAM_FILE}"
-  
+
   private_constant :TT_COMMAND
 
   def analyze(text, options = nil)
@@ -155,7 +155,7 @@ class TTAnalyzer
       opts << "-lex \"#{options[:lexicon]}\""
     end
     # puts "options : #{opts.join(' ')}"
-    puts "Commande : echo \"#{texte_pret}\" | #{TT_COMMAND} #{opts.join(' ')} 2>&1"
+    puts "\n\n\n---Texte prêt : #{'<'*20}\n#{texte_pret}\n#{'>'*40}"
     `echo "#{texte_pret}" | #{TT_COMMAND} #{opts.join(' ')} 2>&1`
   end
 

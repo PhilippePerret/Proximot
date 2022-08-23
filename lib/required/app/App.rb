@@ -8,7 +8,7 @@ class << self
   #
   def load
     clear
-    # return if test 
+    return if test 
     begin
       WAA.goto File.join(APP_FOLDER,'MAIN.HTML')
       WAA.run
@@ -20,10 +20,12 @@ class << self
   def test
     pxpath = File.join(CURRENT_FOLDER,'essai_proximot.pxw')
     prox = Proximot::Document.new(pxpath)
-    # puts "App state : #{prox.app_state.pretty_inspect}"
+    puts "App state : #{prox.app_state.pretty_inspect}"
     # puts "Préférences : #{prox.preferences.pretty_inspect}"
     # puts "Console history : #{prox.console_history.pretty_inspect}"
-    puts "Proximités : #{prox.proximities.pretty_inspect}"
+    # puts "Proximités : #{prox.proximities.pretty_inspect}"
+    puts "Fragments : #{prox.fragment(prox.app_state['fragment_index'].to_i)}"
+
   rescue Exception => e
     puts e.message.rouge
     puts e.backtrace.join("\n").rouge  
@@ -36,7 +38,7 @@ class << self
   # 
   def load_texte(data)
     text_path = search_text_path
-    if false # File.extname(text_path) == '.pxw'
+    if File.extname(text_path) == '.pxw'
       # 
       # Un fichier XML proximot
       # 
