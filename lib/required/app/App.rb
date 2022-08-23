@@ -8,7 +8,7 @@ class << self
   #
   def load
     clear
-    return if test 
+    # return if test 
     begin
       WAA.goto File.join(APP_FOLDER,'MAIN.HTML')
       WAA.run
@@ -42,7 +42,7 @@ class << self
       # 
       # Un fichier XML proximot
       # 
-      IO.load_from_current(text_path)
+      load_proximot_file(text_path)
     else
       # 
       # Un fichier texte normal
@@ -51,6 +51,25 @@ class << self
 
       WAA.send(class:'App',method:'onReceiveText',data:{tokens:tokens})
     end
+  end
+
+  ##
+  # Procède à l'envoi du fichier proximot
+  # 
+  def load_proximot_file(pxpath)
+    prox = Proximot::Document.new(pxpath)
+    puts "App state : #{prox.app_state.pretty_inspect}"
+    WAA.send(class:'App', method:'onReceiveProximotData', data:{type:'app_state', data:prox.app_state})
+    # puts "Préférences : #{prox.preferences.pretty_inspect}"
+    WAA.send(class:'App', method:'onReceiveProximotData', data:{type:'preferences', data:prox.preferences})
+    # puts "Console history : #{prox.console_history.pretty_inspect}"
+    # puts "Proximités : #{prox.proximities.pretty_inspect}"
+    puts "Fragments : #{prox.fragment(prox.app_state['fragment_index'].to_i)}"
+  rescue Exception => e
+    puts e.message.rouge
+    puts e.backtrace.join("\n").rouge  
+  ensure
+    return true # mettre false pour lancer l'application
   end
 
   ##
