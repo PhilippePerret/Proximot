@@ -90,7 +90,7 @@ class << self
   rescue Exception => e
     puts e.message.rouge
     puts e.backtrace.join("\n").rouge
-    WAA.send(class:'App', method:'onError', data:{message:e.message, backtrace:e.backtrace})
+    WAA.send(class:'App', method:'onError', data:{message:"[App.rb#load_proximot_file] #{e.message}", backtrace:e.backtrace})
   ensure
     return true # mettre false pour lancer l'application
   end

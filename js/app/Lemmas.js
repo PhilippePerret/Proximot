@@ -164,7 +164,7 @@ class Lemma {
         */
         const previousMot = this.table[previousPos].mot
         console.log("   PROXIMITÉ AVANT TROUVÉE AVEC ", previousMot)
-        return new Proximity(previousMot, mot)
+        return new Proximity({motAvant: previousMot, motApres: mot})
       }
     }
   }
@@ -180,7 +180,7 @@ class Lemma {
         */
         const nextMot = this.table[nextPos].mot
         console.log("   PROXIMITÉ APRÈS TROUVÉE AVEC ", nextMot)
-        return new Proximity(mot, nextMot)
+        return new Proximity({motAvant: mot, motApres: nextMot})
       }
     }    
   }

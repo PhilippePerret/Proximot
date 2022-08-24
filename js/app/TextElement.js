@@ -20,6 +20,33 @@ class TextElement {
     return this.lastId ++ 
   }
 
+  /**
+  * - main -
+  * 
+  * Méthode principale qui reçoit toutes les données mots du fichier
+  * Proximot (remontées par le serveur) et les dispatche.
+  * 
+  */
+  static setData(data){
+    console.log("Data à dispatcher : ", data)
+    this.reset()
+    var texel ; 
+    data.paragraphs.forEach( dparag => {
+      const parag_index   = int(dparag.index)
+      const parag_texels  = parag.mots.map( dtexel => {
+        switch(dtexel.type){
+        case 'mot': case '':  texel = new Mot(dtexel);         break;
+        case 'ponct':         texel = new Ponctuation(dtexel); break;
+        default:
+          raise("Je ne connais pas le type ", dtexel.type)
+        }
+        if ( texel.id > this.lastId ) this.lastId = texel.id
+        return texel
+      })
+      const paragraph = new Paragraph(parag_index, parag_texels)
+    })
+  }
+
   constructor(data){
     this.id       = this.constructor.getNewId()
     this._content = data[0]

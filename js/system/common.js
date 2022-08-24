@@ -41,6 +41,10 @@ function hdateFor(date){
   return date.toLocaleString()
 }
 
+function int(foo){
+  return parseInt(foo, 10)
+}
+
 /**
  * Pour pouvoir utiliser par exemple :
  * 

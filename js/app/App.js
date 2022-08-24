@@ -9,24 +9,28 @@ class App {
   * App.load_proximot_file
   */
   static onReceiveProximotData(data){
-    console.log("Je reçois ces données pour le chargement de '%s'", data.loading_step, data)
+    // console.log("Je reçois ces données pour le chargement de '%s'", data.loading_step, data)
     var next_step, extra_data ;
     switch(data.loading_step){
     case 'app_state':
-      next_step = 'preferences'
-      this.State = data.data
+      this.State  = data.data
+      next_step   = 'preferences'
       break
     case 'preferences':
-      next_step = 'console_history'
-      break
-    case 'console_history':
-      next_step = 'proximities'
-      break
-    case 'proximities':
+      Preferences.setValues(data.data)
       next_step   = 'fragment_current'
       extra_data  = {fragment_index: parseInt(this.State.fragmentIndex || 0, 10)}
       break
     case 'fragment_current':
+      TextElement.setData(data.data)
+      next_step = 'console_history'
+      break
+    case 'console_history':
+      Console.HistoryManager.setHistory(data.data)
+      next_step = 'proximities'
+      break
+    case 'proximities':
+      Proximity.setData(data.data)
       next_step = null
       break
     }

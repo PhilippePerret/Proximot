@@ -45,9 +45,14 @@ class ConsoleHistoryManager {
    * @return les données de l'historique des commandes à enregistrer
    * 
    */
-  history2save(){
+  getHistory(){
     console.info("[history2save] this.history = ", this.history)
     return this.history || []
+  }
+
+  setHistory(histo){
+    this.history      = histo
+    this.historyIndex = histo.length
   }
 
   /*- private -*/ 

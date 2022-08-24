@@ -7,11 +7,16 @@ class Proximity {
    * @retourne toutes les données Proximités à enregistrer
    * 
    */
-  static getData2save(){
+  static getData(){
     if ( undefined == this.items ) return null;
     return this.items.map( proxi => {
       return proxi.data2save
     })
+  }
+
+  static setData(data){
+    console.log("Données proximité à dispacher :", data)
+    data.forEach( dproximity => new Proximity(dproximity) )
   }
 
   static getNewId(){
@@ -32,13 +37,25 @@ class Proximity {
   | ################     INSTANCE     #################
   */
 
-  constructor(motAvant, motApres){
-    ;(motAvant && motAvant instanceof Mot) || raise(tp(ERRORS.mustBeMot, ['Le mot avant']))
-    ;(motApres && motApres instanceof Mot ) || raise(tp(ERRORS.mustBeMot, ['Le mot après']))
-    motApres.relPos > motAvant.relPos || raise(ERRORS.proximity.apresMustBeApres)
-    this.id       = this.constructor.getNewId()
-    this.motAvant = motAvant
-    this.motApres = motApres
+  constructor(data){
+    if ( data.motAvant || data.motApres ) {
+      /*
+      |  Instanciation en cours de programme (pas en remontée des
+      |  données initiales)
+      */
+      ;(motAvant && motAvant instanceof Mot) || raise(tp(ERRORS.mustBeMot, ['Le mot avant']))
+      ;(motApres && motApres instanceof Mot ) || raise(tp(ERRORS.mustBeMot, ['Le mot après']))
+      motApres.relPos > motAvant.relPos || raise(ERRORS.proximity.apresMustBeApres)
+      this.id       = this.constructor.getNewId()
+      this.motAvant = motAvant
+      this.motApres = motApres
+    } else {
+      /*
+      |  Instanciation à partir de données remontées d'un fichier
+      |  proximot (.pxw)
+      */
+      this.dispatch(data)
+    }
     this.setProximityOfEachWord()
     this.constructor.add(this)
   }
@@ -52,6 +69,21 @@ class Proximity {
       , eloignement:  this.eloignement
       , state:        this.state
     }
+  }
+
+  /**
+  * Dispatcher les données remontées du serveur (récoltées dans le
+  * fichier Proximot) en réglant certaines valeurs à commencer par
+  * l'instance des mots avant et après (if any)
+  */
+  dispatch(data){
+    this.id         = int(data.id)
+    this._dist      = int(data.distance)
+    this.motApresId = data.motApresId && int(data.motApresId)
+    if (this.motApresId) { this.motApres = Mot.get(this.motApresId) }
+    this.motAvantId = data.motAvantId && int(data.motAvantId) 
+    if (this.motAvantId) { this.motAvant = Mot.get(this.motAvantId) }
+    this._state     = int(data.state)
   }
 
   /**

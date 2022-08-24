@@ -38,10 +38,10 @@ class IO {
     this.addToStack('preferences', Preferences.getValues(), 'simple_object')
 
     /* Historique des commandes de console */
-    this.addToStack('console_history', Console.HistoryManager.history2save(), 'simple_list')
+    this.addToStack('console_history', Console.HistoryManager.getHistory(), 'simple_list')
 
     /* Enregistrement des proximités */
-    this.addToStack('proximities', Proximity.getData2save(), 'list_of_objects')
+    this.addToStack('proximities', Proximity.getData(), 'list_of_objects')
 
     /* Le texte et ses modifications */
     this.saveMotsOf(texte)
