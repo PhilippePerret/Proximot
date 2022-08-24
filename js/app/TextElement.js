@@ -13,7 +13,16 @@
 class TextElement {
 
   static reset(){
+    this.table  = {} 
     this.lastId = 0
+  }
+
+  static getById(id){
+    return this.table[id]
+  }
+
+  static add(texel){
+    Object.assign(this.table, {[texel.id]: texel})
   }
 
   static getNewId(){
@@ -29,13 +38,16 @@ class TextElement {
   */
   static setData(data){
     console.log("Data à dispatcher : ", data)
-    this.reset()
-    var texel ; 
-    data.paragraphs.forEach( dparag => {
+    const dataFragment = data.data
+    // this.reset() // SURTOUT PAS (on perdrait les fragments chargés avant)
+    var texel
+    const paragraphs = [];
+    dataFragment.paragraphs.forEach( dparag => {
       const parag_index   = int(dparag.index)
-      const parag_texels  = parag.mots.map( dtexel => {
+      const parag_texels  = dparag.mots.map( dtexel => {
         switch(dtexel.type){
         case 'mot': case '':  texel = new Mot(dtexel);         break;
+        case 'nom-propre':    texel = new NomPropre(dtexel);   break;
         case 'ponct':         texel = new Ponctuation(dtexel); break;
         default:
           raise("Je ne connais pas le type ", dtexel.type)
@@ -44,7 +56,18 @@ class TextElement {
         return texel
       })
       const paragraph = new Paragraph(parag_index, parag_texels)
+      paragraphs.push(paragraph)
     })
+    /*
+    |  On peut instancier le texte courant
+    */
+
+    const firstParagraph  = int(dataFragment.id.split('-')[0])
+        , texte           = Texte.current || (new Texte(paragraphs))
+        , fragmentIndex   = dataFragment.fragment_index
+        , fragment        = new TextFragment(texte, firstParagraph, paragraphs)
+    texte.setFragment(fragmentIndex, fragment)
+    Editor.display(texte.fragment(fragmentIndex))
   }
 
   constructor(data){
@@ -53,6 +76,7 @@ class TextElement {
     // console.info("this.content = ", this.content)
     this.ttTag    = data[1] // NAM, VER:pres, etc.
     this.lemma    = data[2]
+    this.constructor.add(this)
   }
 
   // --- Public Methods ---

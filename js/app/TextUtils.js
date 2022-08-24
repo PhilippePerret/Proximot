@@ -30,7 +30,7 @@ class TextUtils {
 
   /**
    * Méthode qui reçoit les tokens +tokens+ (du serveur qui les a
-   * envoyés par exemple à App.onReceiveText) et en fait une instance
+   * envoyés par App.onReceiveText) et en fait une instance
    * {Texte} avec des paragraphes et des mots.
    *
    * @param tokens {Array} Liste de trinomes [sujet, type, lemme]

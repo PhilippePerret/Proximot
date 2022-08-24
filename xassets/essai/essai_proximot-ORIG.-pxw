@@ -33,10 +33,10 @@
 	</proximities>
 	<fragments>
 		<fragment>
-			<id>0-1</id>
+				<id>0-1</id>
 			<paragraphs>
 				<paragraph index="0">
-					<id>0</id>
+						<id>0</id>
 					<mots>
 						<mot index="2">
 								<id>2</id>
@@ -74,16 +74,16 @@
 								<type>mot</type>
 						</mot>
 						<mot>
-								<id>1</id>
-								<content>.</content>
-								<ttTag>PUNCT</ttTag>
-								<lemma></lemma>
-								<type>ponct</type>							
+							<id>1</id>
+							<content>.</content>
+							<ttTag>PUNCT</ttTag>
+							<lemma></lemma>
+							<type>ponct</type>							
 						</mot>
 					</mots>
 				</paragraph>
 				<paragraph index="1">
-					<id>1</id>
+						<id>1</id>
 					<mots>
 						<mot index="0">
 								<id>7</id>

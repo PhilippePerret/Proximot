@@ -83,6 +83,7 @@ class << self
       # puts "Fragments : #{}"
       puts "Chargement du fragment ##{data['fragment_index']}".bleu
       fragment = prox.fragment(data['fragment_index'])
+      puts "Fragment ##{data['fragment_index']} : #{fragment.pretty_inspect}"
       WAA.send(class:'App', method:'onReceiveProximotData', data: data.merge!(data:fragment))      
     else
       raise "Impossible de trouver l'étape de chargement #{data['loading_step'].inspect}"

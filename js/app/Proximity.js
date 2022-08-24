@@ -80,9 +80,9 @@ class Proximity {
     this.id         = int(data.id)
     this._dist      = int(data.distance)
     this.motApresId = data.motApresId && int(data.motApresId)
-    if (this.motApresId) { this.motApres = Mot.get(this.motApresId) }
+    if (this.motApresId) { this.motApres = TextElement.getById(this.motApresId) }
     this.motAvantId = data.motAvantId && int(data.motAvantId) 
-    if (this.motAvantId) { this.motAvant = Mot.get(this.motAvantId) }
+    if (this.motAvantId) { this.motAvant = TextElement.getById(this.motAvantId) }
     this._state     = int(data.state)
   }
 

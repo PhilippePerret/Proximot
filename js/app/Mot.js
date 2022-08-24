@@ -2,7 +2,7 @@
 class Mot extends TextElement {
 
   static getById(mot_id){
-    return this.table[mot_id]
+    return this.tableMots[mot_id]
   }
 
   /**
@@ -56,12 +56,12 @@ class Mot extends TextElement {
    * @param mot {Mot} Instance du mot tout juste instancié
    * 
    */
-  static add(mot){
-    if ( undefined == this.table ) {
-      this.table = {}
+  static addInTableMots(mot){
+    if ( undefined == this.tableMots ) {
+      this.tableMots = {}
       this.byCountAndLemmas = {}
     }
-    Object.assign(this.table, {[mot.id]: mot})
+    Object.assign(this.tableMots, {[mot.id]: mot})
     if ( undefined == this.byCountAndLemmas[mot.mot] ) {
       Object.assign(this.byCountAndLemmas, {[mot.mot]: {
         count: 0, type: mot.ttTag, lemma:mot.lemma
@@ -79,7 +79,7 @@ class Mot extends TextElement {
     this.mot    = this.content
     this.type   = 'mot'
     this.Klass  = 'Mot'
-    this.constructor.add(this)
+    this.constructor.addInTableMots(this)
   }
 
   // --- Public Methods ---

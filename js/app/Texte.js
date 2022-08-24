@@ -17,10 +17,42 @@ class Texte {
 
   /**
    * @return le premier fragment
+   * Mais cette méthode n'est appelée que pour un texte qui n'est pas
+   * encore étudié (.txt au lieu de .pxw). Dans le cas contraire, les
+   * fragments sont définis par setFragment depuis le chargement des
+   * données du texte (App.onReceiveProximotData)
    */
   get firstFragment(){
     this.fragment_index = 0 // TODO LE GÉRER (plutôt que le numéro de paragraphe)
     return this.getFragmentFromParagraph(0)
+  }
+
+  /* Alias de getFragment */
+  fragment(fIndex){ return this.getFragment(fIndex)}
+
+  /**
+  * @return {Fragment} Le fragment d'index +fragmentIndex+
+  * 
+  */
+  getFragment(fragmentIndex){
+    if ( this.fragments[fragmentIndex] == undefined ) {
+      raise("Il faut apprendre à charger un fragment.")
+      // Note : on s'arrangera pour le faire en cours de
+      // travail sur le texte, de façon invisible on chargera
+      // les deux segments autour.
+    }
+    return this.fragments[fragmentIndex] 
+  }
+
+  /**
+  * Définit le fragment d'index +fragmentIndex+
+  * 
+  * Noter qu'avec le système de lecture, un fragment 12 peut très
+  * bien être chargé seul.
+  */
+  setFragment(fragmentIndex, fragment){
+    if (undefined == this.fragments) { this.fragments = {} }
+    Object.assign(this.fragments, {[fragmentIndex]: fragment})
   }
 
   get motsCount(){

@@ -22,7 +22,7 @@ class App {
       extra_data  = {fragment_index: parseInt(this.State.fragmentIndex || 0, 10)}
       break
     case 'fragment_current':
-      TextElement.setData(data.data)
+      TextElement.setData(data /* note : tout +data+ ici */)
       next_step = 'console_history'
       break
     case 'console_history':
