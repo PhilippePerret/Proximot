@@ -9,19 +9,20 @@ section#section-console {
 section#section-console input#console {
   position: absolute;
   display: block;
-  bottom: 16pt;
+  bottom: 52pt;
   background-color: black;
   color: white;
   font-family: monospace;
   font-size: 16pt;
   width: calc(100% - 4em);
   padding: 1em;
+  margin-left: 28px;
 }
 section#section-console div#console-footer {
-  position: relative;
+  position: absolute;
   width: 100%;
-  margin-left: 0;
-  margin-right: 0;
+  bottom: 0;
+  height: 48pt;
 }
 section#section-console div#console-footer div#console-tooltip,
 section#section-console div#console-footer div#console-status
@@ -30,11 +31,13 @@ section#section-console div#console-footer div#console-status
   position: absolute;
 }
 section#section-console div#console-footer div#console-tooltip {
-  left: 0;
-  width: 800px;
-  background-color: cyan;
+  left: 48px;
+  width: 1200px;
+  /*background-color: #CCC;*/
+  font-family: monospace;
+  font-size: 14pt;
 }
 section#section-console div#console-footer div#console-status {
-  right: 0;
+  right: 14px;
   text-align: right;
 }

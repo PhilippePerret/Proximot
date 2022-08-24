@@ -36,7 +36,10 @@ class ConsoleCommandManager {
     }
 
     switch(command){
-
+    // --- COMMANDES GÉNÉRALES ---
+    case 'aide': case 'help':
+      console.warn("Je dois apprendre à afficher l'aide.")
+      break
     // --- COMMANDES FICHIER ---
     case 'f': // Donne des informations sur le fichier
       console.warn("Je dois apprendre à donner des informations sur le fichier.")
@@ -53,20 +56,45 @@ class ConsoleCommandManager {
 
     case 'i': // information
       console.warn("Je dois apprendre à afficher les informations sur le mot.")
+      this.currentMot.showInfos()
       break
 
-    case 'ig': case 'ignore': // ignorer la proximité courante
+    case 'ig': case 'ignore': // ignorer les proximités de la sélection
       console.warn("Je dois apprendre à ignorer la proximité courante")
+      break
+
+    case 'igl': case 'ignore-left': // ignorer la proximité left (gauche)
+      console.warn("Je dois apprendre à ignorer la proximité gauche de la sélection")
+      break
+
+    case 'igr': case 'ignore-right': // ignorer la proximité left (gauche)
+      console.warn("Je dois apprendre à ignorer la proximité droite de la sélection")
       break
 
     case 'ig*': case 'ignore*': // ignorer toutes les proximités
       console.warn("Je dois apprendre à ignorer toutes les proximités de même type")
       break
     
-    case 'n': // prochaine proximité du mot courant
-      Editor.Selection.set(this.curMot.proxAfter.motAfter)
+    case 'n': // prochaine proximité
+      console.warn("Je dois apprendre à afficher la prochaine proximité.")
       break
-    
+
+    case 'nl': // sélectionner le mot en proximité gauche
+      if ( this.currentMot.proxAvant ) {
+        Editor.Selection.set(this.currentMot.proxAvant)
+      } else {
+        erreur("La sélection n'a pas de proximité avant.")
+      }
+      break
+
+    case 'nr': // sélectionner le mot en proximité gauche
+      if ( this.currentMot.proxApres ) {
+        Editor.Selection.set(this.currentMot.proxApres)
+      } else {
+        erreur("La sélection n'a pas de proximité après.")
+      }
+      break
+
     case 'r': // remplacement
       this.curMot.replaceContentWith(value)
       break
@@ -83,6 +111,9 @@ class ConsoleCommandManager {
         indexMot = indexMotCurrent + index
       } else if ( value.substring(0,1) == '-' ) {
         indexMot = indexMotCurrent - index
+      } else if ( NaN(index) ) {
+        /* Rechercher le premier mot contenant la valeur donnée */
+        return Editor.selectFirstWordWith({text:value})
       } else {
         indexMot = index
       }
@@ -105,6 +136,11 @@ class ConsoleCommandManager {
     */
     this.nettoieConsole()
     this.hm.addToCommandHistory(init_command)
+  }
+
+
+  get currentMot(){
+    return Editor.Selection.current
   }
 
   //########## COMMANDES SUR L'HISTORIQUE DES COMMANDES ############

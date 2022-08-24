@@ -46,3 +46,25 @@ Un fragment est défini par son paragraphe de début (index).
 * On passe à l'affichage de chaque mot du paragraphe. 
 * En affichant ces mots, on regarde s'ils sont **en proximité**. Pour le voir, on consulte la liste des `lemmas` du fragment
   - Cette liste de  `lemmas` 
+
+
+
+## Ajout d’une commande console
+
+* Définir sa lettre/ses lettres (ou utiliser une lettre générique, par exemple “f” pour faire “fx”),
+* programmer la commande dans `js/Console/CommandManager.js`
+  * l’ajouter au switch de la méthode `onSubmit`,
+  * faire sa méthode propre
+* rédiger son aide dans `js/Console/TooltipManager.js`, dans la donnée `DATA_COMMANDS`.
+
+
+
+---
+
+## Sélection
+
+La sélection est un objet de l’éditeur. On l’obtient de n’importe où avec `Editor.Selection`.
+
+### Sélection courante
+
+On l’obtient avec `Editor.Selection.current`. C’est une instance `{Mot < Texel}`.

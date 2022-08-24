@@ -27,6 +27,8 @@ class SelectionManager {
     this.index = this.liste.length - 1
     return this.get()
   }
+  /* Pour répondre à Editor.Selection.current */
+  get current(){return this.last}
 
   get isEmpty(){ return this.liste.length == 0 }
   get isUniq() { return this.liste.length == 1 }

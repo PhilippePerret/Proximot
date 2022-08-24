@@ -11,6 +11,7 @@ class ConsoleClass {
     /*
     | Instanciation des managers
     */
+    // console.log("-> Instantiation des managers de console")
     this.keyManager     = new ConsoleKeyManager(this)
     this.CommandManager = new ConsoleCommandManager(this)
     this.HistoryManager = new ConsoleHistoryManager(this)
@@ -30,8 +31,8 @@ class ConsoleClass {
    */
   observe(){
 
-    this.field.addEventListener('keyup',    this.keyManager.onKeyUp.bind(this))
-    this.field.addEventListener('keydown',  this.keyManager.onKeyDown.bind(this))
+    this.field.addEventListener('keyup',    this.keyManager.onKeyUp.bind(this.keyManager))
+    this.field.addEventListener('keydown',  this.keyManager.onKeyDown.bind(this.keyManager))
   }
 
   /*
