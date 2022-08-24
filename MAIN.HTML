@@ -33,8 +33,9 @@
 
 <section id="section-console">
   <input type="text" id="console">
-  <div id="console-status">
-    MODE : CONS
+  <div id="console-footer">
+    <div id="console-tooltip"></div>
+    <div id="console-status">MODE : CONS</div>
   </div>
 </section>
 
@@ -42,7 +43,11 @@
 <script type="text/javascript" src="js/app/Messages_et_errors.js"></script>
 <script type="text/javascript" src="js/app/App.js"></script>
 <script type="text/javascript" src="js/app/IO.js"></script>
-<script type="text/javascript" src="js/app/Console.js"></script>
+<script type="text/javascript" src="js/app/Console/Console.js" defer></script>
+<script type="text/javascript" src="js/app/Console/CommandManager.js"></script>
+<script type="text/javascript" src="js/app/Console/KeyManager.js"></script>
+<script type="text/javascript" src="js/app/Console/Tooltips.js"></script>
+<script type="text/javascript" src="js/app/Console/HistoryManager.js"></script>
 <script type="text/javascript" src="js/app/Preferences.js"></script>
 <script type="text/javascript" src="js/app/ready.js"></script>
 <script type="text/javascript" src="js/app/Editor.js" defer></script>

@@ -22,26 +22,31 @@ class IO {
    * 
    */
   static saveAll(texte){
-    console.warn("J'apprends à enregistrer un fichier Proximot.")
+    /*
+    |  La pile dans laquelle on va mettre toutes les choses à
+    |  faire.
+    */
     this.stack = []
 
-    /*
-    | On boucle sur tous les éléments pour les mettres dans la pile
-    */
-
+    /* Ouverture du fichier */
     this.addToStack('start', null, null)
 
+    /* État de l'application */
     this.addToStack('app_state', App.state2save(texte), 'simple_object' )
     
+    /* Préférences */
     this.addToStack('preferences', Preferences.getValues(), 'simple_object')
 
-    this.addToStack('console_history', Console.history2save(), 'simple_list')
+    /* Historique des commandes de console */
+    this.addToStack('console_history', Console.HistoryManager.history2save(), 'simple_list')
 
-    // // Enregistrement des proximités
+    /* Enregistrement des proximités */
     this.addToStack('proximities', Proximity.getData2save(), 'list_of_objects')
 
+    /* Le texte et ses modifications */
     this.saveMotsOf(texte)
 
+    /* Fermeture du fichier */
     this.addToStack('end', null, null)
 
     /*

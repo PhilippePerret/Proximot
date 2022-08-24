@@ -17,8 +17,24 @@ section#section-console input#console {
   width: calc(100% - 4em);
   padding: 1em;
 }
-section#section-console div#console-status {
-  position: absolute;
+section#section-console div#console-footer {
+  position: relative;
   width: 100%;
-  bottom: 0;
+  margin-left: 0;
+  margin-right: 0;
+}
+section#section-console div#console-footer div#console-tooltip,
+section#section-console div#console-footer div#console-status
+{
+  display: inline-block;
+  position: absolute;
+}
+section#section-console div#console-footer div#console-tooltip {
+  left: 0;
+  width: 800px;
+  background-color: cyan;
+}
+section#section-console div#console-footer div#console-status {
+  right: 0;
+  text-align: right;
 }
