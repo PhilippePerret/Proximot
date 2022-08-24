@@ -40,12 +40,15 @@ class << self
     text_path = search_text_path
     if File.extname(text_path) == '.pxw'
       # 
-      # Un fichier XML proximot
+      # Un fichier XML proximot à charger (.pxw)
       # 
-      load_proximot_file(text_path)
+      load_proximot_file(
+        'pxpath'        => text_path, 
+        'loading_step'  => 'app_state'
+        )
     else
       # 
-      # Un fichier texte normal
+      # Un fichier texte normal (.txt)
       # 
       tokens = analyze_text_path(text_path)
 
@@ -54,20 +57,40 @@ class << self
   end
 
   ##
-  # Procède à l'envoi du fichier proximot
+  # Procède à l'envoi au client du fichier proximot
+  #
+  # Cela se passe en plusieurs étapes
   # 
-  def load_proximot_file(pxpath)
-    prox = Proximot::Document.new(pxpath)
-    puts "App state : #{prox.app_state.pretty_inspect}"
-    WAA.send(class:'App', method:'onReceiveProximotData', data:{type:'app_state', data:prox.app_state})
-    # puts "Préférences : #{prox.preferences.pretty_inspect}"
-    WAA.send(class:'App', method:'onReceiveProximotData', data:{type:'preferences', data:prox.preferences})
-    # puts "Console history : #{prox.console_history.pretty_inspect}"
-    # puts "Proximités : #{prox.proximities.pretty_inspect}"
-    puts "Fragments : #{prox.fragment(prox.app_state['fragment_index'].to_i)}"
+  # @param data {Hash} Données envoyées par le client. Définit juste
+  #             la prochaine chose à charger
+  def load_proximot_file(data)
+    puts "-> load_proximot_file(data) avec data: #{data.pretty_inspect}"
+    prox = Proximot::Document.new(data['pxpath'])
+    case data['loading_step']
+    when 'app_state'
+      # puts "App state : #{prox.app_state.pretty_inspect}"
+      WAA.send(class:'App', method:'onReceiveProximotData', data: data.merge!(data:prox.app_state))
+    when 'preferences'
+      # puts "Préférences : #{prox.preferences.pretty_inspect}"
+      WAA.send(class:'App', method:'onReceiveProximotData', data: data.merge!(data:prox.preferences))
+    when 'console_history'
+      # puts "Console history : #{prox.console_history.pretty_inspect}"
+      WAA.send(class:'App', method:'onReceiveProximotData', data: data.merge!(data:prox.console_history))
+    when 'proximities'
+      # puts "Proximités : #{prox.proximities.pretty_inspect}"
+      WAA.send(class:'App', method:'onReceiveProximotData', data: data.merge!(data:prox.proximities))
+    when 'fragment_current'
+      # puts "Fragments : #{}"
+      puts "Chargement du fragment ##{data['fragment_index']}".bleu
+      fragment = prox.fragment(data['fragment_index'])
+      WAA.send(class:'App', method:'onReceiveProximotData', data: data.merge!(data:fragment))      
+    else
+      raise "Impossible de trouver l'étape de chargement #{data['loading_step'].inspect}"
+    end
   rescue Exception => e
     puts e.message.rouge
-    puts e.backtrace.join("\n").rouge  
+    puts e.backtrace.join("\n").rouge
+    WAA.send(class:'App', method:'onError', data:{message:e.message, backtrace:e.backtrace})
   ensure
     return true # mettre false pour lancer l'application
   end
