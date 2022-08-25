@@ -1,5 +1,30 @@
 # Proximot - Manuel développeur
 
+
+
+## Fichiers Proximot
+
+Un fichier proximot possède l’extension **`.pxw`** (comme “ProXimot Word”) et, en réalité est **un package** qui contient plusieurs fichiers :
+
+~~~bash
+fichier.pxw
+		|
+		|––– app_state.yml 		# Dernière état de l'application
+		|
+		|––– preferences.yml		# Préférences pour le texte courant
+		|
+		|––– fragments/
+		| 				|
+		|					|––– fragment0/
+		|					|					|––– data.yml          	# données du fragment
+		|					|					|––– mots.csv						# mots du fragment
+		|					|					|––– proximities.csv		# proximités du fragment
+~~~
+
+
+
+
+
 ---
 
 ## Synopsis généraux
