@@ -43,12 +43,25 @@ class TextFragment {
     return new TextFragment(data)
   }
 
+
+
   /**
    * Instanciation d'un fragment de texte
    * 
-   * @param itexte {Texte} Le texte en édition, complet
-   * @param paragraphs  {Array of Paragraphs} Instance des paragraphs
-   *                    relevés dans le texte.
+   * Rappel : le fragment de texte est l'unité principale dans l'app
+   * Proximot.
+   * 
+   * @param data  {Hash} Toutes les données du fragment, qu'elles 
+   *              viennent d'un texte non analysé ou d'un fichier
+   *              Proximot.
+   *              Contient notamment
+   *              - Toujours -
+   *              :paragraphs       Liste (formatée) des paragraphes
+   *              :fragment_index   L'index du fragment dans le texte complet
+   *              :text_path        Chemin d'accès absolu au texte original
+   *              - Dans certain cas -
+   *              :px_path          Chemin d'accès au package .pxw
+   * 
    */
   constructor(data) {
     this.index      = int(data.fragment_index)
@@ -62,6 +75,73 @@ class TextFragment {
 
   // --- Public Methods ---
 
+  /**
+  * Boucle sur tous les paragraphes
+  */
+  forEachParagraph(method){
+    this.paragraphs.forEach(method)
+  }
+  /**
+  * Boucle sur tous les mots du fragment
+  */
+  forEachMot(method){
+    this.mots.forEach(method)
+  }
+
+  /**
+   * Analyse du fragment
+   * -------------------
+   * Cela consiste principalement à définir la propriété @lemmas qui
+   * contient les @{lemma}s du fragment qui permettront de définir
+   * les proximités.
+   * 
+   */
+  analyze(){
+    // console.info("Preferences.get('min_word_length') = ", Preferences.get('min_word_length'), typeof Preferences.get('min_word_length'))
+    delete this._lemma
+    var cursor    = 0
+    var indexMot  = 0
+    const MinWordLength = Pref('min_word_length')
+    this.forEachMot( mot => {
+      mot.relPos = cursor
+      mot.index  = indexMot++
+      /*
+      | Le mot doit être assez long pour être analysé
+      */
+      if ( mot.length >= MinWordLength ) {
+        /*
+        | Le fragment a-t-il déjà un lemma pour ce mot ? Si ce n'est 
+        | pas le cas, on le crée
+        */
+        this.lemmas.get(mot.lemma).addMot(mot)
+      }
+      /*
+      |  Dans tous les cas on déplace le curseur
+      */
+      cursor += mot.length
+    })
+
+    this.isAnalyzedFragment = true // OK
+  }
+
+  /**
+   * Affichage des proximités du fragment
+   * 
+   * Note : il faut avoir analysé le fragment (this.analyze) avant
+   * de pouvoir afficher les proximities
+   */
+  showProximites(){
+    this.isAnalyzedFragment || this.analyze()
+    this.forEachMot( mot => {
+      console.log("[showProximites] Étude du mot ", mot)
+      const css = mot.isTooClose.call(mot, this)
+      if ( css ) {
+        mot.setTooClose(css)
+      } else {
+        mot.unsetTooClose()
+      }
+    })
+  }
 
   /**
   * @return la table des données du fragment (rappel : les données
@@ -87,7 +167,7 @@ class TextFragment {
     |  Boucle sur chaque paragraphe pour en récupérer les données
     |  et les agglutiner.
     */
-    this.paragraphs.forEach( paragraph => {
+    this.forEachParagraph( paragraph => {
       const {paragData, texels, proximities} = paragraph.getData()
       texels      = texels.concat(paragData.texels)
       proximities = proximities.concat(paragData.proximities)
@@ -113,7 +193,7 @@ class TextFragment {
    * des mots.
    */
   display(container){
-    this.paragraphs.forEach( paragraph => {
+    this.forEachParagraph( paragraph => {
       paragraph.fragment = this;
       container.appendChild(paragraph.div)
     })    
@@ -241,51 +321,6 @@ class TextFragment {
     }
   }
 
-  /**
-   * Affichage des proximités du fragment
-   * 
-   */
-  showProximites(){
-    this.mots.forEach( mot => {
-      // console.log("[showProximites] Étude du mot ", mot)
-      const css = mot.isTooClose.call(mot, this)
-      if ( css ) {
-        mot.setTooClose(css)
-      } else {
-        mot.unsetTooClose()
-      }
-    })
-  }
-
-  /**
-   * Analyse du fragment
-   * -------------------
-   * Cela consiste principalement à définir la propriété @lemmas qui
-   * contient les @{lemma}s du fragment qui permettron de définir les
-   * proximité.
-   * 
-   */
-  analyze(){
-    // console.info("Preferences.get('min_word_length') = ", Preferences.get('min_word_length'), typeof Preferences.get('min_word_length'))
-    delete this._lemma
-    var cursor    = 0
-    var indexMot  = 0
-    this.mots.forEach( mot => {
-      mot.relPos = cursor
-      mot.index  = indexMot++
-      /*
-      | Le mot doit être assez long pour être analysé
-      */
-      if ( mot.length >= Preferences.get('min_word_length') ) {
-        /*
-        | Le fragment a-t-il déjà un lemma pour ce mot ? Si ce n'est 
-        | pas le cas, on le crée
-        */
-        this.lemmas.get(mot.lemma).addMot(mot)
-      }
-      cursor += mot.length
-    })
-  }
 
   /**
    * @return le groupe de Lemmas {Lemmas} de lemma +lemma+
@@ -320,7 +355,7 @@ class TextFragment {
   getMots(){
     const ary_mots = []
     this.paragraphs.forEach(parag => {
-      parag.mots.forEach(mot => ary_mots.push(mot))
+      parag.forEachMot(mot => ary_mots.push(mot))
     })
     return ary_mots
   }

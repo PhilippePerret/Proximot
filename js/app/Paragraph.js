@@ -17,6 +17,20 @@ class Paragraph {
   // --- Public Methods ---
 
   /**
+  * Pour faire une boucle sur tous les mots du paragraphe
+  */
+  forEachMot(method){
+    this.mots.forEach(method)
+  }
+
+  /**
+  * Pour faire une boucle sur tous les texels du paragraphe
+  */
+  forEachTexel(method){
+    this.texels.forEach(method)
+  }
+
+  /**
   * @return les données du paragraphe :
   *    {Hash} contenant :
   *       paragData:    données du paragraphe (liste des ID de texels)
@@ -114,7 +128,7 @@ class Paragraph {
         , longueur  = 0
         , ary_mots  = []
         ;
-    this.content.forEach( texel => {
+    this.forEachTexel( texel => {
       if ( texel.isMot ){ 
         nombre += 1
         ary_mots.push(texel)
@@ -125,6 +139,7 @@ class Paragraph {
     this._length = longueur
     this._mcount = nombre
     this._mots   = ary_mots
+    console.log("Mots du paragraphe : ", this._mots)
     return {nbm: nombre, len: longueur, mots:ary_mots} // pour renseignement immédiat
   }
 }

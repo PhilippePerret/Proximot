@@ -5,11 +5,13 @@
 * J'en suis à Editor.display, pour afficher le texte
   - il faudra voir ensuite comment calculer les proximités du nouveau
     texte.
-    
+
 * Poursuivre le chargement d'un fichier Proximot
   - il reste seulement les mots/paragraphes/fragments à définir
   - voir le problème avec les ponctuations
 
+* Pouvoir passer d'un paragraphe à l'autre avec les flèches de sélection
+  + CMD+flèche Haut/bas permet de passer au paragraphe inférieur/supérieur
 * Poursuivre les tooltips de la console
 * Mettre en place le système d'annulation
 * Quand c'est un long texte (non encore travaillé), ne traiter d'abord qu'une portion (de 2000 mots environ, donc de 15000 signes environ)

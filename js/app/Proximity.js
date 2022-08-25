@@ -38,13 +38,20 @@ class Proximity {
   */
 
   constructor(data){
-    if ( data.motAvant || data.motApres ) {
+    if ( data.motAvant ) {
       /*
       |  Instanciation en cours de programme (pas en remontée des
       |  données initiales)
       */
+      const motAvant = data.motAvant
+          , motApres = data.motApres
+      /*
+      |  Les deux mots (avant et après) doivent obligatoirement 
+      |  être définis, être des instances {Mot} et être l'un après
+      |  l'autre.
+      */
       ;(motAvant && motAvant instanceof Mot) || raise(tp(ERRORS.mustBeMot, ['Le mot avant']))
-      ;(motApres && motApres instanceof Mot ) || raise(tp(ERRORS.mustBeMot, ['Le mot après']))
+      ;(motApres && motApres instanceof Mot) || raise(tp(ERRORS.mustBeMot, ['Le mot après']))
       motApres.relPos > motAvant.relPos || raise(ERRORS.proximity.apresMustBeApres)
       this.id       = this.constructor.getNewId()
       this.motAvant = motAvant
