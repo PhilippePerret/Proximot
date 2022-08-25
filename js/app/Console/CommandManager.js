@@ -95,8 +95,12 @@ class ConsoleCommandManager {
       }
       break
 
+    case 'p': // générique pour "préférences"
+      Preferences.set(...value.split(' '))
+      break
+
     case 'r': // remplacement
-      this.curMot.replaceContentWith(value)
+      this.currentMot.replaceContentWith(value)
       break
 
     case 'r*': // remplacer tous
@@ -105,7 +109,7 @@ class ConsoleCommandManager {
     
     case 's': // sélection
       const index = parseInt(value,10)
-      const indexMotCurrent = this.curMot ? this.curMot.index : 0
+      const indexMotCurrent = this.currentMot ? this.currentMot.index : 0
       let indexMot ;
       if ( value.substring(0,1) == '+' ) {
         indexMot = indexMotCurrent + index
@@ -198,7 +202,7 @@ class ConsoleCommandManager {
   /* Déplacer la sélection vers la gauche */
   moveWordToLeft(e){
     e.preventDefault()
-    if ( this.curMot ) { Editor.moveTexel(this.curMot, 'left') }
+    if ( this.currentMot ) { Editor.moveTexel(this.currentMot, 'left') }
     else { erreur("Il faut choisir le mot à déplacer.") }
     return stopEvent(e)
   }
@@ -206,7 +210,7 @@ class ConsoleCommandManager {
   /* Déplacer la sélection vers la droite */
   moveWordToRight(e){
     e.preventDefault()
-    if ( this.curMot ) { Editor.moveTexel(this.curMot, 'right') }
+    if ( this.currentMot ) { Editor.moveTexel(this.currentMot, 'right') }
     else { erreur("Il faut choisir le mot à déplacer.") }
     return stopEvent(e)
   }

@@ -2,10 +2,8 @@
 
 ## En cours
 
-* J'en suis à Editor.display, pour afficher le texte
-  - il faudra voir ensuite comment calculer les proximités du nouveau
-    texte.
-
+* Possibilité de définir la distance minimale de sécurité par la console
+  -> pref
 * Poursuivre le chargement d'un fichier Proximot
   - il reste seulement les mots/paragraphes/fragments à définir
   - voir le problème avec les ponctuations

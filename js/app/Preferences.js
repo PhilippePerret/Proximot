@@ -72,6 +72,32 @@ class Preferences {
   }
 
   /**
+  * Pour définir une préférence
+  * 
+  * @param prefId {String} L'ID de la préférence
+  * @param value  {String} La valeur, toujours en string (sera 
+  *               modifiée suivant le type de la donnée) 
+  */    
+  static set(prefId, value) {
+    const DPref = PREFERENCES_DATA[prefId]
+    try {
+      if ( not(DPref) ) {
+        var keys = Object.keys(PREFERENCES_DATA)
+        const regprefid = new RegExp(prefId)
+        var matchKeys = []
+        keys.forEach(k=> {if(k.match(regprefid)){matchKeys.push(k)}})
+        if ( matchKeys.length == 0 ) matchKeys = keys
+        raise("Préférence inconnue : '" + prefId + "'. Voulez-vous dire " + matchKeys.join("\n") + ' ?')
+      }
+      ;(DPref.valueTest && DPref.valueTest(value)) || raise("La préférence '"+prefId+"' de valeur "+value+" ne passe pas la vérification.")
+    } catch(err) {
+      return erreur(err)
+    }
+
+  }
+
+
+  /**
    * Enregistrement des préférences
    * 
    */
