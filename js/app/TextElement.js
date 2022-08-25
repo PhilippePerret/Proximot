@@ -70,6 +70,23 @@ class TextElement {
     Editor.display(texte.fragment(fragmentIndex))
   }
 
+  static get PROPERTIES(){
+    if (undefined == this._properties){
+      this._properties = {
+          id:         { hname:'Identifiant du text-element', type:'int'}
+        , content:    { hname:'Le contenu textuel'}
+        , ttTag:      { hname:'Type tree-tagger du text-element'}
+        , type:       { hname:'Type Proximot du text-element'}
+        , lemma:      { hname:'Lemme du text-element'}
+        , selected:   { hname:'Sélection du text-element', type:'bool'}
+      }
+    }
+    return this._properties
+  }
+  static get PROPERTIES_KEYS(){return Object.keys(this.PROPERITES)}
+  
+  get PROPERTIES_KEYS(){return this.constructor.PROPERTIES_KEYS}
+
   constructor(data){
     this.id       = this.constructor.getNewId()
     this._content = data[0]
@@ -88,7 +105,12 @@ class TextElement {
     return this._inspect || (this._inspect = `<<<${this.type} #${this.id} ${this.content.substring(0,20)}...>>>`)
   }
 
-  /** @return les données à sauver, pour tout text-element */
+  getData(){
+    return this.PROPERTIES_KEYS.map(prop => {return this[prop]})
+  }
+  setData(){}// utile ?
+
+  /** OBSOLÈTE @return les données à sauver, pour tout text-element */
   get data2save(){
     return {
         id:         this.id

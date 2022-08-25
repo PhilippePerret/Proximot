@@ -20,7 +20,7 @@ $(document).ready(e => {
   | Soit celui contenu dans un fichier .txt du dossier courant, soit
   | un fichier .pxw (Proximot).
   */
-  WAA.send({class:'Proximot::App',method:'load_texte',data:{premier:true}})
+  // WAA.send({class:'Proximot::App',method:'load_texte',data:{premier:true}})
 
   console.log("Ready !")
   

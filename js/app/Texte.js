@@ -67,7 +67,7 @@ class Texte {
    */
   saveAsProximot(newPath){
     console.log("-> saveAsProximot")
-    IO.saveAll(this)
+    IO.saveAll({texte: this, saving_step:'app_state'})
   }
 
   /**

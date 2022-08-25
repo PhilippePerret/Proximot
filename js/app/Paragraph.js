@@ -10,9 +10,46 @@ class Paragraph {
 
   // --- Public Methods ---
 
+  /**
+  * @return les données du paragraphe :
+  *    {Hash} contenant :
+  *       paragData:    données du paragraphe (liste des ID de texels)
+  *       texels:       données des mots (csv)
+  *       proximities:  données des proximités (csv)
+  */  
+  getData(){
+    const proximities = []
+        ;
+
+    const texels = this.texels.map( texel => {
+      texel.proxAvant && proximities.push(texel.proxAvant.getData())
+      texel.proxApres && proximities.push(texel.proxApres.getData())
+      return texel.getData()
+    })
+    texels.unshift(TextElement.PROPERTIES_KEYS)
+    proximities.unshift(Proximity.PROPERTIES_KEYS)
+
+    return {
+        paragData: {
+            index:          this.index
+          , fragmentIndex:  this.fragment.index
+        }
+      , texels: texels
+      , proximities: proximities
+    }
+  }
+
   // @return le DIV (DOM Element) du paragraphe
   // @note: alias de this.obj
   get div(){return this.obj || (this.obj = this.build())}
+
+
+  /**
+  * @return la liste des text-elements du paragraph, dans l'ordre
+  */
+  get texels(){
+    return this.content
+  }
 
   /**
    * @return la liste des mots (et uniquement les mots) du 

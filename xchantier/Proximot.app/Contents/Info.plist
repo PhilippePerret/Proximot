@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>6.0</string>
+    <key>CFBundleName</key>
+    <string>Proximot</string>
+    <key>CFBundleExecutable</key>
+    <string>proximot</string>
+    <key>CFBundleIdentifier</key>
+    <string>phil.app.proximot</string>
+    <key>CFBundleVersion</key>
+    <string>0.1.0</string>
+    <key>CFBundleGetInfoString</key>
+    <string>WebApp pour travailler les proximités des mots dans un texte.</string>
+    <key>CFBundleShortVersionString</key>
+    <string>0.1</string>
+    <key>CFBundleIconFile</key>
+    <string>Proximot</string>
+    <key>CFBundleDocumentTypes</key>
+    <array>
+      <dict>
+        <key>CFBundleTypeExtensions</key>
+        <array>
+          <string>pxw</string>
+        </array>
+        <key>CFBundleTypeName</key>
+        <string>Document Proximot</string>
+        <key>CFBundleTypeOSTypes</key>
+        <array>
+          <string>pxw</string>
+        </array>
+        <key>CFBundleTypeRole</key>
+        <string>Editor</string>
+        <key>LSHandlerRank</key>
+        <string>Owner</string>
+        <key>LSTypeIsPackage</key>
+        <string>YES</string>
+        <key>NSPersistentStoreTypeKey</key>
+        <string>Binary</string>
+        <key>CFBundleTypeIconFile</key>
+        <string>ProximotDocument</string>
+      </dict>
+    </array>
+  </dict>
+</plist>

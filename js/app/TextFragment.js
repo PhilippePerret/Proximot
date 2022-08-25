@@ -31,6 +31,48 @@ class TextFragment {
 
 
   // --- Public Methods ---
+
+
+  /**
+  * @return la table des données du fragment (rappel : les données
+  * du texte proximisé sont enregistrées par fragment d'environ 3000
+  * mots)
+  * 
+  * Les données consistent en :
+  * - un fichier data.yml contenant les informations sur le fragment
+  *   et notamment les paragraphes avec la liste des identifiants de
+  *   texel
+  * - un fichier texels.csv contenant tous les mots et autres
+  *   text-elements
+  * - un fichier proximities.csv contenant les données des proximités
+  *   des mots du fragment.
+  */
+  getData() {
+    const texels = []
+        , proximities = []
+        , paragraphs = []
+        ;
+
+    /*
+    |  Boucle sur chaque paragraphe pour en récupérer les données
+    |  et les agglutiner.
+    */
+    this.paragraphs.forEach( paragraph => {
+      const {paragData, texels, proximities} = paragraph.getData()
+      texels      = texels.concat(paragData.texels)
+      proximities = proximities.concat(paragData.proximities)
+      paragraphs << paragData
+    })
+
+    return {
+        data: {
+            fragmentIndex:  this.index
+          , paragraphs:     paragraphs
+        }
+      , texels: texels
+      , proximities: proximities
+    }
+  }
   
   /**
    * Affichage du fragment dans le conteneur +container+

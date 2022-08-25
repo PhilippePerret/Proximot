@@ -1,22 +1,8 @@
 'use strict'
 class Proximity {
 
-  static getById(id){ return this.table[id] }
-
-  /**
-   * @retourne toutes les données Proximités à enregistrer
-   * 
-   */
-  static getData(){
-    if ( undefined == this.items ) return null;
-    return this.items.map( proxi => {
-      return proxi.data2save
-    })
-  }
-
-  static setData(data){
-    console.log("Données proximité à dispacher :", data)
-    data.forEach( dproximity => new Proximity(dproximity) )
+  static getById(id){ 
+    return this.table[id] 
   }
 
   static getNewId(){
@@ -32,6 +18,20 @@ class Proximity {
     this.items.push(proxi)
     Object.assign(this.table, {[proxi.id]: proxi})
   }
+
+  static get PROPERTIES(){
+    if (undefined == this._properties){
+      this._properties = {
+          id: {hname:'identifiant'}
+        , state:{hname:'Statut de la proximitié'}
+        , motAvantId: {hname:'ID du mot gauche'}
+        , motApresId: {hname:'ID du mot droit'}
+        , distance: {hname:'Distance entre les deux mots (en signes)'}
+        , eloignement: {hname:'Nom humain de l’éloignement (near, mid ou far)'}
+      }
+    }; return this._properties;
+  }
+  static get PROPERTIES_KEYS(){return Object.keys(this.PROPERTIES)}
 
   /*
   | ################     INSTANCE     #################
@@ -60,6 +60,16 @@ class Proximity {
     this.constructor.add(this)
   }
 
+  getData(){
+    return this.PROPERTIES_KEYS.map( prop => { return this[prop] })
+  }
+
+  get PROPERTIES_KEYS(){ return Object.keys(this.PROPERTIES) }
+  get PROPERTIES(){ return this.constructor.PROPERTIES }
+
+  setData(){} // utile ?
+
+  // OBSOLÈTE (ancienne méthode pour xml)
   get data2save(){
     return {
         id:           this.id

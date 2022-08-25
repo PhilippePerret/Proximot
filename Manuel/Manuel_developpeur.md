@@ -9,15 +9,17 @@ Un fichier proximot possède l’extension **`.pxw`** (comme “ProXimot Word”
 ~~~bash
 fichier.pxw
 		|
-		|––– app_state.yml 		# Dernière état de l'application
+		|––– app_state.yml 				# Dernière état de l'application
 		|
-		|––– preferences.yml		# Préférences pour le texte courant
+		|––– preferences.yml			# Préférences pour le texte courant
+		|
+		|––– console_history.yml 	# Historique des commandes en console.
 		|
 		|––– fragments/
 		| 				|
-		|					|––– fragment0/
+		|					|––– fragment-0/
 		|					|					|––– data.yml          	# données du fragment
-		|					|					|––– mots.csv						# mots du fragment
+		|					|					|––– texels.csv  				# text-elements du fragment
 		|					|					|––– proximities.csv		# proximités du fragment
 ~~~
 

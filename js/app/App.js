@@ -62,7 +62,8 @@ class App {
    * fichier.
    * 
    */
-  static state2save(texte){
+  static getState(){
+    const texte = Texte.current
     return {
         created_at: this.State.created_at || hdateFor(new Date())
       , last_open: hdateFor(this.lastOpenDate)
