@@ -14,18 +14,48 @@
 class TextFragment {
 
   /**
+  * Méthode principale qui reçoit les données du fragment et retourne
+  * une nouvelle instance TextFrament pour le fragment courant (pour
+  * le moment c'est le fragment courant, en tout cas).
+  * 
+  * Noter que cette méthode sert autant pour un texte non encore ana-
+  * lysé que pour un texte Proximot.
+  * 
+  */
+  static createFromData(data){
+    // console.log("Je dois créer le fragment à partir de : ", data)
+    /*
+    |  Transformer les données paragraphes en instances {Paragraph}
+    |  ainsi que les text-elements en instances {TextElement}
+    */
+    var paragIndex = 0
+    data.paragraphs = data.paragraphs.map(dparag => {
+      return new Paragraph(paragIndex++, dparag)
+    })
+    /*
+    |  Transformer les données proximités en proximités, si c'est
+    |  un texte déjà analysé. Sinon ?
+    */
+    // TODO
+    /*
+    |  On peut instancier le fragment et le retourner
+    */
+    return new TextFragment(data)
+  }
+
+  /**
    * Instanciation d'un fragment de texte
    * 
    * @param itexte {Texte} Le texte en édition, complet
-   * @param paragIndex  {Number} Index 0-start du premier paragraphe
-   *                    du fragment (index dans le texte complet)
    * @param paragraphs  {Array of Paragraphs} Instance des paragraphs
    *                    relevés dans le texte.
    */
-  constructor(itexte, paragIndex, paragraphs) {
-    this.itexte     = itexte
-    this.pIndex     = paragIndex
-    this.paragraphs = paragraphs
+  constructor(data) {
+    this.index      = int(data.fragment_index)
+    this.lexicon    = data.lexicon
+    this.text_path  = data.text_path
+    this.px_path    = data.px_path // undefined pour un texte
+    this.paragraphs = data.paragraphs
     this.Klass      = 'TextFragment'
   }
 

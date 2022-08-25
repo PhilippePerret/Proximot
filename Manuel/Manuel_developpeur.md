@@ -25,7 +25,42 @@ fichier.pxw
 
 
 
+---
 
+## Fragment
+
+Le cœur de l’application, c’est le fragment de texte (**`TextFragment`** en javascript). C’est lui qui permet d’analyser tout un texte. Mais le texte est dépendant de lui et non pas l’inverse.
+
+Ceci s’explique parce que le texte n’existe pas en tant que tel dans l’application. Alors que le fragment si, puisque c’est lui qui est affiché.
+
+Il existe (pour le moment) deux types de fragment, afin de permettre d’analyser et travailler le texte de façon fluide :
+
+* le fragment réel,
+* le fragment intermédiaire. Entre deux fragments réels se trouve un fragment intermédiaire qui permet de travailler les jointures entre fragments réels.
+
+Ceci s’explique car le fragment est composé ainsi :
+
+~~~bash
+# Composition des fragments (sauf le premier et le dernier)
+
+	2 pages        6 pages affichables        2 pages
+	cachées																		cachées
+|__________||___________________________||___________|
+
+														2 pages            6 pages
+Fragment intermédiaire   |__________||___________________________||___________|
+
+~~~
+
+
+
+Quand on atteint la dernière page d’un fragment (la 6e), l’application charge discrètement le fragment suivant. Dès qu’on passe à la 9e page (en comptant les cachées), l’application instancie le fragment intermédiaire entre le fragment précédente et le fragment suivant.
+
+#### Les pages cachées
+
+Les *pages cachées* permettent simplement de bien gérer les proximités. Si on commençait à la première page, on ne saurait pas si le premier mot est en proximité gauche (arrière) avec un mot précédent du texte au moment où on travaille le fragment. Pareil pour le dernier.
+
+Bien sûr, cela n’est pas valable pour les premières et dernières pages.
 
 ---
 

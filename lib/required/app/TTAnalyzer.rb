@@ -47,17 +47,71 @@ module Proximot
 class TTAnalyzer
   WS = Regexp.new('[[:blank:]]+')
   private_constant :WS
-  # TREE_TAGGER_BIN = File.join('/Applications','Tree-tagger','bin','tree-tagger')
-  # TT_PARAM_FILE = File.join('/Applications','Tree-tagger','lib','french.par') 
   TREE_TAGGER_FOLDER = File.join(LIB_FOLDER,'third-party','tree-tagger')
   TREE_TAGGER_BIN = File.join(TREE_TAGGER_FOLDER,'bin','tree-tagger')
   TT_PARAM_FILE   = File.join(TREE_TAGGER_FOLDER,'french.par')
+  private_constant :TT_PARAM_FILE
   TT_COMMAND = "#{TREE_TAGGER_BIN} #{TT_PARAM_FILE}"
-
   private_constant :TT_COMMAND
 
-  def analyze(text, options = nil)
-    tokenize(text, options)
+  ##
+  # *- public -*
+  # 
+  # = main =
+  # 
+  # Méthode principale appelée pour traiter le texte +text+
+  # 
+  # Noter qu'il peut s'agir seulement d'un fragment du texte s'il a
+  # été découpé.
+  #
+  # @param text   {String} Le texte à analyser
+  # @param fragment_data {Hash} Les données du fragment.
+  #           :lexicon    Le fichier lexicon.lex optionnel
+  #           :fragment_index
+  #           :fragment_offset  Décalage du premier caractère dans le
+  #                             texte original
+  #           :fragment_length  Longueur du fragment. Si le texte est
+  #                             court, correspond à la longueur du
+  #                             texte lui-même.
+  # 
+  # @return data_fragment {Hash} Les données pour le fragment
+  # 
+  def analyzeAsFragment(text, fragment_data)
+    tokens = tokenize(text, fragment_data)
+    # puts "tokens :\n#{tokens}"
+    #
+    # On les distribue en paragraphes
+    # 
+    paragraphs = []   # pour mettre tous les paragraphes
+    paragraph  = []   # pour mettre les tokens du paragraphe courant
+    last_sujet = nil  # pour éviter les retours chariot multiples
+    tokens.each do |trinome|
+      sujet = trinome.first
+      next if sujet == 'BREAK' && last_sujet == 'BREAK'
+      if sujet == 'BREAK'
+        # 
+        # Nouveau paragraphe
+        # 
+        paragraphs << paragraph unless paragraph.empty?
+        paragraph = []
+      else
+        paragraph << trinome
+      end
+      last_sujet = sujet
+    end
+    #
+    # Le dernier paragraphe
+    # 
+    paragraphs << paragraph unless paragraph.empty?
+    #
+    # On finit les données fragment
+    fragment_data.merge!(
+      paragraphs:       paragraphs,
+      paragraphs_count: paragraphs.count,
+      tokens_count:     tokens.count
+    )
+
+    return fragment_data
   end
 
   ##
@@ -91,7 +145,7 @@ class TTAnalyzer
     # 
     # On décompose le string retourné
     # 
-    premiere_liste = res.split("\n").map do |line|
+    premiere_liste = res.split(/\n+/).map do |line|
       sujet, type, lemme = line.split("\t")
       next [sujet,type,lemme] unless lemme == '<unknown>'
       #
@@ -102,7 +156,7 @@ class TTAnalyzer
       # Pour ne pas traiter tous ces lemmes inconnus séparément (ça
       # prend trop de temps), on les rassemble dans une unique liste
       # traitée d'un coup. Et en attendant, on met une marque indicée
-      # dans le résultat actuel
+      # dans le résultat actuel (un 'nil')
       # 
       indice_current_unknown += 1
       to_retreate << sujet
@@ -147,6 +201,9 @@ class TTAnalyzer
     return liste_finale
   end
 
+  ##
+  # Analyse du fragment avec tree-tagger
+  # 
   def tree_taggerize(texte_pret, options = nil)
     options ||= {}
     opts = ['-lemma','-token']
@@ -155,8 +212,8 @@ class TTAnalyzer
       opts << "-lex \"#{options[:lexicon]}\""
     end
     # puts "options : #{opts.join(' ')}"
-    puts "\n\n\n---Texte prêt : #{'<'*20}\n#{texte_pret}\n#{'>'*40}"
-    `echo "#{texte_pret}" | #{TT_COMMAND} #{opts.join(' ')} 2>&1`
+    # puts "\n\n\n---Texte prêt : #{'<'*20}\n#{texte_pret}\n#{'>'*40}"
+    `echo "#{texte_pret}" | #{TT_COMMAND} #{opts.join(' ')}`
   end
 
 

@@ -2,10 +2,16 @@
 
 class Paragraph {
 
-  constructor(index, texelList){
-    this.content = texelList
-    this.Klass   = 'Paragraph'
+  constructor(index, texels){
     this.index   = index
+    this.Klass   = 'Paragraph'
+    /*
+    |  Les données fournies à l'instanciation sont "brutes", ce sont
+    |  juste les trinomes ou les données des mots
+    */
+    this.content = texels.map( dtexel => { 
+      return TextElement.createFromData(dtexel)
+    })
   }
 
   // --- Public Methods ---

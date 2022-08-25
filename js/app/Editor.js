@@ -20,7 +20,7 @@ class EditorClass {
     /*
     | Et enfin on marque les proximités
     */
-    this.fragment.showProximites()
+    // this.fragment.showProximites()
   }
 
  /**

@@ -9,7 +9,8 @@ class App {
   * App.load_proximot_file
   */
   static onReceiveProximotData(data){
-    // console.log("Je reçois ces données pour le chargement de '%s'", data.loading_step, data)
+    console.log("[onReceiveProximotData] Je reçois ces données pour le chargement de '%s'", data.loading_step, data)
+    return
     var next_step, extra_data ;
     switch(data.loading_step){
     case 'app_state':
@@ -22,15 +23,11 @@ class App {
       extra_data  = {fragment_index: parseInt(this.State.fragmentIndex || 0, 10)}
       break
     case 'fragment_current':
-      TextElement.setData(data /* note : tout +data+ ici */)
+      TextFragment.setData(data /* note : tout +data+ ici */)
       next_step = 'console_history'
       break
     case 'console_history':
       Console.HistoryManager.setHistory(data.data)
-      next_step = 'proximities'
-      break
-    case 'proximities':
-      Proximity.setData(data.data)
       next_step = null
       break
     }
@@ -51,10 +48,11 @@ class App {
    * Dans tous les cas, on procède à l'affichage du texte.
    * 
    */
-  static onReceiveText(data){
-    this.lastOpenDate = new Date()
-    const texte = TextUtils.makeTexteFromTokens(data.tokens)
-    Editor.display(texte.firstFragment)
+  static onReceiveFromText(data){
+    // console.log("[onReceiveText] Je reçois ces données texte : ", data)
+    const fragment = TextFragment.createFromData(data)
+    console.log("fragment instancié : ",fragment)
+    Editor.display(fragment)
   }
 
   /**

@@ -11,7 +11,6 @@ class ConsoleKeyManager {
 
   constructor(uiconsole){
     this.uiconsole = uiconsole // la console
-    console.log("this.uiconsole", this.uiconsole)
   }
 
   /**

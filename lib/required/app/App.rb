@@ -17,88 +17,87 @@ class << self
     end
   end
 
-  def test
-    pxpath = File.join(CURRENT_FOLDER,'essai_proximot.pxw')
-    prox = Proximot::Document.new(pxpath)
-    puts "App state : #{prox.app_state.pretty_inspect}"
-    # puts "Préférences : #{prox.preferences.pretty_inspect}"
-    # puts "Console history : #{prox.console_history.pretty_inspect}"
-    # puts "Proximités : #{prox.proximities.pretty_inspect}"
-    puts "Fragments : #{prox.fragment(prox.app_state['fragment_index'].to_i)}"
-
-  rescue Exception => e
-    puts e.message.rouge
-    puts e.backtrace.join("\n").rouge  
-  ensure
-    return true # mettre false pour lancer l'application
-  end
-
   ##
   # Pour charger le texte à analyser/travailler
   # 
-  def load_texte(data)
+  def load_texte
     text_path = search_text_path
     if File.extname(text_path) == '.pxw'
       # 
       # Un fichier XML proximot à charger (.pxw)
       # 
-      load_proximot_file(
-        'pxpath'        => text_path, 
-        'loading_step'  => 'app_state'
-        )
+      load_data = {'pxpath'=>text_path, 'loading_step'=>'app_state'}
+      IO.load_from_current(load_data)
+
     else
       # 
       # Un fichier texte normal (.txt)
       # 
-      tokens = analyze_text_path(text_path)
+      frag_data = analyze_text_path(text_path)
 
-      WAA.send(class:'App',method:'onReceiveText',data:{tokens:tokens})
+      WAA.send(class:'App',method:'onReceiveFromText',data:frag_data)
     end
   end
 
   ##
-  # Procède à l'envoi au client du fichier proximot
-  #
-  # Cela se passe en plusieurs étapes
+  # Procède à l'analyse du texte contenu dans le fichier de chemin
+  # +path+
   # 
-  # @param data {Hash} Données envoyées par le client. Définit juste
-  #             la prochaine chose à charger
-  def load_proximot_file(data)
-    puts "-> load_proximot_file(data) avec data: #{data.pretty_inspect}"
-    prox = Proximot::Document.new(data['pxpath'])
-    case data['loading_step']
-    when 'app_state'
-      # puts "App state : #{prox.app_state.pretty_inspect}"
-      WAA.send(class:'App', method:'onReceiveProximotData', data: data.merge!(data:prox.app_state))
-    when 'preferences'
-      # puts "Préférences : #{prox.preferences.pretty_inspect}"
-      WAA.send(class:'App', method:'onReceiveProximotData', data: data.merge!(data:prox.preferences))
-    when 'console_history'
-      # puts "Console history : #{prox.console_history.pretty_inspect}"
-      WAA.send(class:'App', method:'onReceiveProximotData', data: data.merge!(data:prox.console_history))
-    when 'proximities'
-      # puts "Proximités : #{prox.proximities.pretty_inspect}"
-      WAA.send(class:'App', method:'onReceiveProximotData', data: data.merge!(data:prox.proximities))
-    when 'fragment_current'
-      # puts "Fragments : #{}"
-      puts "Chargement du fragment ##{data['fragment_index']}".bleu
-      fragment = prox.fragment(data['fragment_index'])
-      puts "Fragment ##{data['fragment_index']} : #{fragment.pretty_inspect}"
-      WAA.send(class:'App', method:'onReceiveProximotData', data: data.merge!(data:fragment))      
-    else
-      raise "Impossible de trouver l'étape de chargement #{data['loading_step'].inspect}"
+  # @return L'analyse
+  def analyze_text_path(path)
+    params = {}
+    
+    #
+    # Dossier du texte
+    # 
+    text_folder = File.dirname(path)
+
+    # 
+    # Existe-t-il un fichier lexicon (mots propres ?)
+    # 
+    if File.exist?(File.join(text_folder,'lexicon.lex'))
+      params.merge!(lexicon: File.join(text_folder,'lexicon.lex'))
     end
-  rescue Exception => e
-    puts e.message.rouge
-    puts e.backtrace.join("\n").rouge
-    WAA.send(class:'App', method:'onError', data:{message:"[App.rb#load_proximot_file] #{e.message}", backtrace:e.backtrace})
-  ensure
-    return true # mettre false pour lancer l'application
+
+    # 
+    # Le texte doit-il être fragmenté ?
+    # 
+    if File.size(path) > 20000 # environ 10 pages
+      text_fragment = File.read(path, 20000)
+      last_space = text_fragment.rindex(/[\. \n]/)
+      puts "last_space = #{last_space}"
+      text_fragment = text_fragment[0..last_space]
+      # puts "\n\n#{'<>'*40}\ntext_fragment =\n#{text_fragment}\n#{'<>'*40}"
+    else
+      text_fragment = File.read(path)
+    end
+    #
+    # Les données du fragment
+    # 
+    params.merge!(
+      text_path:        path,
+      px_path:          nil,
+      fragment_index:   0,
+      fragment_offset:  0,
+      fragment_length:  text_fragment.length
+    )
+    # 
+    # On procède à l'analyse et on retourne le fragment analysé,
+    # sous forme de données fragment telles que Proximot pourra les
+    # analyser côté client.
+    # 
+    TTAnalyzer.new.analyzeAsFragment(text_fragment, params)
   end
+
+
+
 
   ##
   # Procède à l'analyse du texte +text+ (en général pas très long, 
   # environ 500 mots dont 3000 caractères)
+  # C'est la méthode appelée côté client pour analyser les modifica-
+  # tions apportées au passage courant, par exemple quand un mot est 
+  # remplacé par un autre.
   #
   # @param data {Hash}
   #             Donnée envoyée par le client, contenant la clé :text
@@ -126,31 +125,9 @@ class << self
   end
 
   ##
-  # Procède à l'analyse du texte contenu dans le fichier de chemin
-  # +path+
-  # 
-  # @return L'analyse
-  def analyze_text_path(path)
-    options = {}
-    #
-    # Dossier du texte
-    # 
-    text_folder = File.dirname(path)
-    # 
-    # Existe-t-il un fichier lexicon (mots propres ?)
-    # 
-    if File.exist?(File.join(text_folder,'lexicon.lex'))
-      options.merge!(lexicon: File.join(text_folder,'lexicon.lex'))
-    end
-    # 
-    # On procède à l'analyse
-    # 
-    analyzer = TTAnalyzer.new
-    analyzer.analyze(File.read(path), options)
-  end
-
-  ##
   # Retourne le chemin du texte à utiliser
+  # On le cherche dans le dossier dans lequel a été ouvert le 
+  # Terminal
   # 
   def search_text_path
     if ARGV[0] && File.exist?(ARGV[0])
@@ -165,8 +142,10 @@ class << self
       return File.join(CURRENT_FOLDER,ARGV[0])
     elsif (paths_pxw  = Dir["#{CURRENT_FOLDER}/*.pxw"]).count > 0
       # 
-      # Pour le moment on prend le premier fichier pxw
+      # Pour le moment on prend le premier fichier pxw (après on 
+      # pourra proposer le choix TODO)
       # 
+      Object.const_set('CURRENT_FOLDER', paths_pxw.first)
       return paths_pxw.first
     elsif (paths_text = Dir["#{CURRENT_FOLDER}/*.{text,txt}"]).count == 1
       # 
@@ -188,23 +167,21 @@ class << self
     end
   end
 
-  ##
-  # Pour effectuer un check de WAA
-  def check(data)
-    puts "J'ai bien reçu le message : #{data['msg']}"
-    # `cd /Applications/Tree-tagger/;bin/tree-tagger ../lib/french.par -lemma ../essai.txt ../essai-tagged.txt`
-    # res = File.read('/Application/Tree-tagger/essai-tagged.txt')
-    # --- FONCTIONNE ---
-    # res = `cd /Applications/Tree-tagger/;bin/tree-tagger ./lib/french.par -lemma ./essai.txt`
-    # puts "res = #{res.inspect}"
-    # res = res.gsub(/\t/,':::').split("\\\\n")
-    # --- /FONCTIONNE ---
+  def test
+    pxpath = File.join(CURRENT_FOLDER,'essai_proximot.pxw')
+    prox = Proximot::Document.new(pxpath)
+    puts "App state : #{prox.app_state.pretty_inspect}"
+    # puts "Préférences : #{prox.preferences.pretty_inspect}"
+    # puts "Console history : #{prox.console_history.pretty_inspect}"
+    # puts "Proximités : #{prox.proximities.pretty_inspect}"
+    puts "Fragments : #{prox.fragment(prox.app_state['fragment_index'].to_i)}"
 
-    res = `cd /Applications/Tree-tagger/; echo "#{data['text']}" | bin/tree-tagger ./lib/french.par -lemma`
-    res = res.gsub(/\t/,':::')
-    WAA.send(class:'TextUtils',method:'receiveLemma', data:{lemma:res})
+  rescue Exception => e
+    puts e.message.rouge
+    puts e.backtrace.join("\n").rouge  
+  ensure
+    return true # mettre false pour lancer l'application
   end
-
 
 end #/<< self
 end #/class App

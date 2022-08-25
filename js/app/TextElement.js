@@ -29,56 +29,66 @@ class TextElement {
     return this.lastId ++ 
   }
 
-  /**
-  * - main -
-  * 
-  * Méthode principale qui reçoit toutes les données mots du fichier
-  * Proximot (remontées par le serveur) et les dispatche.
-  * 
-  */
-  static setData(data){
-    console.log("Data à dispatcher : ", data)
-    const dataFragment = data.data
-    // this.reset() // SURTOUT PAS (on perdrait les fragments chargés avant)
-    var texel
-    const paragraphs = [];
-    dataFragment.paragraphs.forEach( dparag => {
-      const parag_index   = int(dparag.index)
-      const parag_texels  = dparag.mots.map( dtexel => {
-        switch(dtexel.type){
-        case 'mot': case '':  texel = new Mot(dtexel);         break;
-        case 'nom-propre':    texel = new NomPropre(dtexel);   break;
-        case 'ponct':         texel = new Ponctuation(dtexel); break;
-        default:
-          raise("Je ne connais pas le type ", dtexel.type)
-        }
-        if ( texel.id > this.lastId ) this.lastId = texel.id
-        return texel
+  static createFromData(data){
+    const instance_data = {}
+    if ( data.length == 3 ) {
+      /*
+      |  Données venant d'un texte non analysé
+      */
+      const [content, ttTag, lemma] = data
+      instance_data._content  = content
+      instance_data.ttTag     = ttTag
+      instance_data.lemma     = lemma
+      instance_data.type      = this.getTypeFromTTaggerType(ttTag)
+    } else {
+      /*
+      |  Données Proximot complète
+      */
+      this.PROPERTIES.forEach( dproperty => {
+        instance_data[dproperty.name] = data[dproperty.index]
       })
-      const paragraph = new Paragraph(parag_index, parag_texels)
-      paragraphs.push(paragraph)
-    })
-    /*
-    |  On peut instancier le texte courant
-    */
+    }
 
-    const firstParagraph  = int(dataFragment.id.split('-')[0])
-        , texte           = Texte.current || (new Texte(paragraphs))
-        , fragmentIndex   = dataFragment.fragment_index
-        , fragment        = new TextFragment(texte, firstParagraph, paragraphs)
-    texte.setFragment(fragmentIndex, fragment)
-    Editor.display(texte.fragment(fragmentIndex))
+    /*
+    |  En fonction du type, on choisit la classe fille.
+    */
+    switch(instance_data.type){
+      case 'mot':         return new Mot(instance_data)
+      case 'ponct':       return new Ponctuation(instance_data)
+      case 'nom-propre':  return new NomPropre(instance_data)
+      default:            return new TextElement(instance_data)
+    }
+  }
+
+  /**
+  * Retourne le type Proximot ('mot', 'ponct', etc.) en fonction du
+  * tag tree-tagger ('MOT', 'NAME', 'PUN', etc.)
+  */
+  static getTypeFromTTaggerType(ttTag){
+    const [mainTag, subTag] = ttTag.split(':')
+    switch(mainTag){
+    case 'PUN': case 'SENT':  
+      return 'ponct';
+    case 'NAM':
+      return 'nom-propre';
+    default:      
+      return 'mot';
+    }
   }
 
   static get PROPERTIES(){
     if (undefined == this._properties){
+      /*
+      |  :index correspond à l'index de la donnée dans le fichier CSV
+      |  où sont enregistrés les mots.
+      */
       this._properties = {
-          id:         { hname:'Identifiant du text-element', type:'int'}
-        , content:    { hname:'Le contenu textuel'}
-        , ttTag:      { hname:'Type tree-tagger du text-element'}
-        , type:       { hname:'Type Proximot du text-element'}
-        , lemma:      { hname:'Lemme du text-element'}
-        , selected:   { hname:'Sélection du text-element', type:'bool'}
+          id:         { name:'id'       , index:0, hname:'Identifiant du text-element', type:'int'}
+        , content:    { name:'_content' , index:1, hname:'Le contenu textuel'}
+        , ttTag:      { name:'ttTag'    , index:2, hname:'Type tree-tagger du text-element'}
+        , type:       { name:'type'     , index:3, hname:'Type Proximot du text-element'}
+        , lemma:      { name:'lemma'    , index:4, hname:'Lemme du text-element'}
+        , selected:   { name:'selected' , index:5, hname:'Sélection du text-element', type:'bool'}
       }
     }
     return this._properties
@@ -88,13 +98,18 @@ class TextElement {
   get PROPERTIES_KEYS(){return this.constructor.PROPERTIES_KEYS}
 
   constructor(data){
-    this.id       = this.constructor.getNewId()
-    this._content = data[0]
-    // console.info("this.content = ", this.content)
-    this.ttTag    = data[1] // NAM, VER:pres, etc.
-    this.lemma    = data[2]
+    this.id = data.id || this.constructor.getNewId()
+    this.dispatch(data)
     this.constructor.add(this)
   }
+
+  /**
+  * Pour dispatcher les données dans l'instance, à l'instanciation
+  */
+  dispatch(data){
+    for(var prop in data){ this[prop] = data[prop]}
+  }
+
 
   // --- Public Methods ---
 
@@ -110,16 +125,16 @@ class TextElement {
   }
   setData(){}// utile ?
 
-  /** OBSOLÈTE @return les données à sauver, pour tout text-element */
-  get data2save(){
-    return {
-        id:         this.id
-      , content:    this.content
-      , ttTag:      this.ttTag
-      , lemma:      this.lemma
-      , selected:   this.isSelected
-    }
-  }
+  // /** OBSOLÈTE @return les données à sauver, pour tout text-element */
+  // get data2save(){
+  //   return {
+  //       id:         this.id
+  //     , content:    this.content
+  //     , ttTag:      this.ttTag
+  //     , lemma:      this.lemma
+  //     , selected:   this.isSelected
+  //   }
+  // }
 
   get span(){
     return this.obj

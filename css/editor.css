@@ -23,14 +23,15 @@
 
 /* Les paragraphes */
 #editor #content div.paragraph {
-  text-indent: 1em;
+  /*text-indent: 1em; SINON , AJOUTE ÇA À TOUS LES SPANS… VOIR POURQUOI */
 }
 
 /* Tous les éléments textuels */
 #editor #content .texel {
   position: relative;
-  z-index: 1;
+  display: inline-block; /* sinon, ne passent pas à la ligne */
   margin-left: 8pt;
+  z-index: 1;
 }
 #editor #content .texel.ponct:not(.ponct-is) {
   margin-left: 0pt;

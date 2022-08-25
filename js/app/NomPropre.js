@@ -48,9 +48,6 @@ class NomPropre extends TextElement {
     this.proxTooltip && this.proxTooltip.remove()
   }
 
-  /** @return le Lemma du mot */
-  get lemma(){return this._lemma||(this._lemma = this.getLemma())}
-
   // --- /Public Methods ---
 
   // --- Listener Methods ---

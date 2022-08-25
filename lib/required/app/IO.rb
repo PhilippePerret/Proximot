@@ -8,44 +8,7 @@
 
 =end
 module Proximot
-class Document
-  attr_reader :path
-  def initialize(path)
-    @path = path
-  end
-
-  def app_state
-    IO.load_from_current(path, 'app_state')
-  end
-
-  def preferences
-    IO.load_from_current(path, 'preferences')
-  end
-
-  def console_history
-    IO.load_from_current(path, 'console_history').values
-  end
-
-  def proximities
-    IO.load_from_current(path, 'proximities/proximity')['proximities']
-  end
-
-  def fragment(fragIndex)
-    IO.read_fragment(path, fragIndex)
-  end
-end
-
 class IO
-
-  TYPE_END_ELEMENT  = LibXML::XML::Reader::TYPE_END_ELEMENT
-  private_constant :TYPE_END_ELEMENT
-  TYPE_TEXT         = LibXML::XML::Reader::TYPE_TEXT
-  private_constant :TYPE_TEXT
-  TYPE_END_ELEMENT  = LibXML::XML::Reader::TYPE_END_ELEMENT
-  BAD_TYPES = [TYPE_END_ELEMENT, TYPE_TEXT, TYPE_END_ELEMENT]
-  private_constant :BAD_TYPES
-
-
 class << self
 
   ##
@@ -53,8 +16,16 @@ class << self
   # 
   # @param px_path {String} Chemin d'accès au fichier
   #
-  def load_from_current(px_path, xpath, idx = nil)
-
+  def load_from_current(data)
+    puts "\n\n-> load_from_current(data) avec data: #{data.pretty_inspect}"
+    data = IO.send("load_#{data['loading_step']}".to_sym)
+    WAA.send(class:'App', method:'onReceiveProximotData', data: data.merge!(data:data))
+  rescue Exception => e
+    puts e.message.rouge
+    puts e.backtrace.join("\n").rouge
+    WAA.send(class:'App', method:'onError', data:{message:"[App.rb#load_proximot_file] #{e.message}", backtrace:e.backtrace})
+  ensure
+    return true # mettre false pour lancer l'application
   end
 
   ##
