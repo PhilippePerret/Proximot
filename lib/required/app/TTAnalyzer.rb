@@ -147,6 +147,7 @@ class TTAnalyzer
     # 
     premiere_liste = res.split(/\n+/).map do |line|
       sujet, type, lemme = line.split("\t")
+      puts "Sujet = '#{sujet}' (#{lemme})".jaune
       next [sujet,type,lemme] unless lemme == '<unknown>'
       #
       # Si +lemme+ est <unknown>, c'est que le mot n'a pas été
@@ -159,7 +160,7 @@ class TTAnalyzer
       # dans le résultat actuel (un 'nil')
       # 
       indice_current_unknown += 1
-      to_retreate << sujet
+      to_retreate << sujet.strip
       #
       # On met nil dans la liste. Son indice (p.e. le 10e nil) per-
       # mettra de le remplacer.
@@ -187,6 +188,8 @@ class TTAnalyzer
 
     #
     # On remplace les retours chariots par des trinomes BREAK
+    # et on en profite pour trimer toutes les valeurs (certaines,
+    # comme les "« MOT", ne sont pas encore bien traitées)
     # 
     liste_finale = liste_finale.map do |trinome|
       if trinome[0] == RETOUR_CHARIOT
@@ -196,7 +199,7 @@ class TTAnalyzer
       end
     end
 
-    # puts "\n\n<<<<<< liste_finale:\n#{liste_finale}\n>>>>>>>>>>>>>>"
+    puts "\n\n<<<<<< liste_finale:\n#{liste_finale.pretty_inspect}\n>>>>>>>>>>>>>>".jaune
 
     return liste_finale
   end
@@ -278,12 +281,16 @@ class TTAnalyzer
   end
 
   def prepared_text(text)
-    sanitize_text(text).split(WS).join("\n")
+    text = sanitize_text(text).split(WS).join("\n")
+    return text
   end
 
   def sanitize_text(text)
     # text.chomp.strip.gsub(/"/,'\\"')
-    text.strip.gsub(/"/,'\\"').gsub(/\n/," #{RETOUR_CHARIOT} ")
+    text.force_encoding('utf-8').strip
+      .gsub(/"/,'\\"')
+      .gsub(/\n/," #{RETOUR_CHARIOT} ")
+      .gsub(/[[:space:]]/, ' ')
   end
 
   ##
@@ -330,9 +337,12 @@ PRE_N_POST = ['"', "'"]
 
 SPEC_CHARS = ['@','©']
 
-SPLITTABLES = SIMPLE_PRE + SIMPLE_POST + PAIR_PRE + PAIR_POST + PRE_N_POST + SPEC_CHARS
+SPLITTABLES_SIMPLES = SIMPLE_PRE + SIMPLE_POST + PAIR_PRE + PAIR_POST + PRE_N_POST + SPEC_CHARS
 # SPLITABLES_PATTERN = Regexp.new("[^#{Regexp.escape(SPLITTABLES.join)}]+")
-SPLITABLES_PATTERN = Regexp.new("[#{Regexp.escape(SPLITTABLES.join)}]+")
+SPLITTABLES_DOUBLES = ['«[  ]', '[  ]»']
+
+SPLITABLES_PATTERN = Regexp.new("(#{SPLITTABLES_DOUBLES.join('|')}|[#{Regexp.escape(SPLITTABLES_SIMPLES.join)}])+")
+
 
 end #/class TTAnalyzer
 end #/module Proximot

@@ -2,6 +2,8 @@
 
 ## En cours
 
+* Trimer tous les mots, toujours
+* Identifiant unique
 * Pour indiquer les proximités, utiliser les bords droite et gauche avec les styles pxavant et pxapres
 * Possibilité de définir la distance minimale de sécurité par la console
   -> pref
@@ -31,6 +33,8 @@
 
 ## Fonctionnalités
 
+* Pouvoir définir une proximité minimum pour un mot grace à "px Bonjour 200"
+* Pouvoir définir un mot dans le lexicon grâce à "lex Bonjour NAM bonjour"
 * Pouvoir obtenir la liste des commandes/raccourcis clavier
 * Déplacement d'un mot (Editor.moveMot())
   -> Traitement des proximités à chaque déplacement (pour ce mot et les mots concernés)

@@ -10,12 +10,13 @@ class App {
   */
   static onReceiveProximotData(data){
     console.log("[onReceiveProximotData] Je reçois ces données pour le chargement de '%s'", data.loading_step, data)
-    return
+
     var next_step, extra_data ;
     switch(data.loading_step){
     case 'app_state':
-      this.State  = data.data
-      next_step   = 'preferences'
+      this.lastOpenDate = new Date()
+      this.State        = data.data
+      next_step         = 'preferences'
       break
     case 'preferences':
       Preferences.setValues(data.data)
@@ -49,10 +50,15 @@ class App {
    * 
    */
   static onReceiveFromText(data){
-    // console.log("[onReceiveText] Je reçois ces données texte : ", data)
-    const fragment = TextFragment.createFromData(data)
-    console.log("fragment instancié : ",fragment)
-    Editor.display(fragment)
+    try {    
+      // console.log("[onReceiveFromText] Je reçois ces données texte : ", data)
+      this.lastOpenDate = new Date()
+      const fragment = TextFragment.createFromData(data)
+      console.log("fragment instancié : ",fragment)
+      Editor.display(fragment)
+    } catch(err) {
+      console.error(err)
+    }
   }
 
   /**
@@ -61,13 +67,11 @@ class App {
    * 
    */
   static getState(){
-    const texte = Texte.current
     return {
-        created_at: this.State.created_at || hdateFor(new Date())
-      , last_open: hdateFor(this.lastOpenDate)
-      , saved_at:  hdateFor(new Date())
-      , fragment_first_parag_index: texte.fragmentFirstParagraphIndex
-      , fragment_index: this.State.fragment_index || texte.fragmentIndex
+        created_at:     this.State.created_at || hdateFor(new Date())
+      , last_open:      hdateFor(this.lastOpenDate || new Date())
+      , saved_at:       hdateFor(new Date())
+      , fragment_index: TextFragment.current.index
     }
   }
 
@@ -81,6 +85,6 @@ class App {
     console.error(err.backtrace)
   }
   
-  get State(){ return this._state || {} }
-  set State(state){this._state = state}
+  static get State(){ return this._state || {} }
+  static set State(state){this._state = state}
 }

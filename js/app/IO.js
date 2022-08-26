@@ -21,44 +21,58 @@ class IO {
    * surcharger les envois. Elle est reçue et opérée côté serveur
    * par la classe miroir IO.rb
    * 
+   * La première fois, +data+ ne contient que :next_step  et 
+   * :save_as. Ensuite, ont été mis dedans :data, les données à
+   * sauvegarder et :prox_path, le chemin d'accès au package Proximot
+   * 
+   * @param data {Hash} Données
+   *          data.save_as  Nouveau path sous lequel sauver les
+   *                        données (TODO)
    */
   static saveAll(data){
 
-    let next_step ;
+    let next_step
+      , add2data 
+      ;
+    const fragment = TextFragment.current || raise(ERRORS.fragmentRequired)
 
-    if (data.error){
-      raise("Une erreur est survenue pendant l'enregistrement : " + data.error)
+    if (data.result && data.result.error){
+      raise("Une erreur est survenue pendant l'enregistrement : " + data.result.error)
       return 
     }
 
-    switch(data.saving_step){
+    switch( data.saving_step ){
 
     case 'app_state':
-      data = App.getState()
-      next_step = 'preferences'
+      add2data = {  data:       App.getState()
+                  , next_step:  'preferences'
+                  , text_path:  fragment.text_path
+                  , prox_path:  fragment.prox_path  }
       break
     
     case 'preferences':
-      data = Preferences.getValues()
-      next_step = 'console_history'
+      add2data = {  data:       Preferences.getValues()
+                  , next_step:  'console_history' }
       break
 
     case 'console_history':
-      data = Console.HistoryManager.getHistory()
-      next_step = 'current_fragment'
+      add2data = {  data:       Console.HistoryManager.getHistory()
+                  , next_step:  'current_fragment' }
       break
 
     case 'current_fragment':
-      data = Texte.current.currentFragment.getData()
-      next_step = null
+      add2data = {  data:       fragment.getData()
+                  , next_step:  null }
+      console.log("Données fragment à enregistrer : ", add2data.data)
+      return // ENLEVER
       break
-
     default:
       message("Enregistrement terminé avec succès.")
     }
 
-    Object.assign(data, {data:data, next_step:next_step })
-    WAA.send({class:'Proximot::IO',method:'save_in_current', data:data})
+    Object.assign(data, add2data)
+    console.log("data envoyées pour enregistrement : ", data)
+    WAA.send({class:'Proximot::App',method:'save_text', data:data})
   }
 
 

@@ -33,6 +33,7 @@ class ConsoleCommandManager {
       value = command.split(' ')
       command = value.shift()
       value   = value.join(' ')
+      if ( value.trim() == '' ){ value = null }
     }
 
     switch(command){
@@ -48,7 +49,7 @@ class ConsoleCommandManager {
       console.warn("Je dois apprendre à ouvrir un fichier Proximot (ou autre).")
       break
     case 'fw': case 'w': // enregistrer le fichier courant
-      Texte.current.saveAsProximot(value)
+      IO.saveAll({save_as: value, saving_step:'app_state'})
       break
     case 'fwt': // enregistrer seulement le texte dans un fichier
       Texte.current.saveAsText(value)

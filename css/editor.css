@@ -37,24 +37,6 @@
   margin-left: 0pt;
 }
 
-
-#editor #content .texel span.prox-tooltip {
-  display: none;
-  position: absolute;
-  width: 200px;
-  font-size: 12pt;
-  cursor: pointer;
-  background-color: #F0F0F0;
-  z-index: 100;
-}
-#editor #content .texel:hover span.prox-tooltip, 
-#editor #content .texel:hover span.prox-tooltip:hover {
-  display: inline-block;
-  top: -10px;
-  left: 0;
-  z-index: 1000;
-}
-
 /*
     --- LES MOTS ---
 */
@@ -79,7 +61,7 @@
 #editor #content .mot.too-close {
   z-index: 1;
   border: none;
-  border-bottom: 1px solid red;
+  /*border-bottom: 1px solid red;*/
 }
 /* Pour marquer une proximité avant un mot avant */
 #editor #content .mot.too-close.pxavant:before {

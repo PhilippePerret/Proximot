@@ -83,19 +83,24 @@ class TextElement {
       |  où sont enregistrés les mots.
       */
       this._properties = {
-          id:         { name:'id'       , index:0, hname:'Identifiant du text-element', type:'int'}
-        , content:    { name:'_content' , index:1, hname:'Le contenu textuel'}
-        , ttTag:      { name:'ttTag'    , index:2, hname:'Type tree-tagger du text-element'}
-        , type:       { name:'type'     , index:3, hname:'Type Proximot du text-element'}
-        , lemma:      { name:'lemma'    , index:4, hname:'Lemme du text-element'}
-        , selected:   { name:'selected' , index:5, hname:'Sélection du text-element', type:'bool'}
+          id:         { name:'id'         , index:0, hname:'Identifiant du text-element', type:'int'}
+        , content:    { name:'_content'   , index:1, hname:'Le contenu textuel'}
+        , ttTag:      { name:'ttTag'      , index:2, hname:'Type tree-tagger du text-element'}
+        , type:       { name:'type'       , index:3, hname:'Type Proximot du text-element'}
+        , lemma:      { name:'lemma'      , index:4, hname:'Lemme du text-element'}
+        , isSelected: { name:'isSelected' , index:5, hname:'Sélection du text-element', type:'bool'}
       }
     }
     return this._properties
   }
-  static get PROPERTIES_KEYS(){return Object.keys(this.PROPERITES)}
+  static get PROPERTIES_KEYS(){return Object.keys(this.PROPERTIES)}
   
   get PROPERTIES_KEYS(){return this.constructor.PROPERTIES_KEYS}
+
+
+
+  // ############     INSTANCE     ##########
+
 
   constructor(data){
     this.id = data.id || this.constructor.getNewId()
@@ -121,28 +126,17 @@ class TextElement {
   }
 
   getData(){
-    return this.PROPERTIES_KEYS.map(prop => {return this[prop]})
+    return this.constructor.PROPERTIES_KEYS.map(prop => {return this[prop]})
   }
   setData(){}// utile ?
-
-  // /** OBSOLÈTE @return les données à sauver, pour tout text-element */
-  // get data2save(){
-  //   return {
-  //       id:         this.id
-  //     , content:    this.content
-  //     , ttTag:      this.ttTag
-  //     , lemma:      this.lemma
-  //     , selected:   this.isSelected
-  //   }
-  // }
 
   get span(){
     return this.obj
   }
 
-  get isMot(){ return this.type == 'mot'}
+  get isMot(){ return ['mot','nom-propre'].includes(this.type) }
 
-  get isSelected(){ return this._isselected  }
+  get isSelected(){ return this._isselected  || false }
   set isSelected(v) { this._isselected = v }
   
   setSelected(){
@@ -177,15 +171,9 @@ class TextElement {
 
   // --- à redéfinir par les classes filles ---
   onClick(e){
-    if ( this.isMot ) {
-      Editor.Selection.toggle(this, e.shiftKey)
-    }
     return stopEvent(e)
   }
   onMouseOver(e){
-    if ( e.shiftKey ) {
-      Editor.Selection.toggle(this,true)
-    }
     return stopEvent(e)
   }
 }

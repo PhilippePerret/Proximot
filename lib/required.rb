@@ -1,6 +1,5 @@
 # encoding: UTF-8
-# require 'nokogiri'
-# require 'libxml'
+require 'fileutils'
 require 'yaml'
 require 'pretty_inspect'
 

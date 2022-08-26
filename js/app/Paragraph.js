@@ -39,23 +39,36 @@ class Paragraph {
   */  
   getData(){
     const proximities = []
-        ;
-
+    const texel_ids   = []
     const texels = this.texels.map( texel => {
       texel.proxAvant && proximities.push(texel.proxAvant.getData())
       texel.proxApres && proximities.push(texel.proxApres.getData())
+      console.log("texel.getData() = ", texel.getData())
+      /*
+      |  On relève les identifiants des texels du paragraph dans 
+      |  l'ordre pour les mémoriser dans les données du paragraphe.
+      */
+      texel_ids.push(texel.id)
+      /*
+      |  On relève les données du text-element
+      */
       return texel.getData()
     })
-    texels.unshift(TextElement.PROPERTIES_KEYS)
-    proximities.unshift(Proximity.PROPERTIES_KEYS)
+
+    console.log("\nDONNÉES DU PARAGRAPH %i", this.id)
+    console.log("ids texels: ", texel_ids)
+    console.log("texels:", texels)
+    console.log("proximities:", proximities)
 
     return {
         paragData: {
             index:          this.index
+          , id:             this.id
           , fragmentIndex:  this.fragment.index
+          , texel_ids:      texel_ids
         }
-      , texels: texels
-      , proximities: proximities
+      , texis:   texels
+      , proxis:  proximities
     }
   }
 

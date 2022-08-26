@@ -13,6 +13,9 @@
  */
 class TextFragment {
 
+  static get current(){ return this._current /* || TODO */}
+  static set current(frg){this._current = frg}
+
   /**
   * Méthode principale qui reçoit les données du fragment et retourne
   * une nouvelle instance TextFrament pour le fragment courant (pour
@@ -40,7 +43,15 @@ class TextFragment {
     /*
     |  On peut instancier le fragment et le retourner
     */
-    return new TextFragment(data)
+    const fragment = new TextFragment(data)
+    /*
+    |  On met toujours ce frament en fragment courant
+    */
+    this.current = fragment
+    /*
+    |  On retourne toujours le fragment
+    */
+    return fragment
   }
 
 
@@ -60,14 +71,14 @@ class TextFragment {
    *              :fragment_index   L'index du fragment dans le texte complet
    *              :text_path        Chemin d'accès absolu au texte original
    *              - Dans certain cas -
-   *              :px_path          Chemin d'accès au package .pxw
+   *              :prox_path          Chemin d'accès au package .pxw
    * 
    */
   constructor(data) {
     this.index      = int(data.fragment_index)
     this.lexicon    = data.lexicon
     this.text_path  = data.text_path
-    this.px_path    = data.px_path // undefined pour un texte
+    this.prox_path  = data.prox_path // undefined pour un texte
     this.paragraphs = data.paragraphs
     this.Klass      = 'TextFragment'
   }
@@ -133,7 +144,7 @@ class TextFragment {
   showProximites(){
     this.isAnalyzedFragment || this.analyze()
     this.forEachMot( mot => {
-      console.log("[showProximites] Étude du mot ", mot)
+      // console.log("[showProximites] Étude du mot ", mot)
       const css = mot.isTooClose.call(mot, this)
       if ( css ) {
         mot.setTooClose(css)
@@ -145,7 +156,7 @@ class TextFragment {
 
   /**
   * @return la table des données du fragment (rappel : les données
-  * du texte proximisé sont enregistrées par fragment d'environ 3000
+  * du texte proximisé sont enregistrées par fragment d'environ 2500
   * mots)
   * 
   * Les données consistent en :
@@ -158,19 +169,25 @@ class TextFragment {
   *   des mots du fragment.
   */
   getData() {
-    const texels = []
+    let   texels = []
         , proximities = []
         , paragraphs = []
         ;
+
+    /*
+    |  Titre des colonnes de données
+    */
+    texels.push(TextElement.PROPERTIES_KEYS)
+    proximities.push(Proximity.PROPERTIES_KEYS)
 
     /*
     |  Boucle sur chaque paragraphe pour en récupérer les données
     |  et les agglutiner.
     */
     this.forEachParagraph( paragraph => {
-      const {paragData, texels, proximities} = paragraph.getData()
-      texels      = texels.concat(paragData.texels)
-      proximities = proximities.concat(paragData.proximities)
+      const {paragData, texis, proxis} = paragraph.getData()
+      texels      = texels.concat(texis)
+      proximities = proximities.concat(proxis)
       paragraphs << paragData
     })
 

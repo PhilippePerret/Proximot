@@ -6,7 +6,9 @@ class << self
   ##
   # = main point d'entrée =
   #
-  def load
+  # Lance l'application
+  # 
+  def run
     clear
     # return if test 
     begin
@@ -19,14 +21,25 @@ class << self
 
   ##
   # Pour charger le texte à analyser/travailler
+  #
+  # C'est cette méthode qui est appelée après le lancement de l'app
+  # pour charger le texte à analyser (soit en version brut, soit en
+  # version déjà analysée).
   # 
-  def load_texte
+  def load_text
+    #
+    # On cherche un texte valide à proximité…
+    # 
     text_path = search_text_path
+    #
+    # Suivant l'extension, on lit le texte comme un document Proximot
+    # ou comme un simple texte.
+    # 
     if File.extname(text_path) == '.pxw'
       # 
       # Un fichier XML proximot à charger (.pxw)
       # 
-      load_data = {'pxpath'=>text_path, 'loading_step'=>'app_state'}
+      load_data = {'prox_path'=>text_path, 'loading_step'=>'app_state'}
       IO.load_from_current(load_data)
 
     else
@@ -37,6 +50,15 @@ class << self
 
       WAA.send(class:'App',method:'onReceiveFromText',data:frag_data)
     end
+  end
+
+  ##
+  # Pour sauver le texte en cours
+  #
+  # (simple raccourci pour la méthode IO.save_)
+  def save_text(data)
+    puts "-> App::save_text avec les données : #{data.pretty_inspect}".bleu
+    IO.save_current(data)
   end
 
   ##
@@ -63,11 +85,10 @@ class << self
     # Le texte doit-il être fragmenté ?
     # 
     if File.size(path) > 20000 # environ 10 pages
-      text_fragment = File.read(path, 20000)
+      # text_fragment = File.read(path, 20000)
+      text_fragment = File.read(path, 400)
       last_space = text_fragment.rindex(/[\. \n]/)
-      puts "last_space = #{last_space}"
       text_fragment = text_fragment[0..last_space]
-      # puts "\n\n#{'<>'*40}\ntext_fragment =\n#{text_fragment}\n#{'<>'*40}"
     else
       text_fragment = File.read(path)
     end
@@ -76,7 +97,7 @@ class << self
     # 
     params.merge!(
       text_path:        path,
-      px_path:          nil,
+      prox_path:        nil,
       fragment_index:   0,
       fragment_offset:  0,
       fragment_length:  text_fragment.length
@@ -140,7 +161,7 @@ class << self
       # Par chemin relatif dans le dossier courant
       # 
       return File.join(CURRENT_FOLDER,ARGV[0])
-    elsif (paths_pxw  = Dir["#{CURRENT_FOLDER}/*.pxw"]).count > 0
+    elsif false && (paths_pxw  = Dir["#{CURRENT_FOLDER}/*.pxw"]).count > 0 # TODO: REMETTRE
       # 
       # Pour le moment on prend le premier fichier pxw (après on 
       # pourra proposer le choix TODO)

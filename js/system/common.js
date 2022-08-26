@@ -52,17 +52,17 @@ function int(foo){
  * 
  *   condition || raise("C'est une erreur")
  * 
- *   condition || raise("La valeur devrait être %s", [valeur])
+ *   condition || raise(tp("La valeur devrait être %s", [valeur]), data2console)
  * 
- *   condition || raise("Son nom devrait être %{nom} !", {nom: 'Personne'})
+ *   condition || raise(tp("Son nom devrait être %{nom} !", {nom: 'Personne'}))
  *
  * } catch (err) {
  * 
  * }
  */
-function raise(foo, remp) { 
-  if ( remp ) foo = tp(foo, remp)
+function raise(foo, data4console) { 
   erreur(foo)
+  if ( data4console ) console.error("Données transmises par l'erreur :", data4console)
   throw foo 
 }
 

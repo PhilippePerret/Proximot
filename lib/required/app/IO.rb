@@ -14,7 +14,7 @@ class << self
   ##
   # Charge séquentiellement les données du fichier Proximot (.pxw)
   # 
-  # @param px_path {String} Chemin d'accès au fichier
+  # @param prox_path {String} Chemin d'accès au fichier
   #
   def load_from_current(data)
     puts "\n\n-> load_from_current(data) avec data: #{data.pretty_inspect}"
@@ -31,97 +31,49 @@ class << self
   ##
   # Sauver séquentiellement les données dans le texte courant
   #
-  def save_in_current(data)
-    result = {ok:true, error:nil}
-    self.send("save_#{data['saving_step']}".to_sym, data['data'])
+  def save_current(data)
+    result = {ok:true, error:nil, saving_step:data['saving_step']}
+    # 
+    # Le package du texte (qui n'est pas encore forcément prêt)
+    # 
+    package = PXWPackage.new(prox_path:data['prox_path'], text_path:data['text_path'])
+    #
+    # Si le package du texte n'est pas encore préparé, il faut le
+    # préparer. C'est un dossier qui contiendra tous les fichiers
+    # Proximot.
+    # 
+    unless package.ready?
+      puts "* Préparation du package pour le texte #{package.filename}".bleu
+      package.prepare
+      data.merge!('prox_path' => package.prox_path)
+    end
+
+    #
+    # On peut maintenant sauver les données (préférences, ou mots,
+    # etc.)
+    # 
+    package.send("save_#{data['saving_step']}".to_sym, data['data'])
   rescue Exception => e
-    result = {ok:false, error: e.message}
+    result[:ok] = false
+    result[:message] = "#{e.message} (voir la console Terminal)"
+    puts e.message.rouge
+    puts e.backtrace.join("\n").rouge
   ensure
     #
-    # On poursuit (s'il y en a encore)
+    # On poursuit (s'il y en a encore et sauf en cas d'erreur)
     # 
-    data.merge!(result.merge(saving_step: data['next_step']))
+    data.merge!(
+      'saving_step' => data['next_step'],
+      'next_step'   => nil,
+      'result'      => result
+    )
     WAA.send(class:'IO', method:'saveAll', data:data)
   end
 
 
-  #
-  # État de l'application
-  #
-  def save_app_state(data)
-    save_as_yaml_in(data,'app_state.yml')
-  end
-  def load_app_state
-    load_as_yaml_from('app_state.yml')
-  end
-
-  #
-  # Préférence du texte
-  #
-  def save_preferences(data)
-    save_as_yaml_in(data,'preferences.yml')
-  end
-  def load_preferences
-    load_as_yaml_from('preferences.yml')
-  end
-
-  #
-  # Historique des commandes console
-  # 
-  def save_console_history(data)
-    save_as_yaml_in(data,'console_history.yml')
-  end
-  def load_console_history
-    load_as_yaml_from('console_history.yml')
-  end
-
-  #
-  # Fragment courant
-  #
-  def save_current_fragment(data)
-    frag_data = data['data']
-    texels    = data['texels']
-    proxis    = data['proximities']
-    frag_folder = mkdir(File.join(CURRENT_FOLDER,'fragments',"fragment-#{frag_data['fragmentIndex']}"))
-    #
-    # Enregistrement des données du fragment
-    # 
-    File.write(File.join(frag_folder,'data.yml'), frag_data.to_yaml)  
-    #
-    # Enregistrement des text-elements du fragment
-    # 
-    File.write(File.join(frag_folder,'texels.csv'), texels.to_csv)
-    # 
-    # Enregistremetn des proximités du fragment
-    # 
-    File.write(File.join(frag_folder,'proximities.csv'), proxis.to_csv)
-  end
-
-  def load_current_fragment(frag_index)
-    frag_folder = mkdir(File.join(CURRENT_FOLDER,'fragments',"fragment-#{frag_data['fragmentIndex']}"))
-    File.exist?(frag_folder) || raise("Le dossier du fragment ##{frag_index} est introuvable.")
-    
-    puts "Je dois apprendre à lire un fragment".jaune
-  end
 
 
 
-  ##
-  # Méthode générique permettant de sauver les données +data+ dans le
-  # fichier de nom +filename+ dans le dossier Proximot courant.
-  #
-  def save_as_yaml_in(data, filename)
-    File.write(File.join(CURRENT_FOLDER,filename), data.to_yaml)
-  end
-
-
-  ##
-  # Méthode générique permettant de lire les données YAML dans le
-  # fichier de nom +filename+
-  # 
-  def load_as_yaml_from(filename)
-    YAML.load_file(File.join(CURRENT_FOLDER,filename))
-  end
 
 end #/<< self
 

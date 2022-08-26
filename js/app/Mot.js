@@ -84,21 +84,6 @@ class Mot extends MotType {
 
   // --- Public Methods ---
 
-  /**
-   * @return {Hash} Table des données à sauvegarder
-   * 
-   */
-  get data2save(){
-    const table = super.data2save
-    Object.assign(table, {
-        type:           'mot'
-      , markProximity:  this.markProximity
-      , proxAvant:      this.proxAvant && this.proxAvant.id
-      , proxApres:      this.proxApres && this.proxApres.id
-    })
-    return table
-  }
-
   replaceContentWith(newContent){
     /*
     | Si le contenu est le même, on peut s'arrêter là
@@ -169,7 +154,7 @@ class Mot extends MotType {
    * 
    */
   toCloseTo(cmot) {
-    console.log("[toCloseTo] cmot.relPos (%i) - this.relPos (%i) < Lemma.MinProximityDistance (%i)", cmot.relPos, this.relPos, Lemma.MinProximityDistance)
+    // console.log("[toCloseTo] cmot.relPos (%i) - this.relPos (%i) < Lemma.MinProximityDistance (%i)", cmot.relPos, this.relPos, Lemma.MinProximityDistance)
     return Math.abs(cmot.relPos - this.relPos) < Lemma.MinProximityDistance
   }
 
@@ -215,7 +200,7 @@ class Mot extends MotType {
   }
   onMouseOver(e){
     super.onMouseOver(e)
-    return stopEvent(e)
+    return false
   }
 
   // --- /Listener Methods ---
@@ -236,6 +221,7 @@ class Mot extends MotType {
   get isTooShort(){
     return this.content.length < Mot.minLengthWord
   }
+
   static get minLengthWord(){
     return this._minlenword || (this._minlenword = Pref('min_word_length'))
   }

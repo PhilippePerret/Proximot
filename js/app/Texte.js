@@ -60,17 +60,6 @@ class Texte {
   }
 
   /**
-   * Pour enregistrer le document Proximot
-   * 
-   * @param newPath {String} Éventuellement, un nouveau path (pour
-   *                un "enregistrer sous…")
-   */
-  saveAsProximot(newPath){
-    console.log("-> saveAsProximot")
-    IO.saveAll({texte: this, saving_step:'app_state'})
-  }
-
-  /**
    * Pour enregistrer le texte seulement
    * 
    * @param withPath {String} Éventuellement, le chemin d'accès précis

@@ -13,9 +13,14 @@ $(document).ready(e => {
   | Soit celui contenu dans un fichier .txt du dossier courant, soit
   | un fichier .pxw (Proximot).
   */
-  WAA.send({class:'Proximot::App',method:'load_texte'})
+  try {
+    WAA.send({class:'Proximot::App',method:'load_text'})
+    console.log("Ready!")
+  } catch (err) {
+    console.error(err)
+    console.log("Not Ready…")
+  }
 
-  console.log("Ready !")
   
 })
 

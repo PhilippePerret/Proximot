@@ -50,8 +50,8 @@ class Proximity {
       |  être définis, être des instances {Mot} et être l'un après
       |  l'autre.
       */
-      ;(motAvant && motAvant instanceof Mot) || raise(tp(ERRORS.mustBeMot, ['Le mot avant']))
-      ;(motApres && motApres instanceof Mot) || raise(tp(ERRORS.mustBeMot, ['Le mot après']))
+      this.mustBeValidMot(motAvant, 'avant')
+      this.mustBeValidMot(motApres, 'apres')
       motApres.relPos > motAvant.relPos || raise(ERRORS.proximity.apresMustBeApres)
       this.id       = this.constructor.getNewId()
       this.motAvant = motAvant
@@ -75,18 +75,6 @@ class Proximity {
   get PROPERTIES(){ return this.constructor.PROPERTIES }
 
   setData(){} // utile ?
-
-  // OBSOLÈTE (ancienne méthode pour xml)
-  get data2save(){
-    return {
-        id:           this.id
-      , motAvantId:   this.motAvant.id
-      , motApresId:   this.motApres.id
-      , distance:     this.distance
-      , eloignement:  this.eloignement
-      , state:        this.state
-    }
-  }
 
   /**
   * Dispatcher les données remontées du serveur (récoltées dans le
@@ -126,6 +114,14 @@ class Proximity {
   }
 
   /**
+  * Les identifiants des mots
+  */
+  get motAvantId()  { return this._motavantid || (this._motavantid = this.motAvant.id ) }
+  set motAvantId(i) { this._motavantid = i }
+  get motApresId()  { return this._motapresid || (this._motapresid = this.motApres.id ) }
+  set motApresId(i) { this._motapresid = i }
+
+  /**
    * @return l'éloignement sous forme de 'near', 'mid' ou 'far' pour
    * spécifier approximativement si la proximité est importante ou 
    * non. Le retour servira de classe CSS
@@ -150,4 +146,14 @@ class Proximity {
   static get tiersDistance(){
     return this._tiersdist || (this._tiersdist = Preferences.get('min_dist_proximity') / 3)
   }
+
+
+  // --- Private Methods ---
+
+  mustBeValidMot(mot, where){
+    mot || raise(`Le mot ${where} doit impérativement être défini`)
+    mot instanceof Mot || mot instanceof NomPropre || raise(tp(ERRORS.mustBeMot, ['Le mot '+where]), mot)
+    return true
+  }
+
 }

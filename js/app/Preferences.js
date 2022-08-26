@@ -18,9 +18,9 @@ const DATA_SWITCH_BOOLEAN = {'false':{text:'false',next:'true'}, 'true':{text:'t
 
 const PREFERENCES_DATA = {
     'min_word_length': {
-        text:           "Longueur minimumale des mots traités"
-      , defaultValue:   3
-      , value:          3
+        text:           "Longueur minimale des mots traités"
+      , defaultValue:   4
+      , value:          4
       , typeValue:      'integer'
       , button:         tp(BTN_EDIT,['min_word_length'])
     }
