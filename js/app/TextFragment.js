@@ -188,7 +188,7 @@ class TextFragment {
       const {paragData, texis, proxis} = paragraph.getData()
       texels      = texels.concat(texis)
       proximities = proximities.concat(proxis)
-      paragraphs << paragData
+      paragraphs.push(paragData)
     })
 
     return {

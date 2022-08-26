@@ -57,7 +57,7 @@ class << self
   #
   # (simple raccourci pour la méthode IO.save_)
   def save_text(data)
-    puts "-> App::save_text avec les données : #{data.pretty_inspect}".bleu
+    # puts "-> App::save_text avec les données : #{data.pretty_inspect}".bleu
     IO.save_current(data)
   end
 
@@ -85,8 +85,9 @@ class << self
     # Le texte doit-il être fragmenté ?
     # 
     if File.size(path) > 20000 # environ 10 pages
-      # text_fragment = File.read(path, 20000)
-      text_fragment = File.read(path, 400)
+      text_fragment = File.read(path, 20000)
+      # Pour avoir juste quelques paragraphes :
+      # text_fragment = File.read(path, 400)
       last_space = text_fragment.rindex(/[\. \n]/)
       text_fragment = text_fragment[0..last_space]
     else

@@ -40,7 +40,7 @@ class TextElement {
       instance_data._content  = content
       instance_data.ttTag     = ttTag
       instance_data.lemma     = lemma
-      instance_data.type      = this.getTypeFromTTaggerType(ttTag)
+      instance_data.type      = this.getTypeFromTTaggerType(ttTag, content)
     } else {
       /*
       |  Données Proximot complète
@@ -57,21 +57,32 @@ class TextElement {
       case 'mot':         return new Mot(instance_data)
       case 'ponct':       return new Ponctuation(instance_data)
       case 'nom-propre':  return new NomPropre(instance_data)
-      default:            return new TextElement(instance_data)
+      default:            return new AnyText(instance_data)
     }
   }
 
   /**
   * Retourne le type Proximot ('mot', 'ponct', etc.) en fonction du
   * tag tree-tagger ('MOT', 'NAME', 'PUN', etc.)
+  * 
+  * [1] Les abréviations (ABR) peuvent être des choses comme une 
+  *     suite de tirets ou d'étoiles. Donc tout ce qui est sans une
+  *     seule lettre ne sera pas considéré comme un mot ({Mot}) mais
+  *     comme un type {AnyText}
   */
-  static getTypeFromTTaggerType(ttTag){
+  static getTypeFromTTaggerType(ttTag, sujet){
     const [mainTag, subTag] = ttTag.split(':')
     switch(mainTag){
     case 'PUN': case 'SENT':  
       return 'ponct';
     case 'NAM':
       return 'nom-propre';
+    case 'ABR': /* [1] */
+      if ( sujet.match(/[a-zA-Z0-9]/) ) {
+        return 'mot'
+      } else {
+        return 'any'
+      }
     default:      
       return 'mot';
     }

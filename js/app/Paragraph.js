@@ -55,7 +55,7 @@ class Paragraph {
       return texel.getData()
     })
 
-    console.log("\nDONNÉES DU PARAGRAPH %i", this.id)
+    console.log("\nDONNÉES DU PARAGRAPH %i", this.index)
     console.log("ids texels: ", texel_ids)
     console.log("texels:", texels)
     console.log("proximities:", proximities)

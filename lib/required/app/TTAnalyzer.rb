@@ -147,7 +147,7 @@ class TTAnalyzer
     # 
     premiere_liste = res.split(/\n+/).map do |line|
       sujet, type, lemme = line.split("\t")
-      puts "Sujet = '#{sujet}' (#{lemme})".jaune
+      # puts "Sujet = '#{sujet}' (#{lemme})".jaune
       next [sujet,type,lemme] unless lemme == '<unknown>'
       #
       # Si +lemme+ est <unknown>, c'est que le mot n'a pas été
@@ -199,7 +199,7 @@ class TTAnalyzer
       end
     end
 
-    puts "\n\n<<<<<< liste_finale:\n#{liste_finale.pretty_inspect}\n>>>>>>>>>>>>>>".jaune
+    # puts "\n\n<<<<<< liste_finale:\n#{liste_finale.pretty_inspect}\n>>>>>>>>>>>>>>".jaune
 
     return liste_finale
   end
