@@ -1,6 +1,7 @@
 # encoding: UTF-8
 require 'fileutils'
 require 'yaml'
+require 'csv'
 require 'pretty_inspect'
 
 require_relative 'required/constants'

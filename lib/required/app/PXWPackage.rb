@@ -88,7 +88,14 @@ class PXWPackage
     #
     # Enregistrement des text-elements du fragment
     # 
-    File.write(File.join(frag_folder,'texels.csv'), texels.to_csv)
+    puts "texels: #{texels.inspect}::#{texels.class}"
+    puts "Premier élément : #{texels.first}::#{texels.first.class}"
+    puts "Comme csv : #{texels.first.to_csv.inspect}"
+    File.open(File.join(frag_folder,'texels.csv'),'wb') do |f|
+      texels.each do |row|
+        f << row.to_csv
+      end
+    end
     # 
     # Enregistrement des proximités du fragment
     # 

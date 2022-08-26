@@ -31,8 +31,13 @@
 
 ## Fonctionnalités
 
-* Pouvoir définir une proximité minimum pour un mot grace à "px Bonjour 200"
-* Pouvoir définir un mot dans le lexicon grâce à "lex Bonjour NAM bonjour"
+* Précisément :
+  - CMD-Flèche haut pour remonter au paragraphe précédent
+  - CMD-Flèche Bas pour descendre au paragraphe suivant
+  - CMD-MAJ-Flèche haut => page précédente
+  - CMD-MAJ-Flèche bas  => page suivante
+  - Pouvoir définir une proximité minimum pour un mot grace à "px Bonjour 200"
+  - Pouvoir définir un mot dans le lexicon grâce à "lex Bonjour NAM bonjour"
 * Pouvoir obtenir la liste des commandes/raccourcis clavier
 * Déplacement d'un mot (Editor.moveMot())
   -> Traitement des proximités à chaque déplacement (pour ce mot et les mots concernés)

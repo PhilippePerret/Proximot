@@ -63,7 +63,6 @@ class Paragraph {
     return {
         paragData: {
             index:          this.index
-          , id:             this.id
           , fragmentIndex:  this.fragment.index
           , texel_ids:      texel_ids
         }

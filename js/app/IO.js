@@ -64,10 +64,14 @@ class IO {
       add2data = {  data:       fragment.getData()
                   , next_step:  null }
       console.log("Données fragment à enregistrer : ", add2data.data)
-      return // ENLEVER
       break
+
     default:
+      /*
+      |  Fin de l'enregistrement
+      */
       message("Enregistrement terminé avec succès.")
+      return true
     }
 
     Object.assign(data, add2data)
