@@ -31,14 +31,24 @@ class ConsoleHistoryManager {
     if ( this.historyIndex < this.maxHistoryIndex ) {
       ++ this.historyIndex
       this.setCurrentCommandHistory()
+    } else {
+      message("C'est la dernière commande.")
     }
   }
   /**
    * Remettre la commande précédente de l'historique des commandes
    */
   backwardCommandHistory(){
-    -- this.historyIndex
-    this.setCurrentCommandHistory()
+    console.log("-> backwardCommandHistory / index:%i", this.historyIndex)
+    console.log("history :", this.history)
+    if ( this.historyIndex > 0 ) {
+      -- this.historyIndex
+      if ( this.historyIndex < 0 ) this.historyIndex = 0
+      console.log("Index mis à %i, pour la commande '%s'", this.historyIndex, this.history[this.historyIndex])
+      this.setCurrentCommandHistory()      
+    } else {
+      message("Aucune commande avant.")
+    }
   }
 
   /**
@@ -58,7 +68,7 @@ class ConsoleHistoryManager {
   /*- private -*/ 
 
   setCurrentCommandHistory(){
-    this.value = this.history[this.historyIndex] || ''
+    this.owner.value = this.history[this.historyIndex] || ''
   }
 
 }
