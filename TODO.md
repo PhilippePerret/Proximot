@@ -3,10 +3,6 @@
 ## En cours
 
 * Pas d'identifiant pour les paragraphes (pour le moment, ils sont repérés par leur index dans le texte, à voir si c'est tenable même quand on bouge des paragraphes)
-* Les texels sans une seule lettre qui ne sont pas des ponctuations => truc spécial
-* Trimer tous les mots, toujours
-* Identifiant unique
-* Pour indiquer les proximités, utiliser les bords droite et gauche avec les styles pxavant et pxapres
 * Possibilité de définir la distance minimale de sécurité par la console
   -> pref
 * Poursuivre le chargement d'un fichier Proximot

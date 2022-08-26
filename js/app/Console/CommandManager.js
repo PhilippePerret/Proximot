@@ -96,7 +96,7 @@ class ConsoleCommandManager {
       }
       break
 
-    case 'p': // générique pour "préférences"
+    case 'pref': // générique pour "préférences"
       Preferences.set(...value.split(' '))
       break
 

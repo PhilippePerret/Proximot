@@ -136,6 +136,12 @@ class ConsoleToolTipsManager {
       , 'pr':{
             action:'Pour "proximité right", utiliser plutôt "nr" (next-right)'
         }
+      , 'pref':{
+            action:'Pour définir'
+          , ifValue:'la préférence %s'
+          , valueFormater:this.formateValueForPreference.bind(this)
+          , ifNoValue:'une préférence (par sa clé et sa valeur séparées d’une espace)'
+        }
       , 'r': {
             action:'Remplacer %{selection}'
           , ifValue: 'par %s.'
@@ -177,6 +183,39 @@ class ConsoleToolTipsManager {
 
   //########### MÉTHODES DE FORMATAGE DES VALEURS ##############
 
+  /**
+  * Formatage du tooltip pour définir une préférence
+  * 
+  * Non seulement la méthode formate le message, mais elle donne en
+  * plus des indications pour pouvoir trouver la clé
+  *
+  */
+  formateValueForPreference(value){
+    const [prefId, prefVal] = value.split(' ')
+        ,  dPref = PREFERENCES_DATA[prefId]
+
+    if ( dPref ) {
+      /*
+      |  Clé préférence connue
+      */
+      if ( prefVal ) {
+        /*
+        |  Clé préférence connue et valeur définie
+        */
+        return `de clé '${prefId}' à la valeur '${prefVal}'.`
+      } else {
+        /*
+        |  Clé préférence connue mais pas de valeur
+        */
+        return `de clé '${prefId}' (${dPref.text}).`
+      }
+    } else {
+      const possibleKeys = Preferences.maybePrefId(prefId)
+      return 'dont la clé peut-être : ' + possibleKeys.join(', ') + '.'
+    }
+
+    
+  }
   /**
   * Formatage du nom du fichier dans lequel sera enregistré le 
   * texte et ses informations.

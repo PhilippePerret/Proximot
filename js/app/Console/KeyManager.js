@@ -58,11 +58,13 @@ class ConsoleKeyManager {
       if      ( e.ctrlKey ) return this.cm.moveWordToLeft(e) 
       else if ( e.metaKey ) return this.cm.selectPreviousWordOrFirst(e)
       break
-    case 'ArrowTop':
+    case 'ArrowUp':
+      console.info("Flèche top")
       e.preventDefault()
       this.cm.backwardCommandHistory()
       return stopEvent(e)
     case 'ArrowDown':
+      console.info("Flèche down")
       e.preventDefault()
       this.cm.forwardCommandHistory()
       return stopEvent(e)

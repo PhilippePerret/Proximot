@@ -82,18 +82,28 @@ class Preferences {
     const DPref = PREFERENCES_DATA[prefId]
     try {
       if ( not(DPref) ) {
-        var keys = Object.keys(PREFERENCES_DATA)
-        const regprefid = new RegExp(prefId)
-        var matchKeys = []
-        keys.forEach(k=> {if(k.match(regprefid)){matchKeys.push(k)}})
-        if ( matchKeys.length == 0 ) matchKeys = keys
+        const matchKeys = this.maybePrefId(prefId)
         raise("Préférence inconnue : '" + prefId + "'. Voulez-vous dire " + matchKeys.join("\n") + ' ?')
       }
       ;(DPref.valueTest && DPref.valueTest(value)) || raise("La préférence '"+prefId+"' de valeur "+value+" ne passe pas la vérification.")
     } catch(err) {
       return erreur(err)
     }
+  }
 
+  /**
+  * Méthode qui retourne les clés préférences possible à partir de la
+  * mauvaise clé fournie +ckey+
+  * 
+  * @return {Array of String} La liste des clés possibles.
+  */
+  static maybePrefId(ckey){
+    var keys = Object.keys(PREFERENCES_DATA)
+    const regprefid = new RegExp(ckey)
+    var matchKeys = []
+    keys.forEach(k=> {if(k.match(regprefid)){matchKeys.push(k)}})
+    if ( matchKeys.length == 0 ) matchKeys = keys
+    return matchKeys
   }
 
 
