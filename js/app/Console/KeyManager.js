@@ -60,11 +60,27 @@ class ConsoleKeyManager {
       break
     case 'ArrowUp':
       e.preventDefault()
-      this.cm.backwardCommandHistory()
+      if ( e.metaKey ){ 
+        if ( e.shiftKey ) {
+          message("Je dois apprendre à remonter à la page précédente.")
+        } else {
+          message("Je dois apprendre à remonter au paragraphe précédent.")
+        }
+      } else {
+        this.cm.backwardCommandHistory()
+      }
       return stopEvent(e)
     case 'ArrowDown':
       e.preventDefault()
-      this.cm.forwardCommandHistory()
+      if ( e.metaKey ){ 
+        if ( e.shiftKey ) {
+          message("Je dois apprendre à aller à la page suivante.")
+        } else {
+          message("Je dois apprendre à aller au paragraphe suivant.")
+        }
+      } else {
+        this.cm.forwardCommandHistory()
+      }
       return stopEvent(e)
     case 'Backspace':
       if ( e.metaKey ) {
