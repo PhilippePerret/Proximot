@@ -152,7 +152,7 @@ class Paragraph {
     this._length = longueur
     this._mcount = nombre
     this._mots   = ary_mots
-    console.log("Mots du paragraphe : ", this._mots)
+    // console.log("Mots du paragraphe : ", this._mots)
     return {nbm: nombre, len: longueur, mots:ary_mots} // pour renseignement immédiat
   }
 }

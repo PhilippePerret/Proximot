@@ -285,8 +285,9 @@ class TTAnalyzer
     return text
   end
 
+  # Note : si on ne force pas l'encodage, le [[:space:]] en supprime
+  # pas les insécables…
   def sanitize_text(text)
-    # text.chomp.strip.gsub(/"/,'\\"')
     text.force_encoding('utf-8').strip
       .gsub(/"/,'\\"')
       .gsub(/\n/," #{RETOUR_CHARIOT} ")

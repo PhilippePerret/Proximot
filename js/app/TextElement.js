@@ -18,15 +18,16 @@ class TextElement {
   }
 
   static getById(id){
-    return this.table[id]
+    return TextElement.table[id]
   }
 
   static add(texel){
-    Object.assign(this.table, {[texel.id]: texel})
+    Object.assign(TextElement.table, {[texel.id]: texel})
   }
 
   static getNewId(){
-    return this.lastId ++ 
+    console.log("lastId (%s) = %i", self.class, TextElement.lastId)
+    return TextElement.lastId ++ 
   }
 
   static createFromData(data){
@@ -103,9 +104,9 @@ class TextElement {
 
 
   constructor(data){
-    this.id = data.id || this.constructor.getNewId()
+    this.id = data.id || TextElement.getNewId()
     this.dispatch(data)
-    this.constructor.add(this)
+    TextElement.add(this)
   }
 
   /**

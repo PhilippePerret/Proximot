@@ -1,10 +1,6 @@
 'use strict';
 class Mot extends MotType {
 
-  static getById(mot_id){
-    return this.tableMots[mot_id]
-  }
-
   /**
    * @return lemma {String} Le lemme du mot +str_mot+
    * Soit il est déjà connu est retourné tout de suite, soit il doit
