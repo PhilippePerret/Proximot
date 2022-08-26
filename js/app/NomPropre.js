@@ -1,5 +1,5 @@
 'use strict';
-class NomPropre extends TextElement {
+class NomPropre extends MotType {
 
   constructor(dmot){
     super(dmot)
@@ -17,36 +17,15 @@ class NomPropre extends TextElement {
    * @param frag  {TextFragment} L'instance du fragment de
    *              texte.
    */
-  isTooClose(frag){
-    const lemma = frag.getLemma(this.lemma)
-    if ( lemma.hasOnlyOneMot ) {
-      return false
-    } else {
-      return true
-    }
-  }
+  // isTooClose(frag){
+  //   const lemma = frag.getLemma(this.lemma)
+  //   if ( lemma.hasOnlyOneMot ) {
+  //     return false
+  //   } else {
+  //     return true
+  //   }
+  // }
 
-  /**
-   * Marque/démarque le mot comme trop proche d'un autre
-   * 
-   */
-  setTooClose(){
-    // TODO Un tooltip permettant d'avoir des informations et de 
-    // faire des actions sur cette proximité (l'ignorer par exemple)
-    this.obj.classList.add('too-close')
-    /*
-    | Construire le tooltip des informations et des opérations
-    | On le met à l'intérieur, caché.
-    */
-    this.buildProximityTooltip()
-  }
-  unsetTooClose(){
-    this.obj.classList.remove('too-close')
-    /*
-    | On doit détruire le tootip de proximité
-    */
-    this.proxTooltip && this.proxTooltip.remove()
-  }
 
   // --- /Public Methods ---
 
@@ -73,26 +52,6 @@ class NomPropre extends TextElement {
   }
   observe(o){
     o.addEventListener('click', this.onClick.bind(this))
-  }
-
-  /**
-   * Construction, en cas de proximité, d'un div contenant les 
-   * informations et les outils de proximité
-   */
-  buildProximityTooltip(){
-    const o = DCreate('DIV', {text:'Infos sur proximité', class:'prox-tooltip'})
-    this.proxTooltip = o
-    this.obj.appendChild(o)
-  }
-  /**
-   * Observation du tooltip de proximité
-   */
-  observeProxTooltip(){
-    
-  }
-
-  get nlp(){
-    return this._nlp || (this._nlp = new NLP(this.nom))
   }
 
   // --- Private Methods ---

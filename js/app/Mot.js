@@ -1,5 +1,5 @@
 'use strict';
-class Mot extends TextElement {
+class Mot extends MotType {
 
   static getById(mot_id){
     return this.tableMots[mot_id]
@@ -181,22 +181,6 @@ class Mot extends TextElement {
   }
   set markProximty(v) { this._markproxi = v /* false ou class CSS */  }
 
-  /**
-   * @return {String} class CSS de l'éloignement si le mot est en 
-   * proximité avec un autre dans le fragment de texte affiché
-   * 
-   * Si l'étude a déjà été menée (this.markProximty défini), on 
-   * prend directement la valeur là. C'est le cas par exemple lorsque
-   * l'on recharge un fichier.
-   * 
-   * @param frag  {TextFragment} L'instance du fragment de
-   *              texte. Pour savoir quels mots sont après ou avant.
-   */
-  isTooClose(frag){
-    if ( this.isTooShort ) return false
-    this.fragment = frag
-    return this.markProximty // false si aucune
-  }
 
   calcMarkProximity(frag){
     const lemma = frag.getLemma(this.lemma)
@@ -218,30 +202,6 @@ class Mot extends TextElement {
         return false
       }
     }
-  }
-
-  /**
-   * Marque/démarque le mot comme trop proche d'un autre
-   * 
-   * @param cssEloignement {String} 'far', 'mid' ou 'near'
-   */
-  setTooClose(cssEloignement){
-    this.obj.classList.add('too-close')
-    this.obj.classList.add(cssEloignement)
-    /*
-    | Construire le tooltip des informations et des opérations
-    | On le met à l'intérieur, caché.
-    */
-    // TODO Un tooltip permettant d'avoir des informations et de 
-    // faire des actions sur cette proximité (l'ignorer par exemple)
-    this.buildProximityTooltip()
-  }
-  unsetTooClose(){
-    this.obj.classList.remove('too-close')
-    /*
-    | On doit détruire le tootip de proximité
-    */
-    this.proxTooltip && this.proxTooltip.remove()
   }
 
   // --- /Public Methods ---
@@ -271,21 +231,6 @@ class Mot extends TextElement {
     o.addEventListener('click', this.onClick.bind(this))
   }
 
-  /**
-   * Construction, en cas de proximité, d'un div contenant les 
-   * informations et les outils de proximité
-   */
-  buildProximityTooltip(){
-    const o = DCreate('span', {text:'Infos sur proximité', class:'prox-tooltip'})
-    this.proxTooltip = o
-    this.obj.appendChild(o)
-  }
-  /**
-   * Observation du tooltip de proximité
-   */
-  observeProxTooltip(){
-    
-  }
   // --- Private Methods ---
 
   get isTooShort(){

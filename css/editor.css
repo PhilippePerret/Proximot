@@ -55,10 +55,13 @@
   z-index: 1000;
 }
 
+/*
+    --- LES MOTS ---
+*/
 #editor #content .mot {
   z-index: 1;
 }
-
+/* Mot sélectionné */
 #editor #content .mot.selected {
   background-color: #C8EFFF;
   z-index: 1;
@@ -70,14 +73,37 @@
     .near    très proche
     .mid     moyennement proche
     .far     assez loin
+  Si la proximité se trouve avant, le mot porte la classe pxavant
+  Si la proximité se trouve après, le mot porte la classe pxapres
  */
 #editor #content .mot.too-close {
-  background-color: #F9A3A3;
   z-index: 1;
+  border: none;
+  border-bottom: 1px solid red;
 }
-#editor #content .mot.too-close.near  { background-color: #FF0000 }
-#editor #content .mot.too-close.mid   { background-color: #FF7777 }
-#editor #content .mot.too-close.far   { background-color: #FFEEEE }
+/* Pour marquer une proximité avant un mot avant */
+#editor #content .mot.too-close.pxavant:before {
+  color: pink;
+  content: '⇠';
+  margin-right: 4px;
+  margin-left: 2px;
+}
+/* Pour marquer une proximité avec un mot après */
+#editor #content .mot.too-close.pxapres:after {
+  color: pink;
+  content: '⇢';
+  margin-left: 4px;
+  margin-right: 2px;
+}
+#editor #content .mot.too-close.near  { border-color: #FF0000 }
+#editor #content .mot.too-close.mid   { border-color: #FFA531 }
+#editor #content .mot.too-close.far   { border-color: #1FE418 }
+#editor #content .mot.too-close.pxavant.near:before { color: #FF0000 }
+#editor #content .mot.too-close.pxavant.mid:before  { color: #FFA531 }
+#editor #content .mot.too-close.pxavant.far:before  { color: #1FE418 }
+#editor #content .mot.too-close.pxapres.near:after  { color: #FF0000 }
+#editor #content .mot.too-close.pxapres.mid:after   { color: #FFA531 }
+#editor #content .mot.too-close.pxapres.far:after   { color: #1FE418 }
 
 /* UN mot en même temps en proximité et sélectionné */
 #editor #content .mot.too-close.selected {

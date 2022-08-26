@@ -2,6 +2,7 @@
 
 ## En cours
 
+* Pour indiquer les proximités, utiliser les bords droite et gauche avec les styles pxavant et pxapres
 * Possibilité de définir la distance minimale de sécurité par la console
   -> pref
 * Poursuivre le chargement d'un fichier Proximot
