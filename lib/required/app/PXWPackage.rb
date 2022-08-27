@@ -74,39 +74,36 @@ class PXWPackage
   end
 
   #
-  # Fragment courant
+  # Enregistrement des données d'un fragment
   #
+  # @param data {Hash} Données du fragment
+  #    data['data']        Les métadonnées (index, paragraphes, etc.)
+  #    data['texels']      Les text-elements
+  #    data['proximities'] Les données des proximités
+  # 
   def save_current_fragment(data)
-    frag_data   = data['data']
-    texels      = data['texels']
-    proxis      = data['proximities']
-    frag_folder = folder_fragment_index(frag_data['fragmentIndex'])
+    fg_data  = data['metadata'] # "fg" pour "fragment"
+    fg_index = fg_data['fragmentIndex']
     #
     # Enregistrement des données du fragment
     # 
-    File.write(File.join(frag_folder,'data.yml'), frag_data.to_yaml)  
+    save_as_yaml_in(fg_data, rfile_in_fragment(fg_index, 'metadata.yml'))
     #
     # Enregistrement des text-elements du fragment
     # 
-    puts "texels: #{texels.inspect}::#{texels.class}"
-    puts "Premier élément : #{texels.first}::#{texels.first.class}"
-    puts "Comme csv : #{texels.first.to_csv.inspect}"
-    File.open(File.join(frag_folder,'texels.csv'),'wb') do |f|
-      texels.each do |row|
-        f << row.to_csv
-      end
-    end
+    save_as_csv_in(data['texels'], rfile_in_fragment(fg_index'texels.csv'))
     # 
     # Enregistrement des proximités du fragment
     # 
-    File.write(File.join(frag_folder,'proximities.csv'), proxis.to_csv)
+    save_as_csv_in(data['proxis'], rfile_in_fragment(fg_index, 'proxis.csv'))
   end
 
-  def load_current_fragment(frag_index)
-    frag_folder = folder_fragment_index(frag_data['fragmentIndex'], false)
-    File.exist?(frag_folder) || raise("Le dossier du fragment ##{frag_index} est introuvable.")
-    
-    puts "Je dois apprendre à lire un fragment".jaune
+  def load_current_fragment(fg_index)
+    return {
+      'metadata'=> load_as_yaml_from(rfile_in_fragment(fg_index, 'metadata.yml')),
+      'texels'  => load_as_csv_from(rfile_in_fragment(fg_index'texels.csv')),
+      'proxis'  => load_as_csv_from(rfile_in_fragment(fg_index'proxis.csv')),
+    }
   end
 
   def filename
@@ -116,6 +113,16 @@ class PXWPackage
 private
 
   # --- Loading/Saving Private Methods ---
+
+  def save_as_csv_in(data, filename)
+    File.open(File.join(prox_path,filename),'wb') do |f|
+      data.each do |row| f << row.to_csv end
+    end    
+  end
+  # @return {Array of Strings}
+  def load_as_csv_from(filename)
+    CSV.read(File.join(prox_path,filename))
+  end
 
   ##
   # Méthode générique permettant de sauver les données +data+ dans le
@@ -136,14 +143,25 @@ private
   # --- Paths Methods ---
 
   ##
-  # @return {String} Chemin d'accès au dossier de données du fragment
-  # d'index +frag_index+ en le créant si nécessaire.
+  # @return le chemin absolu du fichier de nom +filename+ pour le
+  # fragment d'index +fb_index+
   # 
-  # @param frag_index {Integer} Index du fragment de texte
+  # Cf. le manuel développeur pour voir la hiérarchie des ficheirs 
+  # dans un dossier pxw
+  # 
+  def rfile_in_fragment(fg_index, filename)
+    return File.join(rfolder_fragment_index(fg_index), filename)  
+  end
+
+  ##
+  # @return {String} Chemin d'accès RELATIF au dossier de données du
+  # fragment d'index +fg_index+ en le créant si nécessaire.
+  # 
+  # @param fg_index {Integer} Index du fragment de texte
   # @param make_dir   {Boolean} Pour indiquer de fabriquer le dossier
   #                   s'il n'existe pas.
-  def folder_fragment_index(frag_index, makedir_if_needed = true)
-    fo = File.join(prox_path,'fragments',"fragment-#{frag_index}")
+  def rfolder_fragment_index(fg_index, makedir_if_needed = true)
+    fo = File.join('fragments',"fragment-#{fg_index}")
     mkdir(fo) if makedir_if_needed
     return fo
   end

@@ -55,18 +55,18 @@ class Paragraph {
       return texel.getData()
     })
 
-    console.log("\nDONNÉES DU PARAGRAPH %i", this.index)
-    console.log("ids texels: ", texel_ids)
-    console.log("texels:", texels)
-    console.log("proximities:", proximities)
+    // console.log("\nDONNÉES DU PARAGRAPH %i", this.index)
+    // console.log("ids texels: ", texel_ids)
+    // console.log("texels:", texels)
+    // console.log("proxis:", proximities)
 
     return {
-        paragData: {
+        metadata: {
             index:          this.index
           , fragmentIndex:  this.fragment.index
-          , texel_ids:      texel_ids
+          , texel_ids:      texel_ids.join(',')
         }
-      , texis:   texels
+      , texels:  texels
       , proxis:  proximities
     }
   }

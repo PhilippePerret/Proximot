@@ -26,10 +26,11 @@ class TextFragment {
   * 
   */
   static createFromData(data){
-    // console.log("Je dois créer le fragment à partir de : ", data)
+    console.log("Je dois créer le fragment à partir de : ", data)
+    return
     /*
     |  Transformer les données paragraphes en instances {Paragraph}
-    |  ainsi que les text-elements en instances {TextElement}
+    |  ainsi que ses text-elements en instances {TextElement}
     */
     var paragIndex = 0
     data.paragraphs = data.paragraphs.map(dparag => {
@@ -160,44 +161,44 @@ class TextFragment {
   * mots)
   * 
   * Les données consistent en :
-  * - un fichier data.yml contenant les informations sur le fragment
-  *   et notamment les paragraphes avec la liste des identifiants de
-  *   texel
+  * - un fichier metadata.yml contenant les informations sur le 
+  *   fragment et notamment les paragraphes avec la liste des
+  *   identifiants de texel
   * - un fichier texels.csv contenant tous les mots et autres
   *   text-elements
-  * - un fichier proximities.csv contenant les données des proximités
+  * - un fichier proxis.csv contenant les données des proximités
   *   des mots du fragment.
   */
   getData() {
-    let   texels = []
-        , proximities = []
+    let   all_texels = []
+        , all_proxis = []
         , paragraphs = []
         ;
 
     /*
     |  Titre des colonnes de données
     */
-    texels.push(TextElement.PROPERTIES_KEYS)
-    proximities.push(Proximity.PROPERTIES_KEYS)
+    all_texels.push(TextElement.PROPERTIES_KEYS)
+    all_proxis.push(Proximity.PROPERTIES_KEYS)
 
     /*
     |  Boucle sur chaque paragraphe pour en récupérer les données
     |  et les agglutiner.
     */
     this.forEachParagraph( paragraph => {
-      const {paragData, texis, proxis} = paragraph.getData()
-      texels      = texels.concat(texis)
-      proximities = proximities.concat(proxis)
-      paragraphs.push(paragData)
+      const {metadata, texis, proxis} = paragraph.getData()
+      all_texels = all_texels.concat(texis)
+      all_proxis = all_proxis.concat(proxis)
+      paragraphs.push(metadata)
     })
 
     return {
-        data: {
-            fragmentIndex:  this.index
-          , paragraphs:     paragraphs
+        metadata: {
+            fragmentIndex: this.index
+          , paragraphs:    paragraphs
         }
-      , texels: texels
-      , proximities: proximities
+      , texels: all_texels
+      , proxis: all_proxis
     }
   }
   
