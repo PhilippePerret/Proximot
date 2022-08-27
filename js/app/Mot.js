@@ -81,38 +81,7 @@ class Mot extends MotType {
    */
   toCloseTo(cmot) {
     // console.log("[toCloseTo] cmot.relPos (%i) - this.relPos (%i) < Lemma.MinProximityDistance (%i)", cmot.relPos, this.relPos, Lemma.MinProximityDistance)
-    return Math.abs(cmot.relPos - this.relPos) < Lemma.MinProximityDistance
-  }
-
-  get markProximty(){
-    if ( undefined === this._markproxi ) {
-      this._markproxi = this.calcMarkProximity(this.fragment)
-    }
-    return this._markproxi
-  }
-  set markProximty(v) { this._markproxi = v /* false ou class CSS */  }
-
-
-  calcMarkProximity(frag){
-    const lemma = frag.getLemma(this.lemma)
-    if ( lemma.hasOnlyOneMot ) {
-      return false
-    } else {
-      lemma.defineProximitiesOf(this) // => .proxAvant et .proxApres
-      if ( this.proxAvant || this.proxApres ) {
-        if ( not(this.proxAvant) ) {
-          return this.proxApres.eloignement
-        } else if ( not(this.proxApres) ) {
-          return this.proxAvant.eloignement
-        } else if ( this.proxAvant.distance > this.proxApres.distance ) {
-          return this.proxApres.eloignement
-        } else {
-          return this.proxAvant.eloignement
-        }
-      } else {
-        return false
-      }
-    }
+    return Math.abs(cmot.offset - this.offset) < Lemma.MinProximityDistance
   }
 
   // --- /Public Methods ---

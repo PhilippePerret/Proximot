@@ -61,7 +61,6 @@ class Proximity {
   *         OU données fournies en cours de travail {:motAvant, :motApres}
   */
   constructor(data){
-    console.log("Data pour instanciation de la proximité", data)
     this.setData(data)
     this.setProximityOfEachWord()
     this.constructor.add(this)
@@ -123,6 +122,7 @@ class Proximity {
    * Définit la propriété @proximity de chaque mot
    */
   setProximityOfEachWord(){
+    console.log("Je mets la proximité du mot ... et du mot ... à ...", this.motAvant, this.motApres, this)
     this.motAvant.proxApres = this
     this.motApres.proxAvant = this
   }

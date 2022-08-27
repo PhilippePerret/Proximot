@@ -99,17 +99,23 @@ class MotType extends TextElement {
   */
   showProximities(){
     if ( this.hasProximities ) {
-      const css = ['too-close', this.cssEloignement]
-      this.proxAvant && css.push('pxavant')
-      this.proxApres && css.push('pxapres')
-      this.obj.classList.add(...css)
+      /*
+      |  Quand le mot est en proximité
+      */
+      this.obj.classList.add(...this.cssProximities())
     } else {
+      /*
+      |  Quand le mot n'est pas en proximité
+      */
       this.obj.classList.remove('too-close','pxavant','pxapres')
     }
   }
 
-  get cssEloignement(){
-
+  cssProximities(){
+    const css = []
+    this.proxAvant && css.push('pxavant',this.proxAvant.eloignement)
+    this.proxApres && css.push('pxapres',this.proxApres.eloignement)
+    return css
   }
 
   /**
