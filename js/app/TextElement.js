@@ -26,7 +26,6 @@ class TextElement {
   }
 
   static getNewId(){
-    console.log("lastId (%s) = %i", self.class, TextElement.lastId)
     return TextElement.lastId ++ 
   }
 

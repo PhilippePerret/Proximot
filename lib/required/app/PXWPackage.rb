@@ -11,6 +11,7 @@ module Proximot
 class PXWPackage
 
   attr_reader :text_path, :prox_path
+  attr_reader :errors
 
   def initialize(data)
     @text_path = data[:text_path]
@@ -18,6 +19,10 @@ class PXWPackage
   end
 
   # --- Public Methods ---
+
+  def reset_errors
+    @errors = []
+  end
 
   ##
   # @return true si le package du texte est prêt
@@ -49,7 +54,7 @@ class PXWPackage
   def save_app_state(data)
     save_as_yaml_in(data,'app_state.yml')
   end
-  def load_app_state
+  def load_app_state(data) # data useless (pour simplifier)
     load_as_yaml_from('app_state.yml')
   end
 
@@ -59,7 +64,7 @@ class PXWPackage
   def save_preferences(data)
     save_as_yaml_in(data,'preferences.yml')
   end
-  def load_preferences
+  def load_preferences(data)  # data useless (pour simplifier)
     load_as_yaml_from('preferences.yml')
   end
 
@@ -69,8 +74,9 @@ class PXWPackage
   def save_console_history(data)
     save_as_yaml_in(data,'console_history.yml')
   end
-  def load_console_history
-    load_as_yaml_from('console_history.yml')
+  def load_console_history(data)  # data useless (pour simplifier)
+   @errors ||= []
+   load_as_yaml_from('console_history.yml')
   end
 
   #
@@ -91,18 +97,20 @@ class PXWPackage
     #
     # Enregistrement des text-elements du fragment
     # 
-    save_as_csv_in(data['texels'], rfile_in_fragment(fg_index'texels.csv'))
+    save_as_csv_in(data['texels'], rfile_in_fragment(fg_index, 'texels.csv'))
     # 
     # Enregistrement des proximités du fragment
     # 
     save_as_csv_in(data['proxis'], rfile_in_fragment(fg_index, 'proxis.csv'))
   end
 
-  def load_current_fragment(fg_index)
+  def load_current_fragment(data)
+    puts "data: #{data.inspect}".jaune
+    fg_index = data['fragment_index']
     return {
       'metadata'=> load_as_yaml_from(rfile_in_fragment(fg_index, 'metadata.yml')),
-      'texels'  => load_as_csv_from(rfile_in_fragment(fg_index'texels.csv')),
-      'proxis'  => load_as_csv_from(rfile_in_fragment(fg_index'proxis.csv')),
+      'texels'  => load_as_csv_from(rfile_in_fragment(fg_index,  'texels.csv')),
+      'proxis'  => load_as_csv_from(rfile_in_fragment(fg_index,  'proxis.csv'))
     }
   end
 
@@ -115,9 +123,23 @@ private
   # --- Loading/Saving Private Methods ---
 
   def save_as_csv_in(data, filename)
+    error_occurs = false
     File.open(File.join(prox_path,filename),'wb') do |f|
-      data.each do |row| f << row.to_csv end
-    end    
+      data.each do |row| 
+        begin
+          f << row.to_csv 
+        rescue Exception => e
+          error_occurs = true
+          @errors << e
+          puts "[save_as_csv_in #{filename}] Problème avec la rangée (row) : #{row.inspect}"
+          puts "Message d'erreur (line #{e.backtrace.first.split(':')[-2]}) : #{e.message}"
+        end
+      end
+    end
+    if error_occurs
+      balise = Time.now.to_i.to_s[-4..-1]
+      puts "[#{balise}] Une erreur est survenue sur les données suivantes : #{data.pretty_inspect}\n[/#{balise}] #{'#'*40}".rouge
+    end
   end
   # @return {Array of Strings}
   def load_as_csv_from(filename)

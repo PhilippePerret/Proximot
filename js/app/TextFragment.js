@@ -24,10 +24,45 @@ class TextFragment {
   * Noter que cette méthode sert autant pour un texte non encore ana-
   * lysé que pour un texte Proximot.
   * 
+  * La méthode inverse (pour récupérer les données) est la méthode
+  * d'instance TextFragment#getData
+  * 
   */
   static createFromData(data){
-    console.log("Je dois créer le fragment à partir de : ", data)
-    return
+    if (data.metadata) {
+      this.createFromPackageData(data)
+    } else {
+      this.createFromTextData(data)
+    }
+  }
+
+  /**
+  * Création dun fragment à partir des données d'un package
+  * Proximot
+  */
+  static createFromPackageData(data){
+    console.info("CRÉATION DU FRAGMENT À PARTIR DU PACKAGE. DONNÉES : ", data)
+
+    /*
+    |  Parmi les choses à faire :
+    |   1. typer les valeurs ("false" => false, "1" => 1 etc.)
+    |   2. liste des ids de texels string => array (split(','))
+    |
+    |   Ordre :
+    |       instancier Les texels
+    |       instancier les paragraphes
+    |       instancier le fragment
+    */
+
+  }
+
+  /**
+  * Création du fragment à partir de données élaborées à partir d'un
+  * texte (pas celles d'un fichier Proximot)
+  */
+  static createFromTextData(data) {
+    console.info("CRÉATION DU FRAGMENT À PARTIR DU TEXTE. DONNÉES : ", data)
+
     /*
     |  Transformer les données paragraphes en instances {Paragraph}
     |  ainsi que ses text-elements en instances {TextElement}
@@ -53,6 +88,7 @@ class TextFragment {
     |  On retourne toujours le fragment
     */
     return fragment
+
   }
 
 
@@ -86,6 +122,14 @@ class TextFragment {
 
 
   // --- Public Methods ---
+
+  /**
+  * Affichage du fragment
+  */
+  display(){
+    this.displayIn(Editor.content)
+    this.showProximites()
+  }
 
   /**
   * Boucle sur tous les paragraphes
@@ -168,6 +212,10 @@ class TextFragment {
   *   text-elements
   * - un fichier proxis.csv contenant les données des proximités
   *   des mots du fragment.
+  * 
+  * La méthode inverse (pour instancier un fragment d'après les
+  * données relevées) est la méthode de classe :
+  *   TextFragment#createFromData
   */
   getData() {
     let   all_texels = []
@@ -186,8 +234,8 @@ class TextFragment {
     |  et les agglutiner.
     */
     this.forEachParagraph( paragraph => {
-      const {metadata, texis, proxis} = paragraph.getData()
-      all_texels = all_texels.concat(texis)
+      const {metadata, texels, proxis} = paragraph.getData()
+      all_texels = all_texels.concat(texels)
       all_proxis = all_proxis.concat(proxis)
       paragraphs.push(metadata)
     })
@@ -210,7 +258,7 @@ class TextFragment {
    * Cette méthode en profite aussi pour définir la propriété @fragment
    * des mots.
    */
-  display(container){
+  displayIn(container){
     this.forEachParagraph( paragraph => {
       paragraph.fragment = this;
       container.appendChild(paragraph.div)

@@ -2,27 +2,6 @@
 
 class EditorClass {
 
-  /**
-   * Méthode principale qui affiche le texte +text+
-   * 
-   * @param {Texte} text Instance texte
-   * 
-   */
-  display(fragment) {
-    /*
-    | Pour le garder
-    */
-    this.fragment = fragment
-    /*
-    | Ensuite on affiche les éléments de texte (dont les mots)
-    */
-    this.fragment.display(this.content)
-    /*
-    | Et enfin on marque les proximités
-    */
-    this.fragment.showProximites()
-  }
-
  /**
    * Sélectionner un élément textuel par son index
    * 

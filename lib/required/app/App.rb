@@ -30,23 +30,29 @@ class << self
     #
     # On cherche un texte valide à proximité…
     # 
-    text_path = search_text_path
+    file_path = search_file_path
+    # puts "file_path: #{file_path}".jaune
+
     #
     # Suivant l'extension, on lit le texte comme un document Proximot
     # ou comme un simple texte.
     # 
-    if File.extname(text_path) == '.pxw'
+    if File.extname(file_path) == '.pxw'
+
       # 
       # Un fichier XML proximot à charger (.pxw)
       # 
-      load_data = {'prox_path'=>text_path, 'loading_step'=>'app_state'}
+
+      load_data = {'prox_path' => file_path, 'loading_step'=>'app_state'}
       IO.load_from_current(load_data)
 
     else
+      
       # 
       # Un fichier texte normal (.txt)
       # 
-      frag_data = analyze_text_path(text_path)
+      
+      frag_data = analyze_text_path(file_path)
 
       WAA.send(class:'App',method:'onReceiveFromText',data:frag_data)
     end
@@ -151,41 +157,57 @@ class << self
   # On le cherche dans le dossier dans lequel a été ouvert le 
   # Terminal
   # 
-  def search_text_path
+  def search_file_path
     if ARGV[0] && File.exist?(ARGV[0])
+
       # 
-      # Par chemin d'accès absolu
+      # Par chemin d'accès absolu existant
       # 
+      
       return ARGV[0]
+    
     elsif ARGV[0] && File.exist?(File.join(CURRENT_FOLDER,ARGV[0]))
+      
       # 
       # Par chemin relatif dans le dossier courant
       # 
+      
       return File.join(CURRENT_FOLDER,ARGV[0])
-    elsif false && (paths_pxw  = Dir["#{CURRENT_FOLDER}/*.pxw"]).count > 0 # TODO: REMETTRE
+    
+    elsif (paths_pxw  = Dir["#{CURRENT_FOLDER}/*.pxw"]).count > 0 # TODO: REMETTRE
+
       # 
       # Pour le moment on prend le premier fichier pxw (après on 
       # pourra proposer le choix TODO)
       # 
-      Object.const_set('CURRENT_FOLDER', paths_pxw.first)
+
       return paths_pxw.first
+
     elsif (paths_text = Dir["#{CURRENT_FOLDER}/*.{text,txt}"]).count == 1
+
       # 
       # Un seul fichier texte dans le dossier
       # 
+
       return paths_text.first
+
     elsif paths_text.count > 1
+
       # 
-      # Il faut choisir parmi plusieurs textes
+      # Choisir parmi plusieurs textes
       # 
+
       Q.select("Quel fichier choisir ?".bleu) do |q|
         paths_text.each do |path_text|
           q.choice File.basename(path_text), path_text
         end
         q.per_page paths_text.count
       end
+
     else
+
       raise "Aucun fichier texte défini dans le dossier courant."
+
     end
   end
 

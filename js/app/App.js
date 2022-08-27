@@ -1,44 +1,9 @@
+'use strict';
+
 class App {
 
-  /**
-  * Méthode principale (chargement) qui reçoit les données lorsqu'il
-  * existe un fichier Proximot (.pxw).
-  * 
-  * Les données sont alors envoyées séquentiellement à cette méthode
-  * qui les dispatche. Pour ça, elle communique avec la méthode ruby
-  * App.load_proximot_file
-  */
-  static onReceiveProximotData(data){
-    console.log("[onReceiveProximotData] Je reçois ces données pour le chargement de '%s'", data.loading_step, data)
-
-    var next_step, extra_data ;
-    switch(data.loading_step){
-    case 'app_state':
-      this.lastOpenDate = new Date()
-      this.State        = data.data
-      next_step         = 'preferences'
-      break
-    case 'preferences':
-      Preferences.setValues(data.data)
-      next_step   = 'fragment_current'
-      extra_data  = {fragment_index: parseInt(this.State.fragmentIndex || 0, 10)}
-      break
-    case 'fragment_current':
-      TextFragment.setData(data /* note : tout +data+ ici */)
-      next_step = 'console_history'
-      break
-    case 'console_history':
-      Console.HistoryManager.setHistory(data.data)
-      next_step = null
-      break
-    }
-
-    if ( next_step ) {
-      const ndata = {pxpath: data.pxpath, loading_step: next_step}
-      if ( extra_data ) Object.assign(ndata, extra_data)
-      WAA.send({class:'Proximot::App',method:'load_proximot_file',data:ndata})
-    }
-  }
+  /* TODO : la remonter du serveur */
+  static get APP_VERSION(){ return '0.5.1' }
 
   /**
    * Méthode au chargement qui reçoit du serveur les données du texte 
@@ -51,14 +16,33 @@ class App {
    */
   static onReceiveFromText(data){
     try {    
+
       // console.log("[onReceiveFromText] Je reçois ces données texte : ", data)
       this.lastOpenDate = new Date()
       const fragment = TextFragment.createFromData(data)
-      console.log("fragment instancié : ",fragment)
-      Editor.display(fragment)
+      // console.log("fragment instancié : ",fragment)
+      fragment.display()
+    
     } catch(err) {
+    
       console.error(err)
+    
     }
+  }
+
+  static get STATE_DATA(){
+    if (undefined == this._statedata){
+      this._statedata = {
+          'created_at'      : {hname:'Date de création de l’analyse'}
+        , 'last_open'       : {hname:'Date de dernière ouverture de l’analyse'}
+        , 'saved_at'        : {hname:'Date de dernière sauvegarde de l’analyse'} 
+        , 'fragment_index'  : {hname:'Index du fragment de texte courant'}
+        , 'app_version'     : {hname:'Version de l’application'}
+      }
+    }; return this._statedata ;
+  }
+  static get STATE_KEYS(){
+    return this._statekeys || ( this._statekeys = Object.keys(this.STATE_DATA) )
   }
 
   /**
@@ -67,12 +51,21 @@ class App {
    * 
    */
   static getState(){
-    return {
-        created_at:     this.State.created_at || hdateFor(new Date())
-      , last_open:      hdateFor(this.lastOpenDate || new Date())
-      , saved_at:       hdateFor(new Date())
-      , fragment_index: TextFragment.current.index
-    }
+    const tbl = {}
+    this.STATE_KEYS.forEach( stateKey => {
+      Object.assign( tbl, this[`get_${stateKey}`]() )
+    })
+    return tbl
+  }
+  static get_created_at()     { return this.State.created_at || hdateFor(new Date()) }
+  static get_last_open()      { return hdateFor(this.lastOpenDate || new Date()) }
+  static get_saved_at()       { return hdateFor(new Date()) }
+  static get_fragment_index() { return TextFragment.current.index }
+  static get_app_version()    { return this.APP_VERSION}
+
+  static setState(data){
+      this.lastOpenDate  = new Date()
+      this.State         = data
   }
 
   /**

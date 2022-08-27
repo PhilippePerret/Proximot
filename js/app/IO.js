@@ -79,6 +79,48 @@ class IO {
     WAA.send({class:'Proximot::App',method:'save_text', data:data})
   }
 
+  /**
+  * Pendant de la précédente : charge toutes les données depuis un
+  * package .pxw
+  * La remontée se fait sequentiellement.
+  */
+  static loadAllFromPackage(data){
+
+   console.log("[onReceiveProximotData] Je reçois ces données pour le chargement de '%s'", data.loading_step, data)
+
+    var next_step, extra_data ;
+
+    switch(data.loading_step){
+    case 'app_state':
+      App.setState(data.loadData)
+      next_step   = 'preferences'
+      break
+    case 'preferences':
+      Preferences.setValues(data.loadData)
+      next_step   = 'current_fragment'
+      extra_data  = {fragment_index: int(App.State.fragmentIndex || 0)}
+      break
+    case 'current_fragment':
+      TextFragment.createFromData(data.loadData)
+      next_step   = 'console_history'
+      break
+    case 'console_history':
+      Console.HistoryManager.setHistory(data.loadData)
+      next_step   = false
+      break
+    }
+
+    if ( next_step ) {
+      const ndata = {
+          prox_path: data.prox_path
+        , loading_step: next_step
+      }
+      if ( extra_data ) Object.assign(ndata, extra_data)
+      WAA.send({class:'Proximot::IO',method:'load_from_current',data:ndata})
+    }
+
+  }
+
 
 // Private Methods
 
