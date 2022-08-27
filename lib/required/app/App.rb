@@ -1,6 +1,10 @@
 # encoding: UTF-8
 module Proximot
 class App
+
+# Longueur maximale (en caractères) pour un fragment
+MAX_FRAGMENT_SIZE = 20000  # environ 10 pages
+  
 class << self
 
   ##
@@ -44,7 +48,7 @@ class << self
       # 
 
       load_data = {'prox_path' => file_path, 'loading_step'=>'app_state'}
-      IO.load_from_current(load_data)
+      IO.load_from_package(load_data)
 
     else
       
@@ -52,7 +56,7 @@ class << self
       # Un fichier texte normal (.txt)
       # 
       
-      frag_data = analyze_text_path(file_path)
+      frag_data = load_from_text(file_path)
 
       WAA.send(class:'App',method:'onReceiveFromText',data:frag_data)
     end
@@ -72,7 +76,7 @@ class << self
   # +path+
   # 
   # @return L'analyse
-  def analyze_text_path(path)
+  def load_from_text(path)
     params = {}
     
     #
@@ -87,37 +91,77 @@ class << self
       params.merge!(lexicon: File.join(text_folder,'lexicon.lex'))
     end
 
+    file_size = File.size(path).freeze
+
     # 
     # Le texte doit-il être fragmenté ?
     # 
-    if File.size(path) > 20000 # environ 10 pages
-      # text_fragment = File.read(path, 20000)
+    if file_size > MAX_FRAGMENT_SIZE
       # Pour avoir juste quelques paragraphes :
-      text_fragment = File.read(path, 400)
-      last_space = text_fragment.rindex(/[\. \n]/)
-      text_fragment = text_fragment[0..last_space]
+      # text_fragment = File.read(path, 400)
+
+      # 
+      # On récupère juste le nombre nécessaire de caractères
+      text_fragment = File.read(path, MAX_FRAGMENT_SIZE)
+      last_break    = text_fragment.rindex(/[\.\n]/)
+      text_fragment = text_fragment[0..last_break]
+
     else
       text_fragment = File.read(path)
     end
     #
-    # Les données du fragment
+    # Les données du premier fragment
     # 
     params.merge!(
       text_path:        path,
       prox_path:        nil,
       fragment_index:   0,
       fragment_offset:  0,
-      fragment_length:  text_fragment.length
+      fragment_length:  text_fragment.length,
+      other_fragments:  text_fragment.length < file_size
     )
     # 
     # On procède à l'analyse et on retourne le fragment analysé,
     # sous forme de données fragment telles que Proximot pourra les
     # analyser côté client.
     # 
-    TTAnalyzer.new.analyzeAsFragment(text_fragment, params)
+    return TTAnalyzer.new.analyzeAsFragment(text_fragment, params)
   end
 
-
+  ##
+  # En cas de fragmentation du texte, on appelle cette méthode pour
+  # découper les parties restant.
+  # 
+  # @param data {Hash} Données transmises par le client
+  #         data['text_path']   Chemin d'accès absolu au texte
+  #         data['from_offset'] Caractère duquel il faut partir
+  #         data['fragments_data'] {Hash} Les données actuelles (donc
+  #               ne contenant que les informations du premier 
+  #               fragment)
+  # 
+  def getDataOtherFragments(data)
+    fragment_idx    = 1
+    fragments_data  = data['fragments_data']
+    last_break      = data['from_offset'] - 1
+    text_path       = data['text_path'].freeze
+    file_size       = File.size(text_path).freeze
+    current_offset  = last_break
+    while current_offset < file_size
+      puts "current_offset = #{current_offset} (file_size = #{file_size})".bleu
+      str_fragment = File.read(text_path, MAX_FRAGMENT_SIZE, current_offset += 1)
+      break if str_fragment.nil? || str_fragment.empty?
+      last_break    = str_fragment.rindex(/[\.\n]/)
+      str_fragment  = str_fragment[0..last_break]
+      fragments_data.merge!(
+        fragment_idx => {index: fragment_idx, offset: current_offset, lenInFile: str_fragment.length}
+      )
+      fragments_data['count'] += 1
+      fragment_idx += 1
+      current_offset += last_break
+    end
+    
+    WAA.send(class:'App', method:'receiveDataOtherFragment', data:fragments_data)
+  end
 
 
   ##
@@ -206,7 +250,7 @@ class << self
 
     else
 
-      raise "Aucun fichier texte défini dans le dossier courant."
+      raise "Aucun fichier texte brut (.txt ou .text) défini dans le dossier courant."
 
     end
   end

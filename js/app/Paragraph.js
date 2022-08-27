@@ -41,7 +41,7 @@ class Paragraph {
       var currentMotOffset = 0
       this.content = texels.map( dtexel => {
         dtexel.push(this.offset + currentMotOffset)
-        texel = TextElement.createFromData(dtexel, this.fragment)
+        const texel = TextElement.createFromData(dtexel, this.fragment)
         texel.paragraph = this
         if ( texel.isMot ) currentMotOffset += texel.length
         return texel

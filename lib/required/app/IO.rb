@@ -17,7 +17,7 @@ class << self
   # @param data {Hash} Données pour le chargement
   #        data['prox_path'] {String} Chemin d'accès au fichier .pxw
   #
-  def load_from_current(data)
+  def load_from_package(data)
     puts "\n\n-> load_from_current(data) Entrée avec data: #{data.pretty_inspect}"
     package = PXWPackage.new(prox_path:data['prox_path'], text_path:data['text_path'])
     data.merge!(loadData: package.send("load_#{data['loading_step']}".to_sym, data))

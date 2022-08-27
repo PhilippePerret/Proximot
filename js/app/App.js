@@ -16,17 +16,31 @@ class App {
    */
   static onReceiveFromText(data){
     try {    
-
       // console.log("[onReceiveFromText] Je reçois ces données texte : ", data)
       this.lastOpenDate = new Date()
+      /*
+      |  Instanciation du fragment
+      */
       const fragment = TextFragment.createFromData(data)
-      // console.log("fragment instancié : ",fragment)
+      /*
+      |  Affichage du fragment
+      */
       fragment.display()
+      /*
+      |  On règle les données du premier fragment
+      */
+      this.fragments_data = {
+          count: 1
+        , 0: {index:0, offset:0, lenInFile: data.fragment_length}
+      }
+      /*
+      |  Une fois que c'est fini, on peut demander de relever les
+      |  information des autres fragments si nécessaire.
+      */
+      data.other_fragments && this.getDataOtherFragments(data.text_path)
     
     } catch(err) {
-    
       console.error(err)
-    
     }
   }
 
@@ -89,11 +103,18 @@ class App {
   static set State(state){this._state = state}
 
   static get fragments_data(){
-    return {
-        count: 1
-      , 0: {index: 0, offset: 0}
-    }
+    if (undefined == this._fragments_data){
+      this._fragments_data = {
+          count: 1
+        , 0: {index: 0, offset: 0, lenInFile: null}
+      }
+    } return this._fragments_data
   }
+  static set fragments_data(data){ 
+    this._fragments_data = data
+    this.State.fragments = data
+  }
+
   /**
   * Pour actualiser un fragment
   * 
@@ -121,4 +142,18 @@ class App {
       }
     }
   }
-}
+
+  static getDataOtherFragments(text_path){
+    console.info("[App::getDataOtherFragments] Recherche des informations sur autres fragments du texte.")
+    const data = {
+        fragments_data  : this.fragments_data
+      , from_offset     : this.fragments_data[0].lenInFile
+      , text_path       : text_path
+    }
+    WAA.send({class:'Proximot::App',method:'getDataOtherFragments', data: data})
+  }
+  static receiveDataOtherFragment(data){
+    console.info("[App::receiveDataOtherFragment] Données reçues pour les autres fragments", data)
+  }
+
+} // /class App
