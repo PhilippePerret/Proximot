@@ -171,14 +171,15 @@ class TextElement {
     return this.constructor.PROPERTIES_KEYS.map(prop => {return this[prop]})
   }
   setData(data){
-    for(var prop in data){ this[prop] = data[prop]}    
+    for(var prop in data){ if ( prop != 'type' ) this[prop] = data[prop]}    
   }
 
-  get span(){
-    return this.obj
-  }
+  /* Raccourci */
+  get span(){ return this.obj }
 
-  get isMot(){ return ['mot','nom-propre'].includes(this.type) }
+  // get isMot(){ return ['mot','nom-propre'].includes(this.type) }
+  get isMot(){ return false }
+
 
   get isSelected(){ return this._isselected  || false }
   set isSelected(v) { this._isselected = v }

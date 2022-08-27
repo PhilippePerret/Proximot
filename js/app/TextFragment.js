@@ -175,12 +175,7 @@ class TextFragment {
    * Note : il faut avoir analysé le fragment (this.analyze) avant
    * de pouvoir afficher les proximities
    */
-  showProximites(){
-    this.forEachMot( mot => {
-      // console.log("[showProximites] Étude du mot ", mot)
-      mot.hasProximities && mot.showProximities()
-    })
-  }
+  showProximites(){ this.forEachMot(mot => {mot.showProximities()}) }
 
   /**
   * @return la table des données du fragment (rappel : les données

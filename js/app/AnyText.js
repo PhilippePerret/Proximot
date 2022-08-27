@@ -11,6 +11,8 @@ class AnyText extends TextElement {
     super(fragment, data)
   }
 
+  get type(){return 'anytexel'}
+
   build(){
     const o = DCreate('SPAN', {id:this.domId, class:'texel anytext'})
     o.innerHTML = this.content

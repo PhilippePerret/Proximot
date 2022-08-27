@@ -4,9 +4,11 @@ class SpecChar extends TextElement {
 
   constructor(fragment, spec){
     super(fragment, spec)
-    this.type   = 'spec'
     this.Klass  = 'SpecChar'
   }
+
+  // --- Public Methods ---
+  get type(){ return 'spec' }
 
   // --- Listener Methods ---
 

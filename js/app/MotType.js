@@ -82,10 +82,12 @@ class MotType extends TextElement {
   constructor(fragment, dmot){
     super(fragment, dmot)
     this.mot    = this.content
-    this.type   = 'mot'
     this.Klass  = 'Mot'
     this.constructor.addInTableMots(this)
   }
+
+  // --- Public Methods ---
+  get isMot(){ return true }
 
   /**
   * On ajoute ce text-element de type Mot aux Lemma
@@ -98,11 +100,14 @@ class MotType extends TextElement {
   * Affiche les proximités du mot
   */
   showProximities(){
+    console.log("Je dois montrer les proximités de ", this)
     if ( this.hasProximities ) {
       /*
       |  Quand le mot est en proximité
       */
+      console.log("Il en a")
       this.obj.classList.add(...this.cssProximities())
+      console.log("L'objet devient :", this.obj)
     } else {
       /*
       |  Quand le mot n'est pas en proximité
@@ -112,9 +117,10 @@ class MotType extends TextElement {
   }
 
   cssProximities(){
-    const css = []
-    this.proxAvant && css.push('pxavant',this.proxAvant.eloignement)
-    this.proxApres && css.push('pxapres',this.proxApres.eloignement)
+    const css = ['too-close']
+    this.proxAvant && css.push('pxavant', this.proxAvant.eloignement)
+    this.proxApres && css.push('pxapres', this.proxApres.eloignement)
+    console.log("css à appliquer", css)
     return css
   }
 

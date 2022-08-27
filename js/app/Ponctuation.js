@@ -4,9 +4,12 @@ class Ponctuation extends TextElement {
 
   constructor(fragment, ponct){
     super(fragment, ponct)
-    this.type   = 'ponct'
     this.Klass  = 'Ponctuation'
   }
+
+  // --- Public Methods ---
+
+  get type(){return 'ponct'}
 
   // --- Listener Methods ---
 

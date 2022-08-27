@@ -4,11 +4,12 @@ class Mot extends MotType {
   constructor(fragment, data){
     super(fragment, data)
     this.nom    = this.content
-    this.type   = 'mot'
     this.Klass  = 'Mot'
   }
 
   // --- Public Methods ---
+
+  get type(){return 'mot'}
 
   replaceContentWith(newContent){
     /*

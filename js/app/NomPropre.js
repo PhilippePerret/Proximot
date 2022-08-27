@@ -4,11 +4,11 @@ class NomPropre extends MotType {
   constructor(fragment, data){
     super(fragment, data)
     this.nom    = this.content
-    this.type   = 'nom-propre'
     this.Klass  = 'NomPropre'
   }
 
   // --- Public Methods
+  get type(){return 'nom-propre'}
 
   // --- Listener Methods ---
 
