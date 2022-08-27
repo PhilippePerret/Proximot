@@ -2,6 +2,24 @@
 
 ## En cours
 
+* Changement du travail sur les proximités
+  Maintenant :
+    - à l'instantiation du mot, on doit connaitre son offset dans le 
+      fragment.
+      note : plus tard, il faudra faire son absOffset qui sera son
+      offset dans le texte entier (calculé par rapport au offset du
+      fragment lui-même)
+    - on l'ajoute à Lemmas et à son Lemma
+    - avant l'affichage, on calcule toutes les proximités, dans les
+      Lemmas.
+      - on les dispatche dans chaque mot
+
+* À l'enregistrement, dans app_state, il faut:
+  - enregistrer les données de chaque fragment (offset)
+  - actualiser l'offset de chaque fragment supérieur au fragment 
+    courant en fonction de l'offset de ce dernier et de sa longeur
+    (TextFragment#length)
+
 * infos :
   * proximité
 
@@ -14,7 +32,6 @@
 * Quand c'est un long texte (non encore travaillé), ne traiter d'abord qu'une portion (de 2000 mots environ, donc de 15000 signes environ)
 * Implémenter le bon traitement de 'est-ce' dans TTAnalyzer
 * Les premières proximités sont indiquées de façon grossière. Il faut :
-  - faire des tooltips indiquant les informations d'éloignement
   - pouvoir agir sur la proximité (ignorer)
   - avoir des listes d'exclusion (commencer par mettre les verbes être et avoir)
 * 

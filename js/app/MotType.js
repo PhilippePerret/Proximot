@@ -9,39 +9,116 @@
 
 class MotType extends TextElement {
 
-  /**
-   * @return {String} class CSS de l'éloignement si le mot est en 
-   * proximité avec un autre dans le fragment de texte affiché
-   * 
-   * Si l'étude a déjà été menée (this.markProximty défini), on 
-   * prend directement la valeur là. C'est le cas par exemple lorsque
-   * l'on recharge un fichier.
-   * 
-   * @param frag  {TextFragment} L'instance du fragment de
-   *              texte. Pour savoir quels mots sont après ou avant.
-   */
-  isTooClose(frag){
-    if ( this.isTooShort ) return false
-    this.fragment = frag
-    return this.markProximty // false si aucune
-  }
 
   /**
-   * Marque/démarque le mot comme trop proche d'un autre
+   * @return lemma {String} Le lemme du mot +str_mot+
+   * Soit il est déjà connu est retourné tout de suite, soit il doit
+   * être demandé côté serveur.
    * 
-   * @param cssEloignement {String} 'far', 'mid' ou 'near'
+   * @param strMot {String} Le mot dont on veut le lemme
+   * @param poursuivre  {Function} La fonction à appeler quand on 
+   *                    l'aura obtenu, d'ici ou du serveur
    */
-  setTooClose(cssEloignement){
-    const css = ['too-close', cssEloignement]
-    this.proxAvant && css.push('pxavant')
-    this.proxApres && css.push('pxapres')
-    this.obj.classList.add(...css)
+  static getLemmaOf(strMot, poursuivre) {
+    let dLemme = this.getCountAndLemma(strMot)
+    if ( dLemme ) {
+      /*
+      | OK il est connu 
+      */
+      poursuivre.call(null, [ [strMot,dLemme.type, dLemme.lemma] ])
+    } else {
+      /*
+      | Ce mot est inconnu, il faut demander son lemme côté serveur
+      */
+      TextUtils.analyze(strMot, {poursuivre:poursuivre})
+    }
   }
 
-  unsetTooClose(){
-    this.obj.classList.remove('too-close','pxavant','pxapres')
+  /**
+   * @return la table {:count, :lemma, :type} du mot +str_mot+ 
+   * {String}
+   * 
+   * Cette méthode est fondamentale pour la recherche des nouvelles
+   * proximité puisqu'elle permet de ne pas avoir à faire un appel
+   * serveur pour obtenir le lemma du mot str_mot quand il est déjà
+   * connu du texte.
+   * Rappel : appeler la méthode Mot.getLemmaOf(mot) pour obtenir à
+   * tous les coups ce lemme.
+   */
+  static getCountAndLemma(strMot){
+    console.info("this.byCountAndLemmas=", this.byCountAndLemmas)
+    return this.byCountAndLemmas[strMot]
   }
 
+  /**
+   * Ajoute le mot (à l'instanciation). Cela a une double fonction :
+   * 1. Ça permet de récupérer le mot par Mot.getById()
+   * 2. Mais surtout, ça permet de trouver très vite un lemme lorsqu'on
+   *    entre un mot déjà connu. Car la liste Mot.byCountAndLemmas
+   *    possède en clé le mot et en valeur une table contenant le
+   *    nombre de mots de ce type (count) et le lemme (lemma)
+   * 
+   * @param mot {Mot} Instance du mot tout juste instancié
+   * 
+   */
+  static addInTableMots(mot){
+    if ( undefined == this.tableMots ) {
+      this.tableMots = {}
+      this.byCountAndLemmas = {}
+    }
+    Object.assign(this.tableMots, {[mot.id]: mot})
+    if ( undefined == this.byCountAndLemmas[mot.mot] ) {
+      Object.assign(this.byCountAndLemmas, {[mot.mot]: {
+        count: 0, type: mot.ttTag, lemma:mot.lemma
+      }})
+    }
+    /*
+    | On compte ce mot
+    */
+    this.byCountAndLemmas[mot.mot].count ++ 
+  }
+
+
+  constructor(fragment, dmot){
+    super(fragment, dmot)
+    this.mot    = this.content
+    this.type   = 'mot'
+    this.Klass  = 'Mot'
+    this.constructor.addInTableMots(this)
+  }
+
+  /**
+  * On ajoute ce text-element de type Mot aux Lemma
+  */
+  addToLemmas(){
+    this.fragment.lemmas.get(this.lemma).addMot(this)
+  }
+
+  /**
+  * Affiche les proximités du mot
+  */
+  showProximities(){
+    if ( this.hasProximities ) {
+      const css = ['too-close', this.cssEloignement]
+      this.proxAvant && css.push('pxavant')
+      this.proxApres && css.push('pxapres')
+      this.obj.classList.add(...css)
+    } else {
+      this.obj.classList.remove('too-close','pxavant','pxapres')
+    }
+  }
+
+  get cssEloignement(){
+
+  }
+
+  /**
+  * @return true si le mot est en proximité d'un autre
+  * 
+  */
+  get hasProximities(){
+    return !!( this.proxAvant || this.proxApres )
+  }
 
   // --- Affichage des informations du mot ---
   showInfos(){
@@ -65,5 +142,8 @@ class MotType extends TextElement {
   get occurrences(){
     return this.fragment.getLemma(this.lemma).count
   }
+
+  get motAvant(){ return this.proxAvant ? this.proxAvant.mot : null}
+  get motApres(){ return this.proxApres ? this.proxApres.mot : null}
 
 }

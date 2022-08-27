@@ -116,6 +116,13 @@ class Lemma {
   }
 
   /**
+  * Pour définir toutes les proximités de ce lemme
+  */
+  defineProximities(){
+    
+  }
+
+  /**
    * @return true si le mot +mot+ {Mot} est trop prêt de son précédent
    * ou de son suivant
    * 

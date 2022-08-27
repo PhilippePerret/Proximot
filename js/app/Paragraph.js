@@ -2,11 +2,11 @@
 
 class Paragraph {
 
-  static instanciate(paragsData){
+  static instanciate(fragment, paragsData){
     var currentOffset = 0
     return paragsData.map( dparag => { 
       Object.assign(dparag, {offset: currentOffset})
-      const paragraph = this.createFromData(dparag)
+      const paragraph = this.createFromData(fragment, dparag)
       currentOffset += paragraph.length
       return paragraph
     })
@@ -16,19 +16,19 @@ class Paragraph {
   * Instanciation d'un paragraphe à partir de ses données remontées
   * du package.
   */
-  static createFromData(data){
+  static createFromData(fragment, data){
     let texels = data.texel_ids.split(',').map( id => {
       return TextElement.getById(int(id))
     })
-    const paragraph = new Paragraph(data.index, texels, data.offset)
-    paragraph.fragmentIndex = data.fragmentIndex
+    const paragraph = new Paragraph(fragment, data.index, texels, data.offset)
     return paragraph
   }
 
-  constructor(index, texels, offset){
-    this.index   = index
-    this.Klass   = 'Paragraph'
-    this.offset  = offset
+  constructor(fragment, index, texels, offset){
+    this.index    = index
+    this.Klass    = 'Paragraph'
+    this.offset   = offset
+    this.fragment = fragment
     /*
     |  Les données fournies à l'instanciation sont "brutes", ce sont
     |  juste les trinomes ou les données des mots
@@ -41,7 +41,7 @@ class Paragraph {
       var currentMotOffset = 0
       this.content = texels.map( dtexel => {
         dtexel.push(this.offset + currentMotOffset)
-        texel = TextElement.createFromData(dtexel)
+        texel = TextElement.createFromData(dtexel, this.fragment)
         if ( texel.isMot ) currentMotOffset += texel.length
         return texel
       })

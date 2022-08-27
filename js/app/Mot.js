@@ -1,81 +1,11 @@
 'use strict';
 class Mot extends MotType {
 
-  /**
-   * @return lemma {String} Le lemme du mot +str_mot+
-   * Soit il est déjà connu est retourné tout de suite, soit il doit
-   * être demandé côté serveur.
-   * 
-   * @param strMot {String} Le mot dont on veut le lemme
-   * @param poursuivre  {Function} La fonction à appeler quand on 
-   *                    l'aura obtenu, d'ici ou du serveur
-   */
-  static getLemmaOf(strMot, poursuivre) {
-    let dLemme = this.getCountAndLemma(strMot)
-    if ( dLemme ) {
-      /*
-      | OK il est connu 
-      */
-      poursuivre.call(null, [ [strMot,dLemme.type, dLemme.lemma] ])
-    } else {
-      /*
-      | Ce mot est inconnu, il faut demander son lemme côté serveur
-      */
-      TextUtils.analyze(strMot, {poursuivre:poursuivre})
-    }
-  }
-
-  /**
-   * @return la table {:count, :lemma, :type} du mot +str_mot+ 
-   * {String}
-   * 
-   * Cette méthode est fondamentale pour la recherche des nouvelles
-   * proximité puisqu'elle permet de ne pas avoir à faire un appel
-   * serveur pour obtenir le lemma du mot str_mot quand il est déjà
-   * connu du texte.
-   * Rappel : appeler la méthode Mot.getLemmaOf(mot) pour obtenir à
-   * tous les coups ce lemme.
-   */
-  static getCountAndLemma(strMot){
-    console.info("this.byCountAndLemmas=", this.byCountAndLemmas)
-    return this.byCountAndLemmas[strMot]
-  }
-
-  /**
-   * Ajoute le mot (à l'instanciation). Cela a une double fonction :
-   * 1. Ça permet de récupérer le mot par Mot.getById()
-   * 2. Mais surtout, ça permet de trouver très vite un lemme lorsqu'on
-   *    entre un mot déjà connu. Car la liste Mot.byCountAndLemmas
-   *    possède en clé le mot et en valeur une table contenant le
-   *    nombre de mots de ce type (count) et le lemme (lemma)
-   * 
-   * @param mot {Mot} Instance du mot tout juste instancié
-   * 
-   */
-  static addInTableMots(mot){
-    if ( undefined == this.tableMots ) {
-      this.tableMots = {}
-      this.byCountAndLemmas = {}
-    }
-    Object.assign(this.tableMots, {[mot.id]: mot})
-    if ( undefined == this.byCountAndLemmas[mot.mot] ) {
-      Object.assign(this.byCountAndLemmas, {[mot.mot]: {
-        count: 0, type: mot.ttTag, lemma:mot.lemma
-      }})
-    }
-    /*
-    | On compte ce mot
-    */
-    this.byCountAndLemmas[mot.mot].count ++ 
-  }
-
-
-  constructor(dmot){
-    super(dmot)
-    this.mot    = this.content
+  constructor(fragment, data){
+    super(fragment, data)
+    this.nom    = this.content
     this.type   = 'mot'
     this.Klass  = 'Mot'
-    this.constructor.addInTableMots(this)
   }
 
   // --- Public Methods ---

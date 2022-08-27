@@ -19,15 +19,31 @@ class Proximity {
     Object.assign(this.table, {[proxi.id]: proxi})
   }
 
+  /**
+  * Instancie les données remontée d'un package Proximot
+  */
+  static instantiate(fragment, data){
+    if ( data && data[0][0] == "id") {
+      /*
+      |  Si la première donnée proximité est la rangée de noms de
+      |  colonnes, on la retire. Pour le moment on la met simplement
+      |  de côté, mais avec les versions suivantes, il pourra être
+      |  nécessaire d'y faire référence.
+      */
+      data.shift()
+    }
+    data.forEach( dproxi => { new Proximity(dproxi) } )
+  }
+
   static get PROPERTIES(){
     if (undefined == this._properties){
       this._properties = {
-          id: {hname:'identifiant'}
-        , state:{hname:'Statut de la proximitié'}
-        , motAvantId: {hname:'ID du mot gauche'}
-        , motApresId: {hname:'ID du mot droit'}
-        , distance: {hname:'Distance entre les deux mots (en signes)'}
-        , eloignement: {hname:'Nom humain de l’éloignement (near, mid ou far)'}
+          id            : {index:0, hname:'identifiant', type:'int'}
+        , state         : {index:1, hname:'Statut de la proximitié', type:'int'}
+        , motAvantId    : {index:2, hname:'ID du mot gauche', type:'int'}
+        , motApresId    : {index:3, hname:'ID du mot droit', type:'int'}
+        , distance      : {index:4, hname:'Distance entre les deux mots (en signes)', type:'int'}
+        , eloignement   : {index:5, hname:'Nom humain de l’éloignement (near, mid ou far)'}
       }
     }; return this._properties;
   }
@@ -37,32 +53,16 @@ class Proximity {
   | ################     INSTANCE     #################
   */
 
+  /**
+  * Instanciation d'une proximité
+  * 
+  * @param data {Array} or {Hash}
+  *         Données remontées d'un package ({Array})
+  *         OU données fournies en cours de travail {:motAvant, :motApres}
+  */
   constructor(data){
-    if ( data.motAvant ) {
-      /*
-      |  Instanciation en cours de programme (pas en remontée des
-      |  données initiales)
-      */
-      const motAvant = data.motAvant
-          , motApres = data.motApres
-      /*
-      |  Les deux mots (avant et après) doivent obligatoirement 
-      |  être définis, être des instances {Mot} et être l'un après
-      |  l'autre.
-      */
-      this.mustBeValidMot(motAvant, 'avant')
-      this.mustBeValidMot(motApres, 'apres')
-      motApres.relPos > motAvant.relPos || raise(ERRORS.proximity.apresMustBeApres)
-      this.id       = this.constructor.getNewId()
-      this.motAvant = motAvant
-      this.motApres = motApres
-    } else {
-      /*
-      |  Instanciation à partir de données remontées d'un fichier
-      |  proximot (.pxw)
-      */
-      this.dispatch(data)
-    }
+    console.log("Data pour instanciation de la proximité", data)
+    this.setData(data)
     this.setProximityOfEachWord()
     this.constructor.add(this)
   }
@@ -74,21 +74,35 @@ class Proximity {
   get PROPERTIES_KEYS(){ return Object.keys(this.PROPERTIES) }
   get PROPERTIES(){ return this.constructor.PROPERTIES }
 
-  setData(){} // utile ?
-
   /**
   * Dispatcher les données remontées du serveur (récoltées dans le
   * fichier Proximot) en réglant certaines valeurs à commencer par
   * l'instance des mots avant et après (if any)
   */
-  dispatch(data){
-    this.id         = int(data.id)
-    this._dist      = int(data.distance)
-    this.motApresId = data.motApresId && int(data.motApresId)
-    if (this.motApresId) { this.motApres = TextElement.getById(this.motApresId) }
-    this.motAvantId = data.motAvantId && int(data.motAvantId) 
-    if (this.motAvantId) { this.motAvant = TextElement.getById(this.motAvantId) }
-    this._state     = int(data.state)
+  setData(data){
+    if ( data instanceof Array ) {
+      /*
+      |  Données remontées d'un package
+      */
+      for (var property in this.PROPERTIES ){
+        const dProperty = this.PROPERTIES[property]
+        let value = data[dProperty.index]
+        switch(dProperty.type){
+        case 'int'  : value = int(value); break
+        case 'bool' : value = bool(value); break
+        }
+        this[property] = value
+      }
+    } else {
+      /*
+      |  Données fournies par une instanciation en cours de travail
+      */
+      for(var prop in data){ this[prop] = data[prop] }
+      this.motAvantId = data.motAvant.id
+      this.motApresId = data.motApres.id
+    }
+    this.motAvant = TextElement.getById(this.motAvantId) || raise("Le mot avant devrait toujours exister.")
+    this.motApres = TextElement.getById(this.motApresId) || raise("Le mot après devrait toujours exister.")
   }
 
   /**
@@ -114,14 +128,6 @@ class Proximity {
   }
 
   /**
-  * Les identifiants des mots
-  */
-  get motAvantId()  { return this._motavantid || (this._motavantid = this.motAvant.id ) }
-  set motAvantId(i) { this._motavantid = i }
-  get motApresId()  { return this._motapresid || (this._motapresid = this.motApres.id ) }
-  set motApresId(i) { this._motapresid = i }
-
-  /**
    * @return l'éloignement sous forme de 'near', 'mid' ou 'far' pour
    * spécifier approximativement si la proximité est importante ou 
    * non. Le retour servira de classe CSS
@@ -129,10 +135,12 @@ class Proximity {
   get eloignement(){
     return this._eloign || ( this._eloign = this.calcEloignement())
   }
+  set eloignement(eloi){ this._eloign = eloi}
 
   get distance(){
     return this._dist || (this._dist = this.motApres.relPos - this.motAvant.relPos)
   }
+  set distance(dist){ this._dist = dist}
 
   calcEloignement(){
     if ( this.distance > 2 * Proximity.tiersDistance ) {

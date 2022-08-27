@@ -41,38 +41,37 @@ class TextFragment {
   static createFromPackageData(data){
     console.info("CRÉATION DU FRAGMENT À PARTIR DU PACKAGE. DONNÉES : ", data)
 
+    const fragment = new TextFragment(data.metadata)
+
     /*
     |  Les Text-elements du fragment
     */
-    const texels = data.texels
-    /*
-    |  On retire la première ligne des labels (plus tard, elle pourra
-    |  servir à connaitre l'ordre des données — s'il est modifié)
-    */
-    texels.shift()
+    const texels = data.texels    
     /*
     |  On instancie tous les texels
     */
-    TextElement.instanciate(texels)
+    TextElement.instanciate(fragment, texels)
 
     /*
     |  Traitement des paragraphes
     */
-    const paragraphs = Paragraph.instanciate(data.metadata.paragraphs)
-    // console.info("Paragraphs instanciés : ", paragraphs)
+    fragment.paragraphs = Paragraph.instanciate(fragment, data.metadata.paragraphs)
 
-    const dataFragment = {
-        paragraphs  : paragraphs
-      , index       : data.metadata.fragment_index
-      , prox_path   : data.metadata.prox_path
-      , text_path   : data.metadata.text_path 
-    }
+    /*
+    |  Traitement des proximités
+    |
+    |  Note : on ne se contente pas, ici, de prendre les données
+    |  proximités comme si on les calculait, on prend aussi en 
+    |  compte les états définis (ignorance, etc.)
+    |
+    */
+    Proximity.instantiate(fragment, data.proxis)
 
     /*
     |  On peut instancier le fragment, le mettre en fragment 
     |  courant et le retourner.
     */
-    return this.setCurrent(new TextFragment(dataFragment))
+    return this.setCurrent(fragment)
   }
 
   /**
@@ -82,35 +81,30 @@ class TextFragment {
   static createFromTextData(data) {
     console.info("CRÉATION DU FRAGMENT À PARTIR DU TEXTE. DONNÉES : ", data)
 
+    const fragment = new TextFragment(data)
+
     /*
     |  Transformer les données paragraphes en instances {Paragraph}
     |  ainsi que ses text-elements en instances {TextElement}
     */
     var paragIndex    = 0
     var currentOffset = 0
-    data.paragraphs = data.paragraphs.map(dparag => {
-      const paragraph = new Paragraph(paragIndex++, dparag, currentOffset)
+    fragment.paragraphs = data.paragraphs.map(dparag => {
+      const paragraph = new Paragraph(fragment, paragIndex++, dparag, currentOffset)
       currentOffset += paragraph.length
       return paragraph
     })
+
     /*
-    |  Transformer les données proximités en proximités, si c'est
-    |  un texte déjà analysé. Sinon ?
+    |  Mettre le fragment en fragment courant et le retourner
     */
-    // TODO
-    /*
-    |  On peut instancier le fragment, le mettre en fragment 
-    |  courant et le retourner
-    */
-    return this.setCurrent(new TextFragment(data))
+    return this.setCurrent(fragment)
   }
 
   static setCurrent(fragment){
     this.current = fragment
     return fragment
   }
-
-
 
   /**
    * Instanciation d'un fragment de texte
@@ -123,7 +117,6 @@ class TextFragment {
    *              Proximot.
    *              Contient notamment
    *              - Toujours -
-   *              :paragraphs       Liste (formatée) des paragraphes
    *              :fragment_index   L'index du fragment dans le texte complet
    *              :text_path        Chemin d'accès absolu au texte original
    *              - Dans certain cas -
@@ -135,7 +128,6 @@ class TextFragment {
     this.lexicon    = data.lexicon
     this.text_path  = data.text_path
     this.prox_path  = data.prox_path || this.defineProxPath(this.text_path)
-    this.paragraphs = data.paragraphs
     this.Klass      = 'TextFragment'
   }
 
@@ -173,32 +165,9 @@ class TextFragment {
    * 
    */
   analyze(){
-    // console.info("Preferences.get('min_word_length') = ", Preferences.get('min_word_length'), typeof Preferences.get('min_word_length'))
-    delete this._lemma
-    var cursor    = 0
-    var indexMot  = 0
-    const MinWordLength = Pref('min_word_length')
-    this.forEachMot( mot => {
-      mot.relPos = cursor
-      mot.index  = indexMot++
-      /*
-      | Le mot doit être assez long pour être analysé
-      */
-      if ( mot.length >= MinWordLength ) {
-        /*
-        | Le fragment a-t-il déjà un lemma pour ce mot ? Si ce n'est 
-        | pas le cas, on le crée
-        */
-        this.lemmas.get(mot.lemma).addMot(mot)
-      }
-      /*
-      |  Dans tous les cas on déplace le curseur
-      */
-      cursor += mot.length
-    })
-
-    this.isAnalyzedFragment = true // OK
-  }
+    console.warn("La méhtode TextFragment#analyze est obsolète.")
+    return
+   }
 
   /**
    * Affichage des proximités du fragment
@@ -207,15 +176,9 @@ class TextFragment {
    * de pouvoir afficher les proximities
    */
   showProximites(){
-    this.isAnalyzedFragment || this.analyze()
     this.forEachMot( mot => {
       // console.log("[showProximites] Étude du mot ", mot)
-      const css = mot.isTooClose.call(mot, this)
-      if ( css ) {
-        mot.setTooClose(css)
-      } else {
-        mot.unsetTooClose()
-      }
+      mot.hasProximities && mot.showProximities()
     })
   }
 

@@ -29,16 +29,21 @@ class TextElement {
     return TextElement.lastId ++ 
   }
 
-  static instanciate(texelsData){
+  static instanciate(fragment, texelsData){
+    /*
+    |  On retire la première ligne des labels (plus tard, elle pourra
+    |  servir à connaitre l'ordre des données — s'il est modifié)
+    */
+    texelsData.shift()
     var curoff = 0
     texelsData.forEach(dtexel => {
       dtexel.push(curoff)
-      const texel = this.createFromData(dtexel)
+      const texel = this.createFromData(fragment, dtexel)
       curoff += texel.length
     })
   }
 
-  static createFromData(data){
+  static createFromData(fragment, data){
     // console.log("data texel:", data)
     const instance_data = {}
     if ( data.length == 3 ) {
@@ -76,12 +81,18 @@ class TextElement {
     /*
     |  En fonction du type, on choisit la classe fille.
     */
-    console.log("instance_data = ", instance_data)
-    switch(instance_data.type){
-      case 'mot':         return new Mot(instance_data)
-      case 'ponct':       return new Ponctuation(instance_data)
-      case 'nom-propre':  return new NomPropre(instance_data)
-      default:            return new AnyText(instance_data)
+    // console.log("instance_data = ", instance_data)
+    const instance = this.instantiateByType(fragment, instance_data)
+
+    return instance
+  }
+
+  static instantiateByType(fragment, data){
+    switch(data.type){
+      case 'mot':         return new Mot(fragment, data)
+      case 'ponct':       return new Ponctuation(fragment, data)
+      case 'nom-propre':  return new NomPropre(fragment, data)
+      default:            return new AnyText(fragment, data)
     }
   }
 
@@ -139,19 +150,13 @@ class TextElement {
   // ############     INSTANCE     ##########
 
 
-  constructor(data){
+  constructor(fragment, data){
+    this.fragment = fragment
     this.id = data.id || TextElement.getNewId()
-    this.dispatch(data)
+    this.setData(data)
     TextElement.add(this)
+    this.isMot && this.addToLemmas()
   }
-
-  /**
-  * Pour dispatcher les données dans l'instance, à l'instanciation
-  */
-  dispatch(data){
-    for(var prop in data){ this[prop] = data[prop]}
-  }
-
 
   // --- Public Methods ---
 
@@ -165,7 +170,9 @@ class TextElement {
   getData(){
     return this.constructor.PROPERTIES_KEYS.map(prop => {return this[prop]})
   }
-  setData(){}// utile ?
+  setData(data){
+    for(var prop in data){ this[prop] = data[prop]}    
+  }
 
   get span(){
     return this.obj

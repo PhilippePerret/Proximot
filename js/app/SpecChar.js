@@ -2,8 +2,8 @@
 
 class SpecChar extends TextElement {
 
-  constructor(spec){
-    super(spec)
+  constructor(fragment, spec){
+    super(fragment, spec)
     this.type   = 'spec'
     this.Klass  = 'SpecChar'
   }

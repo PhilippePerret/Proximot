@@ -7,8 +7,8 @@
 */
 
 class AnyText extends TextElement {
-  constructor(data){
-    super(data)
+  constructor(fragment, data){
+    super(fragment, data)
   }
 
   build(){
