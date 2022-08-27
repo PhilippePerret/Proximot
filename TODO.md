@@ -2,12 +2,10 @@
 
 ## En cours
 
-* Pas d'identifiant pour les paragraphes (pour le moment, ils sont repérés par leur index dans le texte, à voir si c'est tenable même quand on bouge des paragraphes)
-* Possibilité de définir la distance minimale de sécurité par la console
-  -> pref
+
 * Poursuivre le chargement d'un fichier Proximot
-  - il reste seulement les mots/paragraphes/fragments à définir
-  - voir le problème avec les ponctuations
+  - dispatcher les données du fragment (toutes les autres sont traitées)  
+* Pouvoir passer au fragment suivant (gros morceau, car c'est un fragment virtuel)
 
 * Pouvoir passer d'un paragraphe à l'autre avec les flèches de sélection
   + CMD+flèche Haut/bas permet de passer au paragraphe inférieur/supérieur

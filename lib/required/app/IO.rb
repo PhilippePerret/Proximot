@@ -36,6 +36,8 @@ class << self
   #
   def save_current(data)
     result = {ok:true, error:nil, saving_step:data['saving_step']}
+    # puts "save courant avec data #{data.pretty_inspect}"
+
     # 
     # Le package du texte (qui n'est pas encore forcément prêt)
     # 

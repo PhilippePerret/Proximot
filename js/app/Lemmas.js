@@ -122,10 +122,8 @@ class Lemma {
    * Note : pour le moment, on ne retourne que les proximités directes
    */
   defineProximitiesOf(mot){
-    console.log("*** Recherche de la proximité de %s", mot.mot)
     const minDist = this.constructor.MinProximityDistance
     const indexInLemma = this.table[mot.relPos].index
-    console.log("   indexInLemma = ", indexInLemma)
     const proximites = []
     if ( mot.proxAvant || mot.proxAvant === null ) {
       mot.proxAvant && proximites.push(mot.proxAvant)
@@ -145,7 +143,6 @@ class Lemma {
       const prox = this.calcProximityApres(mot, indexInLemma)
       prox && proximites.push(prox)
     }
-    console.log("proximites de '%s'", mot.mot, proximites)
     return proximites;
   }
 
@@ -153,17 +150,13 @@ class Lemma {
    * Calcule la proximité avant du mot +mot+ et la retourne
    */
   calcProximityAvant(mot, indexInLemma){
-    console.log("   this.table[mot.relPos] = this.table[%i] = ", mot.relPos, this.table[mot.relPos])
     if ( indexInLemma > 0 ) {
-      console.log("   indexInLemma > 0")
       const previousPos = this.positions[indexInLemma - 1]
-      console.log("previousPos = ", previousPos)
       if ( previousPos + Lemma.MinProximityDistance > mot.relPos) {
         /*
         | Proximité avec le mot d'avant
         */
         const previousMot = this.table[previousPos].mot
-        console.log("   PROXIMITÉ AVANT TROUVÉE AVEC ", previousMot)
         return new Proximity({motAvant: previousMot, motApres: mot})
       }
     }
@@ -171,15 +164,12 @@ class Lemma {
   calcProximityApres(mot, indexInLemma){
     this.proxApres = null
     if ( indexInLemma < this.positions.length - 1) {
-      console.log("   indexInLemma n'est pas le dernier index")
       const nextPos = this.positions[indexInLemma + 1]
-      console.log("   nextPos = %i (Lemmas.MinProximityDistance = %i, mot.relPos = %i)", nextPos, Lemma.MinProximityDistance, mot.relPos)
       if ( mot.relPos + Lemma.MinProximityDistance > nextPos ) {
         /*
         | Proximité avec le mot d'après
         */
         const nextMot = this.table[nextPos].mot
-        console.log("   PROXIMITÉ APRÈS TROUVÉE AVEC ", nextMot)
         return new Proximity({motAvant: mot, motApres: nextMot})
       }
     }    

@@ -28,19 +28,18 @@ class PXWPackage
   # @return true si le package du texte est prêt
   # 
   def ready?
-    prox_path && File.exist?(prox_path) && File.directory?(prox_path)
+    File.exist?(prox_path) && File.directory?(prox_path)
   end
 
   ##
   # Prépare le dossier du package (le package, donc)
   #
   def prepare
-    @prox_path ||= set_prox_path_from_text_path
     mkdir(@prox_path)
     #
     # On fait toujours une copie du texte original dans ce package
     # 
-    FileUtils.copy(text_path, File.join(prox_path,'text-origin.txt'))
+    FileUtils.copy( text_path, file('text-origin.txt') )
 
     return true
   end
@@ -83,9 +82,9 @@ class PXWPackage
   # Enregistrement des données d'un fragment
   #
   # @param data {Hash} Données du fragment
-  #    data['data']        Les métadonnées (index, paragraphes, etc.)
-  #    data['texels']      Les text-elements
-  #    data['proximities'] Les données des proximités
+  #    data['metadata']   Les métadonnées (index, paragraphes, etc.)
+  #    data['texels']     Les text-elements
+  #    data['proxis']     Les données des proximités
   # 
   def save_current_fragment(data)
     fg_data  = data['metadata'] # "fg" pour "fragment"
@@ -105,7 +104,7 @@ class PXWPackage
   end
 
   def load_current_fragment(data)
-    puts "data: #{data.inspect}".jaune
+    # puts "data: #{data.inspect}".jaune
     fg_index = data['fragment_index']
     return {
       'metadata'=> load_as_yaml_from(rfile_in_fragment(fg_index, 'metadata.yml')),
@@ -124,7 +123,7 @@ private
 
   def save_as_csv_in(data, filename)
     error_occurs = false
-    File.open(File.join(prox_path,filename),'wb') do |f|
+    File.open(file(filename),'wb') do |f|
       data.each do |row| 
         begin
           f << row.to_csv 
@@ -143,7 +142,7 @@ private
   end
   # @return {Array of Strings}
   def load_as_csv_from(filename)
-    CSV.read(File.join(prox_path,filename))
+    CSV.read(file(filename))
   end
 
   ##
@@ -151,7 +150,7 @@ private
   # fichier de nom +filename+ dans le dossier Proximot courant.
   #
   def save_as_yaml_in(data, filename)
-    File.write(File.join(prox_path,filename), data.to_yaml)
+    File.write(file(filename), data.to_yaml)
   end
 
   ##
@@ -159,13 +158,19 @@ private
   # fichier de nom +filename+
   # 
   def load_as_yaml_from(filename)
-    YAML.load_file(File.join(prox_path,filename))
+    YAML.load_file(file(filename))
   end
 
   # --- Paths Methods ---
 
+  def file(filename)
+    pth = File.join(prox_path,filename)
+    mkdir(File.dirname(pth))
+    pth
+  end
+
   ##
-  # @return le chemin absolu du fichier de nom +filename+ pour le
+  # @return le chemin RELATIF du fichier de nom +filename+ pour le
   # fragment d'index +fb_index+
   # 
   # Cf. le manuel développeur pour voir la hiérarchie des ficheirs 
@@ -183,15 +188,7 @@ private
   # @param make_dir   {Boolean} Pour indiquer de fabriquer le dossier
   #                   s'il n'existe pas.
   def rfolder_fragment_index(fg_index, makedir_if_needed = true)
-    fo = File.join('fragments',"fragment-#{fg_index}")
-    mkdir(fo) if makedir_if_needed
-    return fo
-  end
-
-  ##
-  # @return {String} Chemin d'accès au package
-  def set_prox_path_from_text_path
-    return File.join(folder,"#{affixe}.pxw")
+    File.join('fragments',"fragment-#{fg_index}")
   end
 
   def affixe
@@ -201,7 +198,7 @@ private
   end
 
   def folder
-    @folder ||= File.dirname(text_path || prox_path)
+    @folder ||= prox_path || File.dirname(text_path)
   end
 
 

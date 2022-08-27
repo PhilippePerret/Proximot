@@ -27,33 +27,52 @@ class TextFragment {
   * La méthode inverse (pour récupérer les données) est la méthode
   * d'instance TextFragment#getData
   * 
+  * @return Le Fragment {TextFragment} instancié
   */
   static createFromData(data){
-    if (data.metadata) {
-      this.createFromPackageData(data)
-    } else {
-      this.createFromTextData(data)
-    }
+    const method = data.metadata ? 'createFromPackageData' : 'createFromTextData'
+    return this[method].call(this, data)
   }
 
   /**
   * Création dun fragment à partir des données d'un package
-  * Proximot
+  * Proximot.
   */
   static createFromPackageData(data){
     console.info("CRÉATION DU FRAGMENT À PARTIR DU PACKAGE. DONNÉES : ", data)
 
     /*
-    |  Parmi les choses à faire :
-    |   1. typer les valeurs ("false" => false, "1" => 1 etc.)
-    |   2. liste des ids de texels string => array (split(','))
-    |
-    |   Ordre :
-    |       instancier Les texels
-    |       instancier les paragraphes
-    |       instancier le fragment
+    |  Les Text-elements du fragment
     */
+    const texels = data.texels
+    /*
+    |  On retire la première ligne des labels (plus tard, elle pourra
+    |  servir à connaitre l'ordre des données — s'il est modifié)
+    */
+    texels.shift()
+    /*
+    |  On instancie tous les texels
+    */
+    TextElement.instanciate(texels)
 
+    /*
+    |  Traitement des paragraphes
+    */
+    const paragraphs = Paragraph.instanciate(data.metadata.paragraphs)
+    // console.info("Paragraphs instanciés : ", paragraphs)
+
+    const dataFragment = {
+        paragraphs  : paragraphs
+      , index       : data.metadata.fragment_index
+      , prox_path   : data.metadata.prox_path
+      , text_path   : data.metadata.text_path 
+    }
+
+    /*
+    |  On peut instancier le fragment, le mettre en fragment 
+    |  courant et le retourner.
+    */
+    return this.setCurrent(new TextFragment(dataFragment))
   }
 
   /**
@@ -77,18 +96,15 @@ class TextFragment {
     */
     // TODO
     /*
-    |  On peut instancier le fragment et le retourner
+    |  On peut instancier le fragment, le mettre en fragment 
+    |  courant et le retourner
     */
-    const fragment = new TextFragment(data)
-    /*
-    |  On met toujours ce frament en fragment courant
-    */
-    this.current = fragment
-    /*
-    |  On retourne toujours le fragment
-    */
-    return fragment
+    return this.setCurrent(new TextFragment(data))
+  }
 
+  static setCurrent(fragment){
+    this.current = fragment
+    return fragment
   }
 
 
@@ -115,7 +131,7 @@ class TextFragment {
     this.index      = int(data.fragment_index)
     this.lexicon    = data.lexicon
     this.text_path  = data.text_path
-    this.prox_path  = data.prox_path // undefined pour un texte
+    this.prox_path  = data.prox_path || this.defineProxPath(this.text_path)
     this.paragraphs = data.paragraphs
     this.Klass      = 'TextFragment'
   }
@@ -242,8 +258,10 @@ class TextFragment {
 
     return {
         metadata: {
-            fragmentIndex: this.index
-          , paragraphs:    paragraphs
+            fragmentIndex : this.index
+          , paragraphs    : paragraphs
+          , text_path     : this.text_path
+          , prox_path     : this.prox_path
         }
       , texels: all_texels
       , proxis: all_proxis
@@ -431,5 +449,12 @@ class TextFragment {
       parag.content.forEach(texel => ary.push(texel.content))
     })
     return ary.join('')
+  }
+
+  /**
+  * Pour définir le chemin d'accès au package
+  */
+  defineProxPath(p){
+    return p.substring(0, p.lastIndexOf('.')) + '.pxw'
   }
 }

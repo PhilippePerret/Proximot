@@ -44,6 +44,9 @@ function hdateFor(date){
 function int(foo){
   return parseInt(foo, 10)
 }
+function bool(foo){
+  return bool === true || bool == 'true'
+}
 
 /**
  * Pour pouvoir utiliser par exemple :

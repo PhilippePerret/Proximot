@@ -101,7 +101,8 @@ class IO {
       extra_data  = {fragment_index: int(App.State.fragmentIndex || 0)}
       break
     case 'current_fragment':
-      TextFragment.createFromData(data.loadData)
+      const fragment = TextFragment.createFromData(data.loadData)
+      fragment.display()
       next_step   = 'console_history'
       break
     case 'console_history':
@@ -129,39 +130,39 @@ class IO {
   |
   | Par tranche de 3000 mots
   */
-  static saveMotsOf(texte) {
-    var iCountMots = 0
+  // static saveMotsOf(texte) {
+  //   var iCountMots = 0
 
-    this.addToStack('start_section', 'fragments', null)
+  //   this.addToStack('start_section', 'fragments', null)
 
-    var firstParagIndex = null
-      , lastParagIndex  = null
-      , dataParags = [] // les données DES paragraphes
-      , dataParag  = {id:null, mots:[]} // les données DU paragraphe
-    texte.paragraphs.forEach( paragraph => {
-      if ( firstParagIndex === null ) firstParagIndex = paragraph.index
-      lastParagIndex  = paragraph.index // toujours
-      dataParag.id    = paragraph.index
-      paragraph.mots.forEach( mot => {
-        dataParag.mots.push(mot.data2save)
-        ++iCountMots
-      })
-      dataParags.push(dataParag)
-      dataParag = {id: null, mots:[]}
-      if ( iCountMots > 5000 ) {
-        this.addToStack('fragment', {id: `${firstParagIndex}-${lastParagIndex}`, paragraphs:dataParags}, 'complex')
-        dataParags  = []
-        iCountMots  = 0
-      }
-    })
-    if ( dataParag.mots.length  ) { dataParags.push(dataParag) }
-    if ( dataParags.length ) {
-      this.addToStack('fragment', {id:`${firstParagIndex}-${lastParagIndex}`, paragraphs:dataParags}, 'complex')
-    }
+  //   var firstParagIndex = null
+  //     , lastParagIndex  = null
+  //     , dataParags = [] // les données DES paragraphes
+  //     , dataParag  = {id:null, mots:[]} // les données DU paragraphe
+  //   texte.paragraphs.forEach( paragraph => {
+  //     if ( firstParagIndex === null ) firstParagIndex = paragraph.index
+  //     lastParagIndex  = paragraph.index // toujours
+  //     dataParag.id    = paragraph.index
+  //     paragraph.mots.forEach( mot => {
+  //       dataParag.mots.push(mot.data2save)
+  //       ++iCountMots
+  //     })
+  //     dataParags.push(dataParag)
+  //     dataParag = {id: null, mots:[]}
+  //     if ( iCountMots > 5000 ) {
+  //       this.addToStack('fragment', {id: `${firstParagIndex}-${lastParagIndex}`, paragraphs:dataParags}, 'complex')
+  //       dataParags  = []
+  //       iCountMots  = 0
+  //     }
+  //   })
+  //   if ( dataParag.mots.length  ) { dataParags.push(dataParag) }
+  //   if ( dataParags.length ) {
+  //     this.addToStack('fragment', {id:`${firstParagIndex}-${lastParagIndex}`, paragraphs:dataParags}, 'complex')
+  //   }
 
-    this.addToStack('end_section', 'fragments', null)
+  //   this.addToStack('end_section', 'fragments', null)
 
-  }
+  // }
 
 
 

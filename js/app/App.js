@@ -39,11 +39,20 @@ class App {
         , 'fragment_index'  : {hname:'Index du fragment de texte courant'}
         , 'app_version'     : {hname:'Version de l’application'}
       }
-    }; return this._statedata ;
+    } return this._statedata
   }
   static get STATE_KEYS(){
     return this._statekeys || ( this._statekeys = Object.keys(this.STATE_DATA) )
   }
+  /* Pour retourner les valeurs de l'état de l'application 
+      cf. getState 
+  */
+  static get_created_at()     { return this.State.created_at || hdateFor(new Date()) }
+  static get_last_open()      { return hdateFor(this.lastOpenDate || new Date()) }
+  static get_saved_at()       { return hdateFor(new Date()) }
+  static get_fragment_index() { return TextFragment.current.index }
+  static get_app_version()    { return this.APP_VERSION}
+
 
   /**
    * @return la table des données d'état à sauvegarder dans le 
@@ -53,19 +62,16 @@ class App {
   static getState(){
     const tbl = {}
     this.STATE_KEYS.forEach( stateKey => {
-      Object.assign( tbl, this[`get_${stateKey}`]() )
+      Object.assign( tbl, {[stateKey]: this[`get_${stateKey}`].call(this) })
     })
+    console.log("Table retournée par App.getState:", tbl)
     return tbl
   }
-  static get_created_at()     { return this.State.created_at || hdateFor(new Date()) }
-  static get_last_open()      { return hdateFor(this.lastOpenDate || new Date()) }
-  static get_saved_at()       { return hdateFor(new Date()) }
-  static get_fragment_index() { return TextFragment.current.index }
-  static get_app_version()    { return this.APP_VERSION}
+
 
   static setState(data){
-      this.lastOpenDate  = new Date()
-      this.State         = data
+    this.lastOpenDate  = new Date()
+    this.State         = data
   }
 
   /**

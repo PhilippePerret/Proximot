@@ -2,6 +2,23 @@
 
 class Paragraph {
 
+  static instanciate(paragsData){
+    return paragsData.map( dparag => { return this.createFromData(dparag) } )
+  }
+
+  /**
+  * Instanciation d'un paragraphe à partir de ses données remontées
+  * du package.
+  */
+  static createFromData(data){
+    let texels = data.texel_ids.split(',').map( id => {
+      return TextElement.getById(int(id))
+    })
+    const paragraph = new Paragraph(data.index, texels)
+    paragraph.fragmentIndex = data.fragmentIndex
+    return paragraph
+  }
+
   constructor(index, texels){
     this.index   = index
     this.Klass   = 'Paragraph'
@@ -9,9 +26,17 @@ class Paragraph {
     |  Les données fournies à l'instanciation sont "brutes", ce sont
     |  juste les trinomes ou les données des mots
     */
-    this.content = texels.map( dtexel => { 
-      return TextElement.createFromData(dtexel)
-    })
+    if ( texels.length && texels[0] instanceof Array ) {
+      /*
+      |  Quand les données fournies à l'instanciation viennent d'un
+      |  texte et non pas d'un package Proximot.
+      */
+      this.content = texels.map( dtexel => { 
+        return TextElement.createFromData(dtexel)
+      })
+    } else {
+      this.content = texels
+    }
   }
 
   // --- Public Methods ---
@@ -43,7 +68,6 @@ class Paragraph {
     const texels = this.texels.map( texel => {
       texel.proxAvant && proximities.push(texel.proxAvant.getData())
       texel.proxApres && proximities.push(texel.proxApres.getData())
-      console.log("texel.getData() = ", texel.getData())
       /*
       |  On relève les identifiants des texels du paragraph dans 
       |  l'ordre pour les mémoriser dans les données du paragraphe.

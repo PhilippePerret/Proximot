@@ -29,6 +29,10 @@ class TextElement {
     return TextElement.lastId ++ 
   }
 
+  static instanciate(texelsData){
+    texelsData.forEach(dtexel => { this.createFromData(dtexel) } )
+  }
+
   static createFromData(data){
     const instance_data = {}
     if ( data.length == 3 ) {
@@ -44,9 +48,23 @@ class TextElement {
       /*
       |  Données Proximot complète
       */
-      this.PROPERTIES.forEach( dproperty => {
-        instance_data[dproperty.name] = data[dproperty.index]
-      })
+      for (var kproperty in this.PROPERTIES) {
+        const dproperty = this.PROPERTIES[kproperty]
+        let value       = data[dproperty.index]
+        /*
+        |  Suivant le donnée, on peut avoir à rectifier son type
+        */
+        switch(dproperty.type) {
+        case 'int'  : 
+          value = int(value)
+          if ( value > this.lastId ) { this.lastId = value}
+          break
+        case 'bool' : 
+          value = bool(value)
+          break
+        }
+        instance_data[kproperty] = value
+      }
     }
 
     /*
