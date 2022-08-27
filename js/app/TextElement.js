@@ -30,10 +30,16 @@ class TextElement {
   }
 
   static instanciate(texelsData){
-    texelsData.forEach(dtexel => { this.createFromData(dtexel) } )
+    var curoff = 0
+    texelsData.forEach(dtexel => {
+      dtexel.push(curoff)
+      const texel = this.createFromData(dtexel)
+      curoff += texel.length
+    })
   }
 
   static createFromData(data){
+    // console.log("data texel:", data)
     const instance_data = {}
     if ( data.length == 3 ) {
       /*
@@ -70,6 +76,7 @@ class TextElement {
     /*
     |  En fonction du type, on choisit la classe fille.
     */
+    console.log("instance_data = ", instance_data)
     switch(instance_data.type){
       case 'mot':         return new Mot(instance_data)
       case 'ponct':       return new Ponctuation(instance_data)
@@ -112,12 +119,13 @@ class TextElement {
       |  où sont enregistrés les mots.
       */
       this._properties = {
-          id:         { name:'id'         , index:0, hname:'Identifiant du text-element', type:'int'}
-        , content:    { name:'_content'   , index:1, hname:'Le contenu textuel'}
-        , ttTag:      { name:'ttTag'      , index:2, hname:'Type tree-tagger du text-element'}
-        , type:       { name:'type'       , index:3, hname:'Type Proximot du text-element'}
-        , lemma:      { name:'lemma'      , index:4, hname:'Lemme du text-element'}
-        , isSelected: { name:'isSelected' , index:5, hname:'Sélection du text-element', type:'bool'}
+          id          :{ name:'id'         , index:0, hname:'Identifiant du text-element', type:'int'}
+        , content     :{ name:'_content'   , index:1, hname:'Le contenu textuel'}
+        , ttTag       :{ name:'ttTag'      , index:2, hname:'Type tree-tagger du text-element'}
+        , type        :{ name:'type'       , index:3, hname:'Type Proximot du text-element'}
+        , lemma       :{ name:'lemma'      , index:4, hname:'Lemme du text-element'}
+        , isSelected  :{ name:'isSelected' , index:5, hname:'Sélection du text-element', type:'bool'}
+        , offset      :{ name:'offset'     , index:6, hname:'Offset du mot dans le fragment'}
       }
     }
     return this._properties
@@ -170,9 +178,17 @@ class TextElement {
   
   setSelected(){
     this.obj.classList.add('selected')
+    this.isMot && this.showInfos()
   }
   unsetSelected(){
     this.obj.classList.remove('selected')
+  }
+
+  /**
+  * @return la distance absolue du text-element avec +texel+
+  */
+  distanceWith(texel){
+    return Math.abs(texel.offset - this.offset)
   }
 
   get length(){

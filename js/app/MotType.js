@@ -42,4 +42,28 @@ class MotType extends TextElement {
     this.obj.classList.remove('too-close','pxavant','pxapres')
   }
 
+
+  // --- Affichage des informations du mot ---
+  showInfos(){
+    this.showInfo('content', this.content)
+    this.showInfo('occurrences', this.occurrences)
+    this.showInfo('lemma', this.lemma)
+    this.showInfo('tttag', this.ttTag)
+    this.showInfo('lprox-mot',  this.motAvant && this.motAvant.mot)
+    this.showInfo('lprox-dist', this.motAvant && this.motAvant.distanceWith(this))
+    this.showInfo('rprox-mot',  this.motApres && this.motApres.mot)
+    this.showInfo('rprox-dist', this.motApres && this.motApres.distanceWith(this))
+    this.showInfo('offset',     this.offset)
+  }
+
+  // --- Private Methods ---
+
+  showInfo(key, value){
+    DGet(`#infos-texel-${key}`).innerHTML = value || '---'
+  }
+
+  get occurrences(){
+    return this.fragment.getLemma(this.lemma).count
+  }
+
 }

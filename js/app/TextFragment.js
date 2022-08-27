@@ -86,9 +86,12 @@ class TextFragment {
     |  Transformer les données paragraphes en instances {Paragraph}
     |  ainsi que ses text-elements en instances {TextElement}
     */
-    var paragIndex = 0
+    var paragIndex    = 0
+    var currentOffset = 0
     data.paragraphs = data.paragraphs.map(dparag => {
-      return new Paragraph(paragIndex++, dparag)
+      const paragraph = new Paragraph(paragIndex++, dparag, currentOffset)
+      currentOffset += paragraph.length
+      return paragraph
     })
     /*
     |  Transformer les données proximités en proximités, si c'est
@@ -143,6 +146,7 @@ class TextFragment {
   * Affichage du fragment
   */
   display(){
+    Editor.fragment = this
     this.displayIn(Editor.content)
     this.showProximites()
   }
@@ -271,10 +275,11 @@ class TextFragment {
   /**
    * Affichage du fragment dans le conteneur +container+
    * (c'est normalement l'éditeur, mais ça pourrait être aussi une
-   *  autre fenêtre quand on veut visualiser une autre partie).
+   *  autre fenêtre quand on veut visualiser une autre partie du 
+   *  texte dans un cadre volant par exemple).
    * 
    * Cette méthode en profite aussi pour définir la propriété @fragment
-   * des mots.
+   * des paragraphes affichés.
    */
   displayIn(container){
     this.forEachParagraph( paragraph => {

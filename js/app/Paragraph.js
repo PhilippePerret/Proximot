@@ -3,7 +3,13 @@
 class Paragraph {
 
   static instanciate(paragsData){
-    return paragsData.map( dparag => { return this.createFromData(dparag) } )
+    var currentOffset = 0
+    return paragsData.map( dparag => { 
+      Object.assign(dparag, {offset: currentOffset})
+      const paragraph = this.createFromData(dparag)
+      currentOffset += paragraph.length
+      return paragraph
+    })
   }
 
   /**
@@ -14,14 +20,15 @@ class Paragraph {
     let texels = data.texel_ids.split(',').map( id => {
       return TextElement.getById(int(id))
     })
-    const paragraph = new Paragraph(data.index, texels)
+    const paragraph = new Paragraph(data.index, texels, data.offset)
     paragraph.fragmentIndex = data.fragmentIndex
     return paragraph
   }
 
-  constructor(index, texels){
+  constructor(index, texels, offset){
     this.index   = index
     this.Klass   = 'Paragraph'
+    this.offset  = offset
     /*
     |  Les données fournies à l'instanciation sont "brutes", ce sont
     |  juste les trinomes ou les données des mots
@@ -31,8 +38,12 @@ class Paragraph {
       |  Quand les données fournies à l'instanciation viennent d'un
       |  texte et non pas d'un package Proximot.
       */
-      this.content = texels.map( dtexel => { 
-        return TextElement.createFromData(dtexel)
+      var currentMotOffset = 0
+      this.content = texels.map( dtexel => {
+        dtexel.push(this.offset + currentMotOffset)
+        texel = TextElement.createFromData(dtexel)
+        if ( texel.isMot ) currentMotOffset += texel.length
+        return texel
       })
     } else {
       this.content = texels
@@ -78,11 +89,6 @@ class Paragraph {
       */
       return texel.getData()
     })
-
-    // console.log("\nDONNÉES DU PARAGRAPH %i", this.index)
-    // console.log("ids texels: ", texel_ids)
-    // console.log("texels:", texels)
-    // console.log("proxis:", proximities)
 
     return {
         metadata: {

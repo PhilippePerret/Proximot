@@ -201,7 +201,6 @@ class Mot extends MotType {
 
   // --- /Listener Methods ---
 
-
   build(){
     const o = DCreate('SPAN', {id:this.domId, class:'texel mot'})
     o.innerHTML = this.mot

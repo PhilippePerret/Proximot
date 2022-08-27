@@ -2,11 +2,11 @@
 
 ## En cours
 
+* infos :
+  * proximité
 
-* Poursuivre le chargement d'un fichier Proximot
-  - dispatcher les données du fragment (toutes les autres sont traitées)  
+* Afficher l'info du mot sélectionné en haut, toujours
 * Pouvoir passer au fragment suivant (gros morceau, car c'est un fragment virtuel)
-
 * Pouvoir passer d'un paragraphe à l'autre avec les flèches de sélection
   + CMD+flèche Haut/bas permet de passer au paragraphe inférieur/supérieur
 * Poursuivre les tooltips de la console

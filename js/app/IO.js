@@ -86,7 +86,7 @@ class IO {
   */
   static loadAllFromPackage(data){
 
-   console.log("[onReceiveProximotData] Je reçois ces données pour le chargement de '%s'", data.loading_step, data)
+   // console.log("[onReceiveProximotData] Je reçois ces données pour le chargement de '%s'", data.loading_step, data)
 
     var next_step, extra_data ;
 
@@ -122,48 +122,4 @@ class IO {
 
   }
 
-
-// Private Methods
-
-  /*
-  | ENREGISTREMENT DES MOTS 
-  |
-  | Par tranche de 3000 mots
-  */
-  // static saveMotsOf(texte) {
-  //   var iCountMots = 0
-
-  //   this.addToStack('start_section', 'fragments', null)
-
-  //   var firstParagIndex = null
-  //     , lastParagIndex  = null
-  //     , dataParags = [] // les données DES paragraphes
-  //     , dataParag  = {id:null, mots:[]} // les données DU paragraphe
-  //   texte.paragraphs.forEach( paragraph => {
-  //     if ( firstParagIndex === null ) firstParagIndex = paragraph.index
-  //     lastParagIndex  = paragraph.index // toujours
-  //     dataParag.id    = paragraph.index
-  //     paragraph.mots.forEach( mot => {
-  //       dataParag.mots.push(mot.data2save)
-  //       ++iCountMots
-  //     })
-  //     dataParags.push(dataParag)
-  //     dataParag = {id: null, mots:[]}
-  //     if ( iCountMots > 5000 ) {
-  //       this.addToStack('fragment', {id: `${firstParagIndex}-${lastParagIndex}`, paragraphs:dataParags}, 'complex')
-  //       dataParags  = []
-  //       iCountMots  = 0
-  //     }
-  //   })
-  //   if ( dataParag.mots.length  ) { dataParags.push(dataParag) }
-  //   if ( dataParags.length ) {
-  //     this.addToStack('fragment', {id:`${firstParagIndex}-${lastParagIndex}`, paragraphs:dataParags}, 'complex')
-  //   }
-
-  //   this.addToStack('end_section', 'fragments', null)
-
-  // }
-
-
-
-}
+} // class IO

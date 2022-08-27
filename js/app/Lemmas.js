@@ -180,7 +180,9 @@ class Lemma {
   }
 
   /** @return TRUE si le Lemma possède déjà des mots */
-  get hasMots(){return this.positions.length > 0}
+  get hasMots(){return this.count > 0}
+
+  get count(){return this.positions.length }
 
   get hasOnlyOneMot(){return this.positions.length == 1}
   

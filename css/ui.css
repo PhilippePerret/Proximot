@@ -41,3 +41,27 @@ section#section-console div#console-footer div#console-status {
   right: 14px;
   text-align: right;
 }
+
+
+/*
+  --- TABLE DES INFORMATIONS ---
+*/
+section#infos {
+  position: fixed;
+  top: 0;
+  left: 4em;
+}
+section#infos table {
+  font-size: 0.8em;
+  /*border: 1px solid;*/
+}
+section#infos table tr td {
+  width: 80px;
+  overflow: hidden;
+  text-align: center;
+}
+section#infos table tr#infos-line-sup td {
+  height: 10px;
+  margin: 0;
+  padding: 0;
+}
