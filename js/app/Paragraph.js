@@ -42,15 +42,22 @@ class Paragraph {
       this.content = texels.map( dtexel => {
         dtexel.push(this.offset + currentMotOffset)
         texel = TextElement.createFromData(dtexel, this.fragment)
+        texel.paragraph = this
         if ( texel.isMot ) currentMotOffset += texel.length
         return texel
       })
     } else {
+      texels.forEach(texel => texel.paragraph = this)
       this.content = texels
     }
   }
 
   // --- Public Methods ---
+
+  /**
+  * @return true si le paragraphe est construit
+  */
+  isBuilt(){ return this._isbuilt }
 
   /**
   * Pour faire une boucle sur tous les mots du paragraphe
@@ -139,30 +146,12 @@ class Paragraph {
 
   // --- Listener Methods ---
 
-  onClick(e){
-    console.log("J'ai cliqué le paragraphe", this.content)
-    // return stopEvent(e)
-  }
-  onMouseOver(e){return stopEvent(e)}
-
+  // --- DOM Methods ---
 
   build(){
-    const o = DCreate('DIV', {class:'paragraph'})
-    this.content.forEach(texel => {
-      texel.fragment = this.fragment
-      o.appendChild( texel.span )
-    })
-    this.observe(o)
-    return o
+    return DCreate('DIV', {class:'paragraph'})
   }
   
-  observe(o){
-
-  }
-
-  get fragment() { return this._fragment }
-  set fragment(frag){ this._fragment = frag }
-
   // --- Private Methods ---
 
   countMots(){

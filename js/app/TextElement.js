@@ -35,12 +35,18 @@ class TextElement {
     |  servir à connaitre l'ordre des données — s'il est modifié)
     */
     texelsData.shift()
+    /*
+    |  La liste des instances {TextElement} retournée
+    */
+    const texels = []
     var curoff = 0
     texelsData.forEach(dtexel => {
       dtexel.push(curoff)
       const texel = this.createFromData(fragment, dtexel)
+      texels.push(texel)
       curoff += texel.length
     })
+    return texels
   }
 
   static createFromData(fragment, data){
@@ -172,6 +178,19 @@ class TextElement {
   }
   setData(data){
     for(var prop in data){ if ( prop != 'type' ) this[prop] = data[prop]}    
+  }
+
+  // --- DOM Méthods ---
+
+  /**
+  * Construction du texel
+  */
+  buildIn(container){
+    if ( not(this.paragraph.isBuilt() ) ) {
+      container.appendChild(this.paragraph.div)
+      this.paragraph._isbuilt = true
+    }
+    this.paragraph.div.appendChild(this.obj)
   }
 
   /* Raccourci */

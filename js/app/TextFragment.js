@@ -46,11 +46,7 @@ class TextFragment {
     /*
     |  Les Text-elements du fragment
     */
-    const texels = data.texels    
-    /*
-    |  On instancie tous les texels
-    */
-    TextElement.instanciate(fragment, texels)
+    fragment.texels = TextElement.instanciate(fragment, data.texels)
 
     /*
     |  Traitement des paragraphes
@@ -89,11 +85,14 @@ class TextFragment {
     */
     var paragIndex    = 0
     var currentOffset = 0
+    const texels = []
     fragment.paragraphs = data.paragraphs.map(dparag => {
       const paragraph = new Paragraph(fragment, paragIndex++, dparag, currentOffset)
       currentOffset += paragraph.length
+      texels.push(paragraph.texels)
       return paragraph
     })
+    fragment.texels = texels
 
     /*
     |  Mettre le fragment en fragment courant et le retourner
@@ -155,6 +154,18 @@ class TextFragment {
   forEachMot(method){
     this.mots.forEach(method)
   }
+  /**
+  * Boucle sur tous les mots affichés du fragment
+  */
+  forEachDisplayedMot(method){
+    this.displayedMots.forEach(method)
+  }
+  /**
+  * Boucle sur tous les texels affichés du fragment
+  */
+  forEachDisplayedTexel(method){
+    this.displayedTexels.forEach(method) 
+  }
 
   /**
    * Analyse du fragment
@@ -170,12 +181,30 @@ class TextFragment {
    }
 
   /**
+   * Affichage du fragment dans le conteneur +container+
+   * (c'est normalement l'éditeur, mais ça pourrait être aussi une
+   *  autre fenêtre quand on veut visualiser une autre partie du 
+   *  texte dans un cadre volant par exemple).
+   * 
+   * Noter que ça n'affiche que les "displayedMot" du fragment
+   * 
+   */
+  displayIn(container){
+    // this.forEachParagraph( paragraph => {
+    //   container.appendChild(paragraph.div)
+    // })
+    this.forEachDisplayedTexel( texel => {
+      texel.buildIn(container)
+    })
+  }
+
+  /**
    * Affichage des proximités du fragment
    * 
    * Note : il faut avoir analysé le fragment (this.analyze) avant
    * de pouvoir afficher les proximities
    */
-  showProximites(){ this.forEachMot(mot => {mot.showProximities()}) }
+  showProximites(){ this.forEachDisplayedMot(mot => {mot.showProximities()}) }
 
   /**
   * @return la table des données du fragment (rappel : les données
@@ -230,21 +259,6 @@ class TextFragment {
     }
   }
   
-  /**
-   * Affichage du fragment dans le conteneur +container+
-   * (c'est normalement l'éditeur, mais ça pourrait être aussi une
-   *  autre fenêtre quand on veut visualiser une autre partie du 
-   *  texte dans un cadre volant par exemple).
-   * 
-   * Cette méthode en profite aussi pour définir la propriété @fragment
-   * des paragraphes affichés.
-   */
-  displayIn(container){
-    this.forEachParagraph( paragraph => {
-      paragraph.fragment = this;
-      container.appendChild(paragraph.div)
-    })    
-  }
 
   /**
    * Méthode qui checke la proximité du +mot+ {Mot}
@@ -388,8 +402,42 @@ class TextFragment {
     return this._lemmas || (this._lemmas = new Lemmas(this))
   }
 
+  /**
+  * Retourne tous les mots du fragment, même les mots cachés
+  */
   get mots(){
     return this._mots || (this._mots = this.getMots() )
+  }
+
+  /**
+  * @return {Array of TextElement} La liste des texels affiché
+  * 
+  */
+  get displayedTexels(){
+    const firstIndexMot = this.getFirstIndexDisplayedMot()
+    const lastIndice    = this.getLastIndexDisplayedMot()
+    return this.texels.slice(firstIndexMot, lastIndice)
+  }
+  /**
+  * @return {Array of TypeMot} La liste des mots affichés
+  */
+  get displayedMots(){
+    const firstIndexMot = this.getFirstIndexDisplayedMot()
+    const lastIndice    = this.getLastIndexDisplayedMot()
+    return this.mots.slice(firstIndexMot, lastIndice)
+  }
+  get firstIndexDisplayedMot(){
+    return this._firstidxmot || (this._firstidxmot = this.getFirstIndexDisplayedMot())
+  }
+  get lastIndexDisplayedMot(){
+    return this._lastidxmot || (this._lastidxmot = this.getLastIndexDisplayedMot())
+  }
+  getFirstIndexDisplayedMot(){
+    return this.index > 0 ? 500 : 0
+  }
+  getLastIndexDisplayedMot(){
+    const isLastIndex   = not(this.index < int(App.fragments_data.count) - 1)
+    return this.mots.length - (isLastIndex ? 0 : 500)
   }
 
   get text(){

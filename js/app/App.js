@@ -37,6 +37,7 @@ class App {
         , 'last_open'       : {hname:'Date de dernière ouverture de l’analyse'}
         , 'saved_at'        : {hname:'Date de dernière sauvegarde de l’analyse'} 
         , 'fragment_index'  : {hname:'Index du fragment de texte courant'}
+        , 'fragments_data'  : {hname:'Données de tous les fragments du texte'}
         , 'app_version'     : {hname:'Version de l’application'}
       }
     } return this._statedata
@@ -52,7 +53,7 @@ class App {
   static get_saved_at()       { return hdateFor(new Date()) }
   static get_fragment_index() { return TextFragment.current.index }
   static get_app_version()    { return this.APP_VERSION}
-
+  static get_fragments_data() { return this.fragments_data }
 
   /**
    * @return la table des données d'état à sauvegarder dans le 
@@ -84,6 +85,40 @@ class App {
     console.error(err.backtrace)
   }
   
-  static get State(){ return this._state || {} }
+  static get State(){ return this._state || {fragments: this.fragments_data } }
   static set State(state){this._state = state}
+
+  static get fragments_data(){
+    return {
+        count: 1
+      , 0: {index: 0, offset: 0}
+    }
+  }
+  /**
+  * Pour actualiser un fragment
+  * 
+  * Note : si la longueur du fragment a changé, cela actualise aussi
+  * les offsets des fragments suivants
+  */
+  static setFragment(fragment){
+    const lastFragmentLength = this.fragments_data[fragment.index].length
+    /*
+    |  On actualise la donnée
+    */
+    Object.assign(this.fragments_data, {[fragment.index]: {
+        index   : fragment.index
+      , offset  : fragment.offset
+      , length  : fragment.length  
+    }})
+    /*
+    |  Si la longueur du fragment a changé, on actualise l'offset de
+    |  tous les fragments suivants
+    */
+    if ( fragment.length != lastFragmentLength ) {
+      for (var ifragment = fragment.index + 1; ifragment < fragments_data.count; ++ifragment){
+        const prevFramentData = this.fragments_data[ifragment - 1]
+        this.fragments_data[ifragment].offset = prevFramentData.offset + prevFramentData.length
+      }
+    }
+  }
 }
