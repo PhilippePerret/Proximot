@@ -14,7 +14,7 @@ $(document).ready(e => {
   | un fichier .pxw (Proximot).
   */
   try {
-    WAA.send({class:'Proximot::App',method:'load_text'})
+    WAA.send({class:'Proximot::App',method:'load'})
     console.log("Ready!")
   } catch (err) {
     console.error(err)

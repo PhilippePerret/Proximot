@@ -120,6 +120,38 @@ class IO {
       WAA.send({class:'Proximot::IO',method:'load_from_current',data:ndata})
     }
 
+  } // loadAllFromPackage
+
+  static loadAllFromText(data){
+    try {    
+      console.log("[onReceiveFromText] Je reçois ces données texte : ", data)
+      return 
+      this.lastOpenDate = new Date()
+      /*
+      |  Instanciation du fragment
+      */
+      const fragment = TextFragment.createFromData(data)
+      /*
+      |  Affichage du fragment
+      */
+      fragment.display()
+      /*
+      |  On règle les données du premier fragment
+      */
+      this.fragments_data = {
+          count: 1
+        , 0: {index:0, offset:0, lenInFile: data.fragment_length}
+      }
+      /*
+      |  Une fois que c'est fini, on peut demander de relever les
+      |  information des autres fragments si nécessaire.
+      */
+      data.other_fragments && this.getDataOtherFragments(data.text_path)
+    
+    } catch(err) {
+      console.error(err)
+    }
+
   }
 
 } // class IO

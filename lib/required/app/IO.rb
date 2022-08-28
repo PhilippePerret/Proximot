@@ -18,17 +18,32 @@ class << self
   #        data['prox_path'] {String} Chemin d'accès au fichier .pxw
   #
   def load_from_package(data)
-    puts "\n\n-> load_from_current(data) Entrée avec data: #{data.pretty_inspect}"
-    package = PXWPackage.new(prox_path:data['prox_path'], text_path:data['text_path'])
-    data.merge!(loadData: package.send("load_#{data['loading_step']}".to_sym, data))
-    puts "\n\nDonnées à retourner : #{data.pretty_inspect}"
+    package = PXWPackage.new(
+      prox_path:  data['prox_path'], 
+      text_path:  data['text_path']
+    )
+    data.merge!(
+      loadData:   package.send("load_#{data['loading_step']}".to_sym, data)
+    )
     WAA.send(class:'IO', method:'loadAllFromPackage', data: data)
   rescue Exception => e
     puts e.message.rouge
     puts e.backtrace.join("\n").rouge
-    WAA.send(class:'App', method:'onError', data:{message:"[App.rb#load_proximot_file] #{e.message}", backtrace:e.backtrace})
+    WAA.send(class:'App', method:'onError', data:{message:"[IO.rb#load_from_package] #{e.message}", backtrace:e.backtrace})
   ensure
     return true # mettre false pour lancer l'application
+  end
+
+  def load_from_text(data)
+    WAA.send(
+      class:  'IO',
+      method: 'loadAllFromText', 
+      data:   get_first_fragment_analyzed(data['text_path'])
+    )
+  rescue Exception => e
+    puts e.message.rouge
+    puts e.backtrace.join("\n").rouge
+    WAA.send(class:'App', method:'onError', data:{message:"[IO.rb#load_from_text] #{e.message}", backtrace:e.backtrace})
   end
 
   ##
@@ -85,6 +100,75 @@ class << self
     WAA.send(class:'IO', method:'saveAll', data:data)
   end
 
+
+private
+
+
+  ##
+  # Procède à l'analyse du premier fragment de texte contenu dans 
+  # le fichier de chemin +path+
+  # 
+  # @return L'analyse
+  def get_first_fragment_analyzed(path)
+    params = {}
+    
+    #
+    # Dossier du texte
+    # 
+    text_folder = File.dirname(path)
+
+    # 
+    # Existe-t-il un fichier lexicon (mots propres ?)
+    # 
+    if File.exist?(File.join(text_folder,'lexicon.lex'))
+      params.merge!(lexicon: File.join(text_folder,'lexicon.lex'))
+    end
+
+    #
+    # Taille du fichier (pour savoir comment il va falloir le
+    # découper — ou pas)
+    # 
+    file_size = File.size(path).freeze
+
+    # 
+    # Le texte doit-il être fragmenté ?
+    # 
+    if file_size > App::MAX_FRAGMENT_SIZE
+      # Pour avoir juste quelques paragraphes :
+      # text_fragment = File.read(path, 400)
+
+      # 
+      # On récupère juste le nombre nécessaire de caractères
+      text_fragment = File.read(path, App::MAX_FRAGMENT_SIZE)
+      last_break    = text_fragment.rindex(/[\.\n]/)
+      text_fragment = text_fragment[0..last_break]
+
+    else
+
+      # 
+      # Pour un texte court (< 10 pages)
+      # 
+      text_fragment = File.read(path)
+    
+    end
+    #
+    # Les données du premier fragment
+    # 
+    params.merge!(
+      text_path:        path,
+      prox_path:        nil,
+      fragment_index:   0,
+      fragment_offset:  0,
+      fragment_length:  text_fragment.length,
+      other_fragments:  text_fragment.length < file_size
+    )
+    # 
+    # On procède à l'analyse et on retourne le fragment analysé,
+    # sous forme de données fragment telles que Proximot pourra les
+    # utiliser côté client.
+    # 
+    return TTAnalyzer.new.analyzeAsFragment(text_fragment, params)
+  end
 
 end #/<< self
 

@@ -26,11 +26,14 @@ class << self
   ##
   # Pour charger le texte à analyser/travailler
   #
+  # Ce texte peut provenir soit d'un texte non encore analysé soit
+  # d'un package Proximot
+  #
   # C'est cette méthode qui est appelée après le lancement de l'app
   # pour charger le texte à analyser (soit en version brut, soit en
   # version déjà analysée).
   # 
-  def load_text
+  def load
     #
     # On cherche un texte valide à proximité…
     # 
@@ -56,9 +59,9 @@ class << self
       # Un fichier texte normal (.txt)
       # 
       
-      frag_data = load_from_text(file_path)
+      load_data = {'text_path' => file_path}
+      IO.load_from_text(load_data)
 
-      WAA.send(class:'App',method:'onReceiveFromText',data:frag_data)
     end
   end
 
@@ -69,63 +72,6 @@ class << self
   def save_text(data)
     # puts "-> App::save_text avec les données : #{data.pretty_inspect}".bleu
     IO.save_current(data)
-  end
-
-  ##
-  # Procède à l'analyse du texte contenu dans le fichier de chemin
-  # +path+
-  # 
-  # @return L'analyse
-  def load_from_text(path)
-    params = {}
-    
-    #
-    # Dossier du texte
-    # 
-    text_folder = File.dirname(path)
-
-    # 
-    # Existe-t-il un fichier lexicon (mots propres ?)
-    # 
-    if File.exist?(File.join(text_folder,'lexicon.lex'))
-      params.merge!(lexicon: File.join(text_folder,'lexicon.lex'))
-    end
-
-    file_size = File.size(path).freeze
-
-    # 
-    # Le texte doit-il être fragmenté ?
-    # 
-    if file_size > MAX_FRAGMENT_SIZE
-      # Pour avoir juste quelques paragraphes :
-      # text_fragment = File.read(path, 400)
-
-      # 
-      # On récupère juste le nombre nécessaire de caractères
-      text_fragment = File.read(path, MAX_FRAGMENT_SIZE)
-      last_break    = text_fragment.rindex(/[\.\n]/)
-      text_fragment = text_fragment[0..last_break]
-
-    else
-      text_fragment = File.read(path)
-    end
-    #
-    # Les données du premier fragment
-    # 
-    params.merge!(
-      text_path:        path,
-      prox_path:        nil,
-      fragment_index:   0,
-      fragment_offset:  0,
-      fragment_length:  text_fragment.length,
-      other_fragments:  text_fragment.length < file_size
-    )
-    # 
-    # On procède à l'analyse et on retourne le fragment analysé,
-    # sous forme de données fragment telles que Proximot pourra les
-    # analyser côté client.
-    # 
-    return TTAnalyzer.new.analyzeAsFragment(text_fragment, params)
   end
 
   ##
