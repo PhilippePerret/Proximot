@@ -124,7 +124,7 @@ class TextFragment {
             |  Note : excommenter cette ligne pour voir tous les texels
             |  qui ne sont pas considérés comme des mots TODO
             */
-            console.log("Pas un mot : ", dtexel)
+            // console.log("Pas un mot : ", dtexel)
           }
           /*
           |  Instanciation du texel

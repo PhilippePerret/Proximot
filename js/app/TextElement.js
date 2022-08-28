@@ -153,7 +153,6 @@ class TextElement {
   get PROPERTIES_KEYS(){return this.constructor.PROPERTIES_KEYS}
 
 
-
   // ############     INSTANCE     ##########
 
 

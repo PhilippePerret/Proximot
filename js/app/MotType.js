@@ -100,14 +100,12 @@ class MotType extends TextElement {
   * Affiche les proximités du mot
   */
   showProximities(){
-    console.log("Je dois montrer les proximités de ", this)
+    // console.log("Je dois montrer les proximités de ", this)
     if ( this.hasProximities ) {
       /*
       |  Quand le mot est en proximité
       */
-      console.log("Il en a")
       this.obj.classList.add(...this.cssProximities())
-      console.log("L'objet devient :", this.obj)
     } else {
       /*
       |  Quand le mot n'est pas en proximité
@@ -120,7 +118,6 @@ class MotType extends TextElement {
     const css = ['too-close']
     this.proxAvant && css.push('pxavant', this.proxAvant.eloignement)
     this.proxApres && css.push('pxapres', this.proxApres.eloignement)
-    console.log("css à appliquer", css)
     return css
   }
 
