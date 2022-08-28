@@ -172,11 +172,16 @@ class ConsoleCommandManager {
 
   /* Sélectionner mot suivant ou premier */
   selectNextWordOrFirst(e){
+    console.log("-> next mot", {
+        texel_courant: Editor.Selection.current
+      , nombre_mots:   Fragment.current.mots.length
+      , dernier_index_possible: Editor.lastAvailableIndex
+    })
     e.preventDefault()
     if ( Editor.Selection.isEmpty ) {
       // Aucune sélection => sélectionner le premier mot
       Editor.selectMotByIndex(0)
-    } else if ( Editor.Selection.last.index < Editor.lastAvailableIndex ) {
+    } else if ( Editor.Selection.current.index < Editor.lastAvailableIndex ) {
       Editor.selectMotByIndex(Editor.Selection.last.index + 1)
     } else {
       message("C'est le dernier mot !")
@@ -190,7 +195,7 @@ class ConsoleCommandManager {
     if ( Editor.Selection.isEmpty ) {
       // Aucune sélection => sélection le premier mot
       Editor.selectMotByIndex(0)
-    } else if (Editor.Selection.last.index > 0) {
+    } else if (Editor.Selection.current.index > 0) {
       // Sélection du mot précédent
       Editor.selectMotByIndex(Editor.Selection.last.index - 1)
     } else {

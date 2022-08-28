@@ -50,7 +50,7 @@ class TextFragment {
     /*
     |  Les Text-elements du fragment
     */
-    fragment.texels = TextElement.instanciate(fragment, data.texels)
+    fragment.texels = TextElement.instanciateFromPackage(fragment, data.texels)
 
     /*
     |  Traitement des paragraphes
@@ -65,7 +65,7 @@ class TextFragment {
     |  compte les états définis (ignorance, etc.)
     |
     */
-    Proximity.instantiate(fragment, data.proxis)
+    Proximity.instanciate(fragment, data.proxis)
 
     /*
     |  On peut instancier le fragment, le mettre en fragment 
@@ -129,7 +129,7 @@ class TextFragment {
           /*
           |  Instanciation du texel
           */
-          const texel = TextElement.createFromData(fragment, dtexel)
+          const texel = TextElement.createFromTextData(fragment, dtexel)
           /*
           |  Prochain offset
           */

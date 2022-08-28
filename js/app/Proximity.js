@@ -22,7 +22,7 @@ class Proximity {
   /**
   * Instancie les données remontée d'un package Proximot
   */
-  static instantiate(fragment, data){
+  static instanciate(fragment, data){
     if ( data && data[0][0] == "id") {
       /*
       |  Si la première donnée proximité est la rangée de noms de

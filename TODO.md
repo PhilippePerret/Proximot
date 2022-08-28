@@ -2,6 +2,10 @@
 
 ## En cours
 
+* régler les espaces à l'affichage
+  - parenthèse ouverte : espace avant et pas espace après
+  - chevron ouvert : espace avant et pas espace après
+  
 * Autre fonctionnement pour "raccord" : on prend les 500 mots avant et après d'un fragment précédent et suivant
 * Changement du travail sur les proximités
   Maintenant :

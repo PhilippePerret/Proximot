@@ -2,6 +2,10 @@
 
 class Paragraph {
 
+  /**
+  * Instancie tous les paragraphes d'après les données +paragsData+
+  * qui sont des données remontées d'un package.
+  */
   static instanciate(fragment, paragsData){
     var currentOffset = 0
     return paragsData.map( dparag => { 
@@ -17,9 +21,10 @@ class Paragraph {
   * du package.
   */
   static createFromData(fragment, data){
-    let texels = data.texel_ids.split(',').map( id => {
+    const texels = data.texel_ids.split(',').map( id => {
       return TextElement.getById(int(id))
     })
+    console.log("texels des paragraphes ", texels)
     const paragraph = new Paragraph(fragment, data.index, texels, data.offset)
     return paragraph
   }

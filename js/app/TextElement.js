@@ -29,7 +29,7 @@ class TextElement {
     return TextElement.lastId ++ 
   }
 
-  static instanciate(fragment, texelsData){
+  static instanciateFromPackage(fragment, texelsData){
     /*
     |  On retire la première ligne des labels (plus tard, elle pourra
     |  servir à connaitre l'ordre des données — s'il est modifié)
@@ -42,53 +42,62 @@ class TextElement {
     var curoff = 0
     texelsData.forEach(dtexel => {
       dtexel.push(curoff)
-      const texel = this.createFromData(fragment, dtexel)
+      const texel = this.createFromDataPackage(fragment, dtexel)
       texels.push(texel)
       curoff += texel.length
     })
     return texels
   }
 
-  static createFromData(fragment, data){
-    // console.log("data texel:", data)
+  static createFromDataPackage(fragment, data) {
+    // console.log("data texel initiales:", data)
     const dInstance = {}
-    if ( data instanceof Array ) {
+    /*
+    |  Données Proximot complète
+    */
+    for (var kproperty in this.PROPERTIES) {
+      const dproperty = this.PROPERTIES[kproperty]
+      let value       = data[dproperty.index]
       /*
-      |  Données venant d'un texte non analysé
+      |  Suivant le donnée, on peut avoir à rectifier son type
       */
-      const [content, ttTag, lemma, offset] = data
-      dInstance._content  = content
-      dInstance.ttTag     = ttTag
-      dInstance.lemma     = lemma
-      dInstance.type      = this.getTypeFromTTaggerType(ttTag, content)
-      dInstance.offset    = offset
-    } else {
-      /*
-      |  Données Proximot complète
-      */
-      for (var kproperty in this.PROPERTIES) {
-        const dproperty = this.PROPERTIES[kproperty]
-        let value       = data[dproperty.index]
-        /*
-        |  Suivant le donnée, on peut avoir à rectifier son type
-        */
-        switch(dproperty.type) {
-        case 'int'  : 
-          value = int(value)
-          if ( value > this.lastId ) { this.lastId = value}
-          break
-        case 'bool' : 
-          value = bool(value)
-          break
-        }
-        dInstance[kproperty] = value
+      switch(dproperty.type) {
+      case 'int'  : 
+        value = int(value)
+        if ( value > this.lastId ) { this.lastId = value}
+        break
+      case 'bool' : 
+        value = bool(value)
+        break
       }
+      dInstance[kproperty] = value
     }
+    /*
+    |  En fonction du type, on choisit la classe fille.
+    */
+    // console.log("dInstance pour l'instancier = ", dInstance)
+    const instance = this.instantiateByType(fragment, dInstance)
+
+    return instance
+  }
+
+  static createFromTextData(fragment, data){
+    // console.log("data texel initiales:", data)
+    const dInstance = {}
+    /*
+    |  Données venant d'un texte non analysé
+    */
+    const [content, ttTag, lemma, offset] = data
+    dInstance._content  = content
+    dInstance.ttTag     = ttTag
+    dInstance.lemma     = lemma
+    dInstance.type      = this.getTypeFromTTaggerType(ttTag, content)
+    dInstance.offset    = offset
 
     /*
     |  En fonction du type, on choisit la classe fille.
     */
-    // console.log("dInstance = ", dInstance)
+    // console.log("dInstance pour l'instancier = ", dInstance)
     const instance = this.instantiateByType(fragment, dInstance)
 
     return instance

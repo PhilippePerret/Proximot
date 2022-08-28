@@ -62,7 +62,12 @@ class App {
     console.error(err.backtrace)
   }
   
-  static get State(){ return this._state || {fragments: this.fragments_data } }
+  static get State(){ 
+    return this._state || { /* valeurs par défaut */
+        fragments: this.fragments_data
+      , last_texel_id: 0
+    }
+  }
   static set State(state){this._state = state}
 
   static get fragments_data(){

@@ -86,7 +86,7 @@ class IO {
   */
   static loadAllFromPackage(data){
 
-   // console.log("[onReceiveProximotData] Je reçois ces données pour le chargement de '%s'", data.loading_step, data)
+   // console.log("[loadAllFromPackage] Je reçois ces données pour le chargement de '%s'", data.loading_step, data)
 
     var next_step, extra_data ;
 
@@ -117,7 +117,7 @@ class IO {
         , loading_step: next_step
       }
       if ( extra_data ) Object.assign(ndata, extra_data)
-      WAA.send({class:'Proximot::IO',method:'load_from_current',data:ndata})
+      WAA.send({class:'Proximot::IO',method:'load_from_package',data:ndata})
     }
 
   } // loadAllFromPackage
