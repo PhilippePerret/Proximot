@@ -13,15 +13,9 @@ class AnyText extends TextElement {
 
   get type(){return 'anytexel'}
 
-  build(){
-    const o = DCreate('SPAN', {id:this.domId, class:'texel anytext'})
-    o.innerHTML = this.content
-    this.observe(o)
-    return o
+  get css(){
+    return super.getCssClasses(['anytext'])
   }
 
-  observe(){
-    
-  }
 
 }

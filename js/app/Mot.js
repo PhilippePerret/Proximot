@@ -101,20 +101,19 @@ class Mot extends MotType {
 
   // --- /Listener Methods ---
 
-  build(){
-    const o = DCreate('SPAN', {id:this.domId, class:'texel mot'})
-    o.innerHTML = this.mot
-    this.observe(o)
-    return o
-  }
   observe(o){
     o.addEventListener('click', this.onClick.bind(this))
   }
+
 
   // --- Private Methods ---
 
   get isTooShort(){
     return this.content.length < Mot.minLengthWord
+  }
+
+  get css(){
+    return super.getCssClasses(['mot'])
   }
 
   static get minLengthWord(){

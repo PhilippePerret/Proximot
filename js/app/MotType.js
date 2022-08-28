@@ -155,4 +155,8 @@ class MotType extends TextElement {
   get motAvant(){ return this.proxAvant ? this.proxAvant.mot : null}
   get motApres(){ return this.proxApres ? this.proxApres.mot : null}
 
+  get css(){
+    return super.getCssClasses(['ponct'])
+  }
+
 }

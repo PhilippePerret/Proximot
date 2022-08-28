@@ -33,8 +33,13 @@
   margin-left: 8pt;
   z-index: 1;
 }
-#editor #content .texel.ponct:not(.ponct-is) {
+
+/* Les texels ayant une insécable avant */
+#editor #content .texel.ponct:not(.space-before) {
   margin-left: 0pt;
+}
+#editor #content .texel.no-space-after + * {
+  margin-left: 0px !important;
 }
 
 /*

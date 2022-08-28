@@ -233,6 +233,16 @@ class TextElement {
 
   // --- /Public Methods ---
 
+
+  // --- DOM Methods ---
+
+  build(){
+    const o = DCreate('SPAN', {id:this.domId, class:this.css})
+    o.innerHTML = this.content
+    this.observe(o)
+    return o
+  }
+
   get domId(){
     return this._domid || (this._domid = `${this.type}-${this.id}`)
   }
@@ -253,4 +263,18 @@ class TextElement {
   onMouseOver(e){
     return stopEvent(e)
   }
+
+  getCssClasses(classesCss){
+    classesCss.push('texel')
+    this.hasSpaceBefore   && classesCss.push('space-before')
+    this.hasNoSpaceAfter  && classesCss.push('no-space-after')
+    return classesCss.join(' ')
+  }
+  get hasSpaceBefore(){
+    return this._hasinsec || ( this._hasinsec = this.content.match(/[\(«»\!\?\;\:]/))
+  }
+  get hasNoSpaceAfter(){
+    return this._hasnospaf || ( this._hasnospaf = this.content.match(/[\(']$/))
+  }
+
 }

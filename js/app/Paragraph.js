@@ -24,7 +24,6 @@ class Paragraph {
     const texels = data.texel_ids.split(',').map( id => {
       return TextElement.getById(int(id))
     })
-    console.log("texels des paragraphes ", texels)
     const paragraph = new Paragraph(fragment, data.index, texels, data.offset)
     return paragraph
   }

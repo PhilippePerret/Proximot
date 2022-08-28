@@ -17,15 +17,10 @@ class SpecChar extends TextElement {
     return stopEvent(e)
   }
 
+  // --- Private Methods ---
 
-  build(){
-    const o = DCreate('SPAN', {id:this.domId, class:'texel spec', text:this.content})
-    this.observe(o)
-    return o
-  }
-  observe(o){
-    super.observe(o)
-
+  get css(){
+    return super.getCssClasses(['spec'])
   }
 
 }
