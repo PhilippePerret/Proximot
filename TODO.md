@@ -2,6 +2,7 @@
 
 ## En cours
 
+* Autre fonctionnement pour "raccord" : on prend les 500 mots avant et après d'un fragment précédent et suivant
 * Changement du travail sur les proximités
   Maintenant :
     - à l'instantiation du mot, on doit connaitre son offset dans le 
@@ -20,11 +21,10 @@
     courant en fonction de l'offset de ce dernier et de sa longeur
     (TextFragment#length)
 
-* infos :
-  * proximité
+* Réflexion sur le fait de faire tous les calculs de longueur en direct, c'est-à-dire que dès qu'on change la longueur d'un texel, on calcule la différence avec la longueur précédente et on l'impacte sur le paragraphe et le fragment. Donc inutile de recalculer la longueur.
+Le gain de temps en vaut-il l'effort ?
 
-* Afficher l'info du mot sélectionné en haut, toujours
-* Pouvoir passer au fragment suivant (gros morceau, car c'est un fragment virtuel)
+* Pouvoir passer au fragment suivant
 * Pouvoir passer d'un paragraphe à l'autre avec les flèches de sélection
   + CMD+flèche Haut/bas permet de passer au paragraphe inférieur/supérieur
 * Poursuivre les tooltips de la console

@@ -55,11 +55,6 @@ class Paragraph {
   // --- Public Methods ---
 
   /**
-  * @return true si le paragraphe est construit
-  */
-  isBuilt(){ return this._isbuilt }
-
-  /**
   * Pour faire une boucle sur tous les mots du paragraphe
   */
   forEachMot(method){
@@ -109,9 +104,7 @@ class Paragraph {
   }
 
   // @return le DIV (DOM Element) du paragraphe
-  // @note: alias de this.obj
-  get div(){return this.obj || (this.obj = this.build())}
-
+  get obj(){return this._obj || (this._obj = DGet(`#${this.domId}`) || this.build())}
 
   /**
   * @return la liste des text-elements du paragraph, dans l'ordre
@@ -150,6 +143,11 @@ class Paragraph {
 
   build(){
     return DCreate('DIV', {class:'paragraph'})
+  }
+
+  buildIn(container){
+    container.appendChild(this.obj)
+    this.forEachTexel(texel => { texel.buildIn(o)} )
   }
   
   // --- Private Methods ---

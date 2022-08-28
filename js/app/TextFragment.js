@@ -155,16 +155,10 @@ class TextFragment {
     this.mots.forEach(method)
   }
   /**
-  * Boucle sur tous les mots affichés du fragment
+  * Boucle sur tous les texels du fragment
   */
-  forEachDisplayedMot(method){
-    this.displayedMots.forEach(method)
-  }
-  /**
-  * Boucle sur tous les texels affichés du fragment
-  */
-  forEachDisplayedTexel(method){
-    this.displayedTexels.forEach(method) 
+  forEachTexel(method){
+    this.texels.forEach(method)
   }
 
   /**
@@ -190,11 +184,8 @@ class TextFragment {
    * 
    */
   displayIn(container){
-    // this.forEachParagraph( paragraph => {
-    //   container.appendChild(paragraph.div)
-    // })
-    this.forEachDisplayedTexel( texel => {
-      texel.buildIn(container)
+    this.forEachParagraph( paragraph => {
+      paragrapth.buildIn(container)
     })
   }
 
@@ -204,7 +195,7 @@ class TextFragment {
    * Note : il faut avoir analysé le fragment (this.analyze) avant
    * de pouvoir afficher les proximities
    */
-  showProximites(){ this.forEachDisplayedMot(mot => {mot.showProximities()}) }
+  showProximites(){ this.forEachMot(mot => {mot.showProximities()}) }
 
   /**
   * @return la table des données du fragment (rappel : les données
@@ -407,37 +398,6 @@ class TextFragment {
   */
   get mots(){
     return this._mots || (this._mots = this.getMots() )
-  }
-
-  /**
-  * @return {Array of TextElement} La liste des texels affiché
-  * 
-  */
-  get displayedTexels(){
-    const firstIndexMot = this.getFirstIndexDisplayedMot()
-    const lastIndice    = this.getLastIndexDisplayedMot()
-    return this.texels.slice(firstIndexMot, lastIndice)
-  }
-  /**
-  * @return {Array of TypeMot} La liste des mots affichés
-  */
-  get displayedMots(){
-    const firstIndexMot = this.getFirstIndexDisplayedMot()
-    const lastIndice    = this.getLastIndexDisplayedMot()
-    return this.mots.slice(firstIndexMot, lastIndice)
-  }
-  get firstIndexDisplayedMot(){
-    return this._firstidxmot || (this._firstidxmot = this.getFirstIndexDisplayedMot())
-  }
-  get lastIndexDisplayedMot(){
-    return this._lastidxmot || (this._lastidxmot = this.getLastIndexDisplayedMot())
-  }
-  getFirstIndexDisplayedMot(){
-    return this.index > 0 ? 500 : 0
-  }
-  getLastIndexDisplayedMot(){
-    const isLastIndex   = not(this.index < int(App.fragments_data.count) - 1)
-    return this.mots.length - (isLastIndex ? 0 : 500)
   }
 
   get text(){

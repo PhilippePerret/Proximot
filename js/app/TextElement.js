@@ -186,11 +186,7 @@ class TextElement {
   * Construction du texel
   */
   buildIn(container){
-    if ( not(this.paragraph.isBuilt() ) ) {
-      container.appendChild(this.paragraph.div)
-      this.paragraph._isbuilt = true
-    }
-    this.paragraph.div.appendChild(this.obj)
+    container.appendChild(this.obj)
   }
 
   /* Raccourci */
