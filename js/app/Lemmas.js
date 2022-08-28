@@ -117,20 +117,21 @@ class Lemma {
   addMot(mot){
     var   index = null
         , resetIndexes = true
+        , offset = int(mot.offset)
         ;
-    if ( not(this.hasMots) || mot.offset > this.lastPosition ) {
+    if ( not(this.hasMots) || offset > this.lastPosition ) {
       /*
       | Un mot à mettre au bout
       */
       index = this.positions.length
-      this.positions.push(mot.offset)
+      this.positions.push(offset)
       resetIndexes = false // inutile d'actualiser les indexs
-    } else if ( mot.offset < this.firstPosition ) {
+    } else if ( offset < this.firstPosition ) {
       /*
       | Un mot à mettre au tout début
       */
       index = 0
-      this.positions.unshift(mot.offset)
+      this.positions.unshift(offset)
     } else {
       /*
       | Un mot à glisser dans la liste
@@ -139,13 +140,13 @@ class Lemma {
       |        fin puisque ça a été traité avant.
       */
       for (var ipos in this.positions){
-        if ( mot.offset < this.positions[ipos] ) {
-          this.positions.slice(ipos, 0, mot.offset)
+        if ( offset < this.positions[ipos] ) {
+          this.positions.slice(ipos, 0, offset)
           break
         }
       }
     }
-    Object.assign(this.table, {[mot.offset]: {mot:mot, index:index}})
+    Object.assign(this.table, {[offset]: {mot:mot, index:index}})
     /*
     | Actualiser si nécessaire les propriétés index
     |
@@ -176,15 +177,10 @@ class Lemma {
       const posCurr   = this.positions[i]
       const distance  = posCurr - posPrev
       /*
-      |  Si les deux mots sont suffisamment éloignés dans l'absolu, 
-      |  on les passe.
-      */
-      if ( distance > Lemmas.MIN_DIST_FOR_PROX){ continue }
-      /*
       |  Si les deux mots sont suffisamment éloignés dans leur
       |  définition propre, on les passe.
       */
-      if ( this.distance_minimale && distance > this.distance_minimale ) { continue }
+      if ( distance > this.distance_minimale ) { continue }
       /*
       |  Si les deux mots arrivent ici, c'est qu'ils sont en 
       |  proximité
@@ -212,7 +208,7 @@ class Lemma {
   * proximité du lemme propre.
   */
   eloignementPerDistance(distance) {
-    const tiersDistance = (this.distance_minimale || Lemmas.MIN_DIST_FOR_PROX) / 3
+    const tiersDistance = this.distance_minimale / 3
     if ( distance < tiersDistance ) { return 'near' }
     else if ( distance < 2 * tiersDistance ) { return 'mid' } 
     else { return 'far' }
@@ -287,7 +283,7 @@ class Lemma {
 
   get distance_minimale(){
     if ( undefined === this._mindist) {
-      this._mindist = this.getDistanceMinimale()
+      this._mindist = this.getDistanceMinimale() || Lemmas.MIN_DIST_FOR_PROX
     } return this._mindist
   }
   getDistanceMinimale(){

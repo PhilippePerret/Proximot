@@ -172,13 +172,20 @@ class ConsoleCommandManager {
 
   /* Sélectionner mot suivant ou premier */
   selectNextWordOrFirst(e){
-    console.log("-> next mot", {
-        texel_courant: Editor.Selection.current
-      , nombre_mots:   TextFragment.current.mots.length
-      , dernier_index_possible: Editor.lastAvailableIndex
-      , index_selection: (Editor.Selection.current && Editor.Selection.current.index)
-    })
+    // console.log("-> next mot", {
+    //     texel_courant: Editor.Selection.current
+    //   , nombre_mots:   TextFragment.current.mots.length
+    //   , dernier_index_possible: Editor.lastAvailableIndex
+    //   , index_selection: (Editor.Selection.current && Editor.Selection.current.index)
+    // })
     e.preventDefault()
+    /*
+    |  Retirer ceux qui peuvent être en exergue
+    */
+    TextElement.unsetExergues()
+    /*
+    |  Suivant le cas, passer au suivant, au premier ou à rien
+    */
     if ( Editor.Selection.isEmpty ) {
       // Aucune sélection => sélectionner le premier mot
       Editor.selectMotByIndex(0)
@@ -193,6 +200,13 @@ class ConsoleCommandManager {
   /* Sélectionner mot précédent ou premier */
   selectPreviousWordOrFirst(e){
     e.preventDefault()
+    /*
+    |  Retirer ceux qui peuvent être en exergue
+    */
+    TextElement.unsetExergues()
+    /*
+    |  Suivant le cas, passer au précédent, au premier ou à rien
+    */
     if ( Editor.Selection.isEmpty ) {
       // Aucune sélection => sélection le premier mot
       Editor.selectMotByIndex(0)

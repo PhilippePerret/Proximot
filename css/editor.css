@@ -113,3 +113,8 @@ section#infos table td.info.far
 #editor #content .wspace {
   cursor: text;
 }
+
+
+#editor #content span.texel.exergue {
+  background-color: #FF6666;
+}

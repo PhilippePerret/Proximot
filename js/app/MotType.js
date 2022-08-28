@@ -129,16 +129,39 @@ class MotType extends TextElement {
     return !!( this.proxAvant || this.proxApres )
   }
 
-  // --- Affichage des informations du mot ---
+  /* --- Affichage des informations du mot ---
+  |  + Mise en exergue des mots en proximité if any
+  */
   showInfos(){
+    var mot, css, dis, elo, den ;
     this.showInfo('content', this.content)
     this.showInfo('occurrences', this.occurrences)
     this.showInfo('lemma', this.lemma)
     this.showInfo('tttag', this.ttTag)
-    this.showInfo('lprox-mot',  this.proxAvant && this.proxAvant.motAvant.mot, this.proxAvant && this.proxAvant.eloignement)
-    this.showInfo('lprox-dist', this.proxAvant && this.proxAvant.distance, this.proxAvant && this.proxAvant.eloignement)
-    this.showInfo('rprox-mot',  this.proxApres && this.proxApres.motApres.mot, this.proxApres && this.proxApres.eloignement)
-    this.showInfo('rprox-dist', this.proxApres && this.proxApres.distance, this.proxApres && this.proxApres.eloignement)
+    if ( this.proxAvant ) {
+      ;[mot, css] = [this.proxAvant.motAvant.mot    , this.proxAvant.eloignement]
+      ;[dis, elo] = [this.proxAvant.distance        , this.proxAvant.eloignement]
+      den = this.proxAvant.density
+      this.proxAvant.motAvant.setExergue()
+    } else {
+      [mot, css, dis, elo, den] = ['---', null, null, null, null]
+    }
+    this.showInfo('lprox-mot'     , mot, css)
+    this.showInfo('lprox-dist'    , dis, css)
+    this.showInfo('lprox-density' , den, css)
+    if ( this.proxApres ) {
+      ;[mot, css] = [this.proxApres.motApres.mot,  this.proxApres.eloignement]
+      ;[dis, elo] = [this.proxApres.distance,      this.proxApres.eloignement]
+      den = this.proxApres.density
+      this.proxApres.motApres.setExergue()
+    } else {
+      [mot, css, dis, elo, den] = ['---', null, null, null, null]
+    }
+    this.showInfo('rprox-mot'     , mot, css)
+    this.showInfo('rprox-dist'    , dis, css)
+    this.showInfo('rprox-density' , den, css)
+
+    /* Offset */
     this.showInfo('offset',     this.offset)
   }
 

@@ -44,6 +44,7 @@ class Proximity {
         , motApresId    : {index:3, hname:'ID du mot droit', type:'int'}
         , distance      : {index:4, hname:'Distance entre les deux mots (en signes)', type:'int'}
         , eloignement   : {index:5, hname:'Nom humain de l’éloignement (near, mid ou far)'}
+        , density       : {index:6, hname:'Densité de la proximité'}
       }
     }; return this._properties;
   }
@@ -125,7 +126,6 @@ class Proximity {
    * Définit la propriété @proximity de chaque mot
    */
   setProximityOfEachWord(){
-    console.log("Je mets la proximité du mot ... et du mot ... à ...", this.motAvant, this.motApres, this)
     this.motAvant.proxApres = this
     this.motApres.proxAvant = this
   }
@@ -143,6 +143,8 @@ class Proximity {
   get distance()        { return this._dist }
   set distance(dist)    { this._dist = dist }
 
+  get density()         { return this._density || this.calcDensity() }
+  set density(d)        { this._density = d }
 
   // --- Private Methods ---
 
@@ -152,4 +154,29 @@ class Proximity {
     return true
   }
 
+  /**
+  * Calcul la densité de cette proximité
+  * 
+  * La densité correspond au nombre d'occurrence du lemme dans un 
+  * passage compris entre l'offset du mot d'avant - la distance de 
+  * proximité et l'offset du mot d'après + la distance de proximité
+  * 
+  */
+  calcDensity(){
+    const lemma     = TextFragment.current.getLemma(this.motAvant.lemma)
+    const positions = lemma.positions
+    const minOffset = int(this.motAvant.offset) - lemma.distance_minimale
+    const maxOffset = int(this.motApres.offset) + lemma.distance_minimale
+    var density = 0
+    console.log("Positions:", positions)
+    for(var i = 0, len = positions.length; i < len; ++i){
+      const position = int(positions[i])
+      console.log("Position = ", position)
+      if ( position < minOffset ) { continue }
+      else if ( position > maxOffset ) { break }
+      else { density ++ }
+    }
+    console.log("Calc densité entre %i et %i = %i", minOffset, maxOffset, density)
+    return density
+  }
 }

@@ -43,6 +43,10 @@ Le gain de temps en vaut-il l'effort ?
 
 ## Fonctionnalités
 
+* Signaler une forte densité du mot dans le passage (passage court) et offrir la possibilité d'afficher toutes les occurrences.
+  - La "densité" correspond au nombre d'occurrences sur une zone partant du mot, jusqu'à la distance de proximité avant de après.
+  Par exemple, si la distance de proximité est 500, et que la proximité étudiée se trouve à 1200 et 1280, la densité correspond au
+  nombre d'occurrence du lemme entre 700 (1200 - 500) et 1780 (1280 + 500). Pour le moment, la densité est égale au nombre d'occurrence.
 * Précisément :
   - CMD-Flèche haut pour remonter au paragraphe précédent
   - CMD-Flèche Bas pour descendre au paragraphe suivant

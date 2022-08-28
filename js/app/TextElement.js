@@ -141,6 +141,13 @@ class TextElement {
     }
   }
 
+  /**
+  * Pour supprimer toutes les exergues courantes
+  */
+  static unsetExergues(){
+    DGetAll('.exergue').forEach( dom => dom.classList.remove('exergue'))
+  }
+
   static get PROPERTIES(){
     if (undefined == this._properties){
       /*
@@ -216,6 +223,13 @@ class TextElement {
   }
   unsetSelected(){
     this.obj.classList.remove('selected')
+  }
+
+  setExergue(){
+    this.obj.classList.add('exergue')
+  }
+  unsetExergue(){
+    this.obj.classList.remove('exergue')
   }
 
   /**
