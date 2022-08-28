@@ -174,8 +174,9 @@ class ConsoleCommandManager {
   selectNextWordOrFirst(e){
     console.log("-> next mot", {
         texel_courant: Editor.Selection.current
-      , nombre_mots:   Fragment.current.mots.length
+      , nombre_mots:   TextFragment.current.mots.length
       , dernier_index_possible: Editor.lastAvailableIndex
+      , index_selection: (Editor.Selection.current && Editor.Selection.current.index)
     })
     e.preventDefault()
     if ( Editor.Selection.isEmpty ) {

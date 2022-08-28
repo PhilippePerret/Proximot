@@ -2,10 +2,9 @@
 
 ## En cours
 
-* régler les espaces à l'affichage
-  - parenthèse ouverte : espace avant et pas espace après
-  - chevron ouvert : espace avant et pas espace après
-  
+* Pouvoir définir une distance minimale hors proximité pour chaque lemme
+  (cf. la méthode Lemma#getDistanceMinimale)
+* Calcul des proximités lors d'un chargement depuis un texte
 * Autre fonctionnement pour "raccord" : on prend les 500 mots avant et après d'un fragment précédent et suivant
 * Changement du travail sur les proximités
   Maintenant :
@@ -18,12 +17,6 @@
     - avant l'affichage, on calcule toutes les proximités, dans les
       Lemmas.
       - on les dispatche dans chaque mot
-
-* À l'enregistrement, dans app_state, il faut:
-  - enregistrer les données de chaque fragment (offset)
-  - actualiser l'offset de chaque fragment supérieur au fragment 
-    courant en fonction de l'offset de ce dernier et de sa longeur
-    (TextFragment#length)
 
 * Réflexion sur le fait de faire tous les calculs de longueur en direct, c'est-à-dire que dès qu'on change la longueur d'un texel, on calcule la différence avec la longueur précédente et on l'impacte sur le paragraphe et le fragment. Donc inutile de recalculer la longueur.
 Le gain de temps en vaut-il l'effort ?

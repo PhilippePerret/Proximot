@@ -109,6 +109,7 @@ class TextFragment {
         |  On transforme les trinômes en instances Texel
         */
         var currentMotOffset = 0
+        var idx = 0
         const paragTexels = ary_texels.map( dtexel => {
           /*
           |  Pour savoir si c'est un mot
@@ -131,9 +132,12 @@ class TextFragment {
           */
           const texel = TextElement.createFromTextData(fragment, dtexel)
           /*
-          |  Prochain offset
+          |  Prochain offset et index
           */
-          if ( isMot ) { currentMotOffset += texel.length }
+          if ( isMot ) { 
+            currentMotOffset += texel.length 
+            texel.index = idx++ 
+          }
 
           return texel
         })
@@ -149,7 +153,16 @@ class TextFragment {
         return paragraph    
       }
     )
+    /*
+    |  On fixe les texels du fragment
+    */
     fragment.texels = texels
+
+    /*
+    |  Puisque les données viennent d'un texte, il faut précéder
+    |  au calcul des proximités
+    */
+    fragment.analyzeProximities()
 
     /*
     |  Mettre le fragment en fragment courant et le retourner
@@ -229,17 +242,22 @@ class TextFragment {
   }
 
   /**
-   * Analyse du fragment
-   * -------------------
-   * Cela consiste principalement à définir la propriété @lemmas qui
-   * contient les @{lemma}s du fragment qui permettront de définir
-   * les proximités.
+   * Analyse des proximités du fragment
+   * ----------------------------------
+   * Après un chargement des données d'un texte (versus un package)
+   * il faut procéder à l'analyse des proximités. Cela consiste à
+   * définir les propriétés proxAvant et proxApres de chaque texel
+   * mot du fragment
+   * 
+   * TODO: Il faut charger les 500 derniers mots du fragment 
+   * précédent et les 500 premiers mots du fragment suivant pour
+   * pouvoir calculer les proximités des premiers et derniers mots.
    * 
    */
-  analyze(){
-    console.warn("La méhtode TextFragment#analyze est obsolète.")
-    return
-   }
+  analyzeProximities(){
+    console.log("-> Analyse des proximités")
+    this.lemmas.analyzeProximites()
+  }
 
   /**
    * Affichage du fragment dans le conteneur +container+

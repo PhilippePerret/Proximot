@@ -40,9 +40,11 @@ class TextElement {
     */
     const texels = []
     var curoff = 0
+    var idx    = 0
     texelsData.forEach(dtexel => {
       dtexel.push(curoff)
       const texel = this.createFromDataPackage(fragment, dtexel)
+      if ( texel.isMot ) texel.index = idx++
       texels.push(texel)
       curoff += texel.length
     })

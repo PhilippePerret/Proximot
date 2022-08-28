@@ -92,16 +92,19 @@ class Proximity {
         }
         this[property] = value
       }
+      this.motAvant = TextElement.getById(this.motAvantId) || raise("Le mot avant devrait toujours exister.")
+      this.motApres = TextElement.getById(this.motApresId) || raise("Le mot après devrait toujours exister.")
     } else {
       /*
       |  Données fournies par une instanciation en cours de travail
       */
       for(var prop in data){ this[prop] = data[prop] }
+      this.motAvant || raise("Le mot avant devrait toujours exister.")
+      this.motApres || raise("Le mot après devrait toujours exister.")
       this.motAvantId = data.motAvant.id
       this.motApresId = data.motApres.id
+      this.id         = definedOr(data.id, this.constructor.getNewId())
     }
-    this.motAvant = TextElement.getById(this.motAvantId) || raise("Le mot avant devrait toujours exister.")
-    this.motApres = TextElement.getById(this.motApresId) || raise("Le mot après devrait toujours exister.")
   }
 
   /**
@@ -122,7 +125,7 @@ class Proximity {
    * Définit la propriété @proximity de chaque mot
    */
   setProximityOfEachWord(){
-    // console.log("Je mets la proximité du mot ... et du mot ... à ...", this.motAvant, this.motApres, this)
+    console.log("Je mets la proximité du mot ... et du mot ... à ...", this.motAvant, this.motApres, this)
     this.motAvant.proxApres = this
     this.motApres.proxAvant = this
   }
@@ -131,29 +134,14 @@ class Proximity {
    * @return l'éloignement sous forme de 'near', 'mid' ou 'far' pour
    * spécifier approximativement si la proximité est importante ou 
    * non. Le retour servira de classe CSS
+   * Cette valeur est calculée à l'instanciation des proximités dans
+   * le Lemma
    */
-  get eloignement(){
-    return this._eloign || ( this._eloign = this.calcEloignement())
-  }
-  set eloignement(eloi){ this._eloign = eloi}
+  get eloignement()     { return this._eloign }
+  set eloignement(eloi) { this._eloign = eloi }
 
-  get distance(){
-    return this._dist || (this._dist = this.motApres.relPos - this.motAvant.relPos)
-  }
-  set distance(dist){ this._dist = dist}
-
-  calcEloignement(){
-    if ( this.distance > 2 * Proximity.tiersDistance ) {
-      return 'far'
-    } else if (this.distance > Proximity.tiersDistance ) {
-      return 'mid'
-    } else {
-      return 'near'
-    }
-  }
-  static get tiersDistance(){
-    return this._tiersdist || (this._tiersdist = Preferences.get('min_dist_proximity') / 3)
-  }
+  get distance()        { return this._dist }
+  set distance(dist)    { this._dist = dist }
 
 
   // --- Private Methods ---
