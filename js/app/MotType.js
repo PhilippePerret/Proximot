@@ -97,7 +97,7 @@ class MotType extends TextElement {
   }
 
   /**
-  * Affiche les proximités du mot
+  * Affiche les proximités du mot dans le texte (avec des flèches)
   */
   showProximities(){
     // console.log("Je dois montrer les proximités de ", this)
@@ -135,17 +135,20 @@ class MotType extends TextElement {
     this.showInfo('occurrences', this.occurrences)
     this.showInfo('lemma', this.lemma)
     this.showInfo('tttag', this.ttTag)
-    this.showInfo('lprox-mot',  this.motAvant && this.motAvant.mot)
-    this.showInfo('lprox-dist', this.motAvant && this.motAvant.distanceWith(this))
-    this.showInfo('rprox-mot',  this.motApres && this.motApres.mot)
-    this.showInfo('rprox-dist', this.motApres && this.motApres.distanceWith(this))
+    this.showInfo('lprox-mot',  this.proxAvant && this.proxAvant.motAvant.mot, this.proxAvant && this.proxAvant.eloignement)
+    this.showInfo('lprox-dist', this.proxAvant && this.proxAvant.distance, this.proxAvant && this.proxAvant.eloignement)
+    this.showInfo('rprox-mot',  this.proxApres && this.proxApres.motApres.mot, this.proxApres && this.proxApres.eloignement)
+    this.showInfo('rprox-dist', this.proxApres && this.proxApres.distance, this.proxApres && this.proxApres.eloignement)
     this.showInfo('offset',     this.offset)
   }
 
   // --- Private Methods ---
 
-  showInfo(key, value){
-    DGet(`#infos-texel-${key}`).innerHTML = value || '---'
+  showInfo(key, value, css){
+    const td = DGet(`#infos-texel-${key}`)
+    td.innerHTML = value || '---'
+    td.className = 'info'
+    css && td.classList.add(css)
   }
 
   get occurrences(){

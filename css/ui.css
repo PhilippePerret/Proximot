@@ -65,3 +65,7 @@ section#infos table tr#infos-line-sup td {
   margin: 0;
   padding: 0;
 }
+
+section#infos table tr#infos-line-values td {
+  line-height:22px;
+}

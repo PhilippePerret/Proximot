@@ -13,7 +13,7 @@
 
 #editor #content {
   padding: 2em;
-  margin: 2em;
+  margin: 3em 2em;
   border: 1px solid #CCC;
   border-radius: 8px;
   height: calc(100% - 8em);
@@ -82,9 +82,18 @@
   margin-left: 4px;
   margin-right: 2px;
 }
-#editor #content .mot.too-close.near  { border-color: #FF0000 }
-#editor #content .mot.too-close.mid   { border-color: #FFA531 }
-#editor #content .mot.too-close.far   { border-color: #1FE418 }
+#editor #content .mot.too-close.near
+{ border-color: #FF0000 }
+section#infos table td.info.near
+{ background-color: #FF0000; color:white !important; }
+#editor #content .mot.too-close.mid
+{ border-color: #FFA531 }
+section#infos table td.info.mid
+{ background-color: #FFA531 }
+#editor #content .mot.too-close.far
+{ border-color: #1FE418 }
+section#infos table td.info.far
+{ background-color: #1FE418; }
 #editor #content .mot.too-close.pxavant.near:before { color: #FF0000 }
 #editor #content .mot.too-close.pxavant.mid:before  { color: #FFA531 }
 #editor #content .mot.too-close.pxavant.far:before  { color: #1FE418 }
