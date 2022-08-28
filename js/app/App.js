@@ -14,6 +14,7 @@ class App {
         , 'fragment_index'  : {hname:'Index du fragment de texte courant'}
         , 'fragments_data'  : {hname:'Données de tous les fragments du texte'}
         , 'app_version'     : {hname:'Version de l’application'}
+        , 'last_texel_id'   : {hname:'Dernier ID de texel'}
       }
     } return this._statedata
   }
@@ -29,6 +30,7 @@ class App {
   static get_fragment_index() { return TextFragment.current.index }
   static get_app_version()    { return this.APP_VERSION}
   static get_fragments_data() { return this.fragments_data }
+  static get_last_texel_id()  { return TextElement.lastId }
 
   /**
    * @return la table des données d'état à sauvegarder dans le 
@@ -75,7 +77,7 @@ class App {
     this._fragments_data = data
     this.State.fragments = data
   }
-  static setFragmentsData(data){ this.fragments_data = data}
+  static setFragmentsData(data){ Object.assign(this.fragments_data, data)}
 
   /**
   * Pour actualiser un fragment
@@ -116,6 +118,7 @@ class App {
   }
   static receiveDataOtherFragment(data){
     console.info("[App::receiveDataOtherFragment] Données reçues pour les autres fragments", data)
+    this.setFragmentsData(data)
   }
 
 } // /class App

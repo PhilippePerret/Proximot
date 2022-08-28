@@ -14,7 +14,7 @@ class TextElement {
 
   static reset(){
     this.table  = {} 
-    this.lastId = 0
+    this.lastId = App.State.last_texel_id || 0
   }
 
   static getById(id){
