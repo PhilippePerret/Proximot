@@ -11,6 +11,10 @@
  *    8 pages = 8 x 250 mots
  *    1 page (250 mots) de marge au début et à la fin
  */
+
+// Les types principaux qui ne sont pas des textes
+const TTTAG_TYPES_NOT_MOT = ['ABR','PUN','SENT']
+
 class TextFragment {
 
   static get current(){ return this._current /* || TODO */}
@@ -77,27 +81,89 @@ class TextFragment {
   static createFromTextData(data) {
     console.info("CRÉATION DU FRAGMENT À PARTIR DU TEXTE. DONNÉES : ", data)
 
-    const fragment = new TextFragment(data)
+    /*
+    |  Instanciation du fragment
+    */
+    const fragment = new TextFragment({
+        text_path   : data.text_path
+      , index       : int(data.fragment_index)
+      , lexicon     : data.lexicon
+      , offset      : data.fragment_offset
+    })
 
     /*
     |  Transformer les données paragraphes en instances {Paragraph}
     |  ainsi que ses text-elements en instances {TextElement}
     */
-    var paragIndex    = 0
-    var currentOffset = 0
-    const texels = []
-    fragment.paragraphs = data.paragraphs.map(dparag => {
-      const paragraph = new Paragraph(fragment, paragIndex++, dparag, currentOffset)
-      currentOffset += paragraph.length
-      texels.push(paragraph.texels)
-      return paragraph
-    })
+    var paragIndex  = 0
+    var paragOffset = 0
+    const texels    = []
+    fragment.paragraphs = data.paragraphs.map(
+      ary_texels => {
+        /*
+        |  +ary_texels+ est ici une liste de trinomes renvoyés par 
+        |  tree-tagger ([sujet, type, lemme])
+        */
+
+        /*
+        |  On transforme les trinômes en instances Texel
+        */
+        var currentMotOffset = 0
+        const paragTexels = ary_texels.map( dtexel => {
+          /*
+          |  Pour savoir si c'est un mot
+          */
+          const isMot = this.isTTTagMot(dtexel[1])
+          /*
+          |  Ajout de l'offset du texel, si c'est un mot
+          */
+          if ( isMot ) {
+            dtexel.push(paragOffset + currentMotOffset)
+          } else {
+            /*
+            |  Note : excommenter cette ligne pour voir tous les texels
+            |  qui ne sont pas considérés comme des mots TODO
+            */
+            console.log("Pas un mot : ", dtexel)
+          }
+          /*
+          |  Instanciation du texel
+          */
+          const texel = TextElement.createFromData(fragment, dtexel)
+          /*
+          |  Prochain offset
+          */
+          if ( isMot ) { currentMotOffset += texel.length }
+
+          return texel
+        })
+        /*
+         |  Instanciation du paragraphe
+         */        
+        const paragraph = new Paragraph(fragment, paragIndex++, paragTexels, paragOffset)
+        /*
+        |  Offset du prochain paragraphe
+        */
+        paragOffset += paragraph.length
+
+        return paragraph    
+      }
+    )
     fragment.texels = texels
 
     /*
     |  Mettre le fragment en fragment courant et le retourner
     */
     return this.setCurrent(fragment)
+  }
+
+  /**
+  * @return true si le +ttag+ (tag tree-tagger) correspond à un
+  * mot.
+  */
+  static isTTTagMot(ttag){
+    if ( ttag.match(':') ) { ttag = ttag.split(':')[0] }
+    return not(TTTAG_TYPES_NOT_MOT.includes(ttag))
   }
 
   static setCurrent(fragment){
@@ -123,10 +189,11 @@ class TextFragment {
    * 
    */
   constructor(data) {
-    this.index      = int(data.fragment_index)
+    this.index      = int(definedOr(data.index, data.fragment_index))
     this.lexicon    = data.lexicon
     this.text_path  = data.text_path
     this.prox_path  = data.prox_path || this.defineProxPath(this.text_path)
+    this.offset     = data.offset
     this.Klass      = 'TextFragment'
   }
 
@@ -185,7 +252,7 @@ class TextFragment {
    */
   displayIn(container){
     this.forEachParagraph( paragraph => {
-      paragrapth.buildIn(container)
+      paragraph.buildIn(container)
     })
   }
 

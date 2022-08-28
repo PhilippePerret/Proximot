@@ -5,45 +5,6 @@ class App {
   /* TODO : la remonter du serveur */
   static get APP_VERSION(){ return '0.5.1' }
 
-  /**
-   * Méthode au chargement qui reçoit du serveur les données du texte 
-   * à analyser. Soit c'est une liste de tokens (avec lemma) d'un
-   * texte analysé pour la première fois, soit ce sont les données
-   * d'un fichier XML Proximot.
-   * 
-   * Dans tous les cas, on procède à l'affichage du texte.
-   * 
-   */
-  static onReceiveFromText(data){
-    try {    
-      // console.log("[onReceiveFromText] Je reçois ces données texte : ", data)
-      this.lastOpenDate = new Date()
-      /*
-      |  Instanciation du fragment
-      */
-      const fragment = TextFragment.createFromData(data)
-      /*
-      |  Affichage du fragment
-      */
-      fragment.display()
-      /*
-      |  On règle les données du premier fragment
-      */
-      this.fragments_data = {
-          count: 1
-        , 0: {index:0, offset:0, lenInFile: data.fragment_length}
-      }
-      /*
-      |  Une fois que c'est fini, on peut demander de relever les
-      |  information des autres fragments si nécessaire.
-      */
-      data.other_fragments && this.getDataOtherFragments(data.text_path)
-    
-    } catch(err) {
-      console.error(err)
-    }
-  }
-
   static get STATE_DATA(){
     if (undefined == this._statedata){
       this._statedata = {
@@ -114,6 +75,7 @@ class App {
     this._fragments_data = data
     this.State.fragments = data
   }
+  static setFragmentsData(data){ this.fragments_data = data}
 
   /**
   * Pour actualiser un fragment

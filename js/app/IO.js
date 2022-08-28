@@ -124,9 +124,8 @@ class IO {
 
   static loadAllFromText(data){
     try {    
-      console.log("[onReceiveFromText] Je reçois ces données texte : ", data)
-      return 
-      this.lastOpenDate = new Date()
+      // console.log("[IO::loadAllFromText] Je reçois ces données texte : ", data)
+      App.lastOpenDate = new Date()
       /*
       |  Instanciation du fragment
       */
@@ -138,15 +137,15 @@ class IO {
       /*
       |  On règle les données du premier fragment
       */
-      this.fragments_data = {
+      App.setFragmentsData({
           count: 1
         , 0: {index:0, offset:0, lenInFile: data.fragment_length}
-      }
+      })
       /*
       |  Une fois que c'est fini, on peut demander de relever les
       |  information des autres fragments si nécessaire.
       */
-      data.other_fragments && this.getDataOtherFragments(data.text_path)
+      data.other_fragments && App.getDataOtherFragments(data.text_path)
     
     } catch(err) {
       console.error(err)

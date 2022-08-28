@@ -24,32 +24,21 @@ class Paragraph {
     return paragraph
   }
 
+  /**
+  * Instanciation du paragraph avec
+  * 
+  * @param fragment {TextFragment} Le fragment de texte contenant le paragraphe
+  * @param index    {Integer} Index du paragraphe dans le fragment
+  * @param texels   {Array of TextElement} Les texels du paragraphe
+  * @param offset   {Integer} Décalage du paragraphe dans le fragment
+  */
   constructor(fragment, index, texels, offset){
-    this.index    = index
     this.Klass    = 'Paragraph'
+    this.index    = index
     this.offset   = offset
     this.fragment = fragment
-    /*
-    |  Les données fournies à l'instanciation sont "brutes", ce sont
-    |  juste les trinomes ou les données des mots
-    */
-    if ( texels.length && texels[0] instanceof Array ) {
-      /*
-      |  Quand les données fournies à l'instanciation viennent d'un
-      |  texte et non pas d'un package Proximot.
-      */
-      var currentMotOffset = 0
-      this.content = texels.map( dtexel => {
-        dtexel.push(this.offset + currentMotOffset)
-        const texel = TextElement.createFromData(dtexel, this.fragment)
-        texel.paragraph = this
-        if ( texel.isMot ) currentMotOffset += texel.length
-        return texel
-      })
-    } else {
-      texels.forEach(texel => texel.paragraph = this)
-      this.content = texels
-    }
+    texels.forEach(texel => texel.paragraph = this)
+    this.texels = texels
   }
 
   // --- Public Methods ---
@@ -106,13 +95,7 @@ class Paragraph {
   // @return le DIV (DOM Element) du paragraphe
   get obj(){return this._obj || (this._obj = DGet(`#${this.domId}`) || this.build())}
 
-  /**
-  * @return la liste des text-elements du paragraph, dans l'ordre
-  */
-  get texels(){
-    return this.content
-  }
-
+  
   /**
    * @return la liste des mots (et uniquement les mots) du 
    * paragraphe
@@ -146,7 +129,8 @@ class Paragraph {
   }
 
   buildIn(container){
-    container.appendChild(this.obj)
+    const o = this.obj
+    container.appendChild(o)
     this.forEachTexel(texel => { texel.buildIn(o)} )
   }
   

@@ -4,9 +4,22 @@
  * 
  * Méthode communes
  * 
- * version 2.3
+ * version 2.4
  * 
  */
+
+/**
+* Si la valeur +primValue+ est définie (même si elle est false ou 0,
+* même à null) on la renvoie, sinon on prend +elseValue+
+* 
+*/
+function definedOr(primValue, elseValue){
+  if ( undefined === primValue ) {
+    return elseValue
+  } else {
+    return primValue
+  }
+}
 
 function not(v){ return ! v }
 

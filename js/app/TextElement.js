@@ -51,16 +51,17 @@ class TextElement {
 
   static createFromData(fragment, data){
     // console.log("data texel:", data)
-    const instance_data = {}
-    if ( data.length == 3 ) {
+    const dInstance = {}
+    if ( data instanceof Array ) {
       /*
       |  Données venant d'un texte non analysé
       */
-      const [content, ttTag, lemma] = data
-      instance_data._content  = content
-      instance_data.ttTag     = ttTag
-      instance_data.lemma     = lemma
-      instance_data.type      = this.getTypeFromTTaggerType(ttTag, content)
+      const [content, ttTag, lemma, offset] = data
+      dInstance._content  = content
+      dInstance.ttTag     = ttTag
+      dInstance.lemma     = lemma
+      dInstance.type      = this.getTypeFromTTaggerType(ttTag, content)
+      dInstance.offset    = offset
     } else {
       /*
       |  Données Proximot complète
@@ -80,15 +81,15 @@ class TextElement {
           value = bool(value)
           break
         }
-        instance_data[kproperty] = value
+        dInstance[kproperty] = value
       }
     }
 
     /*
     |  En fonction du type, on choisit la classe fille.
     */
-    // console.log("instance_data = ", instance_data)
-    const instance = this.instantiateByType(fragment, instance_data)
+    // console.log("dInstance = ", dInstance)
+    const instance = this.instantiateByType(fragment, dInstance)
 
     return instance
   }
