@@ -1,0 +1,37 @@
+div.panel {
+  position: fixed;
+  font-size: 16pt;
+  font-family: 'Arial Narrow', Arial, Geneva, serif;
+  width: 840px;
+  background-color: #F8F9F9;
+  border: 1px solid;
+  box-shadow: 25px 26px 50px grey;
+  z-index: 1000;
+}
+div.panel.hidden {display: none}
+
+div.panel-main-title {
+  font-size: 1.8em;
+  height: 40px;
+  padding: 1em 1em;
+}
+
+div.panel div.content {
+  height: 760px;
+  overflow-y: auto;
+  padding: 1em 2em;
+}
+div.panel div.tools {
+  text-align: right;
+  padding: 0.5em 1em;
+  background-color: grey;
+}
+
+div.panel div.tools button {
+  font-size: 1em;
+  padding: 0 1em;
+}
+
+div.panel div.tools button.btn-cancel {
+  float: left;
+}

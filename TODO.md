@@ -41,6 +41,13 @@ Le gain de temps en vaut-il l'effort ?
 
 * Les mettre en place pour l'édition (en profiter pour implémenter la classe Panneau — ou reprendre une classe identique existant, pour une des dernières applications)
 
+## Aide
+
+* La mettre en place
+* Sur :
+  - 'aide start' Pour aider à démarrer, quand aucun texte n'est fourni
+  
+
 ## Fonctionnalités
 
 * Signaler une forte densité du mot dans le passage (passage court) et offrir la possibilité d'afficher toutes les occurrences.

@@ -39,7 +39,7 @@ class ConsoleCommandManager {
     switch(command){
     // --- COMMANDES GÉNÉRALES ---
     case 'aide': case 'help':
-      console.warn("Je dois apprendre à afficher l'aide.")
+      Help.show()
       break
     // --- COMMANDES FICHIER ---
     case 'f': // Donne des informations sur le fichier
