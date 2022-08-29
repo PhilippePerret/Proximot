@@ -35,12 +35,18 @@ class ConsoleKeyManager {
    */
   onKeyUp(e){
 
-    /**
-    * Soumission de la commande tapée en console
-    */
-    if ( e.key == 'Enter') {    
+    switch(e.key) {
+
+    case 'Enter':
+      /**
+      * Soumission de la commande tapée en console
+      */
       e.preventDefault()
       this.cm.onSubmit(e, this.consoleValue )
+      return stopEvent(e)
+
+    case 'Escape':
+      Panel.closeCurrent()
       return stopEvent(e)
     }
 

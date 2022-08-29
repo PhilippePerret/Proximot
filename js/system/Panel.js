@@ -17,6 +17,44 @@
 */
 class Panel {
 
+  static reset(){
+    this.stack = []
+  }
+
+  // --- Public Class Method ---
+
+  /**
+  * Fermeture du panneau courant (par exemple avec Escape)
+  * Utiliser : Panel.closeCurrent()
+  */
+  static closeCurrent(){
+    this.current && this.current.hide()
+  }
+
+  /**
+  * Le panneau courant
+  */
+  static get current(){
+    return this.stack[this.stack.length - 1]
+  }
+
+  static addToStack(panel){
+    this.stack || this.reset()
+    this.stack.push(panel)
+  }
+
+  static removeFromStack(panel){
+    const newStack = []
+    this.stack.forEach( pan => {
+      if ( pan.id == panel.id ) { return }
+      else { newStack.push(pan) }
+    })
+    this.stack = newStack
+  }
+
+
+  //##############        INSTANCE       ###################
+
   constructor(data){
     this.isBuilt  = false
     this.data     = data
@@ -44,12 +82,14 @@ class Panel {
   show(){
     this.isBuilt || this.build()
     this.obj.classList.remove('hidden')
+    this.constructor.addToStack(this)
   }
   /**
   * Masquage du panneau
   */
   hide(){
     this.obj.classList.add('hidden')
+    this.constructor.removeFromStack(this)
   }
 
   // --- Private Methods ---
