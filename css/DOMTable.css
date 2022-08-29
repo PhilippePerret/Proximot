@@ -1,0 +1,15 @@
+/*
+  --- Pour DOMTable.js ---
+  
+*/
+table.listing {
+  border: 1px solid #CCC;
+}
+table.listing tr:nth-child(1) {
+  background-color: #888 !important;
+  color: white;
+}
+table.listing tr:nth-child(1) td {font-style: italic;}
+table.listing tr td {padding: 4px 16px;}
+table.listing tr:nth-child(odd) { background-color: #E1FFFE }
+table.listing tr:nth-child(even) { background-color: #E3FFE3 /* ~vert */}

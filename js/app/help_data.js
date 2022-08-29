@@ -20,35 +20,6 @@ Vous trouverez ci-dessous de **nombreux renseignements**.
 
 **Proximot** est une application qui permet de travailler les proximités dans un texte.
 `
-
-class DOMTable {
-  constructor(data){
-    this.colsWidth = data.colsWidth
-    this.code = [`<table class="${data.css}">`]
-    if ( data.rows ){
-      this.injectRows(data.rows)
-    }
-  }
-  tr(...cells){
-    this.code.push('<tr>')
-    const tr = []
-    for (var icol = 0, len = this.colsWidth.length; icol < len; ++icol){
-      const cell = cells[icol] || ''
-      const width = this.colsWidth[icol]
-      tr.push(`<td style="width:${width}px;">${marked.parseInline(cell)}</td>`)
-    }
-    this.code.push(tr.join(''))
-    this.code.push('</tr>')
-  }
-  injectRows(rows){
-    rows.forEach(row => {this.tr(...row)})
-    return this;//chainage
-  }
-  to_html(){ 
-    this.code.push('</table>')
-    return this.code.join('')
-  }
-}
 const colsWidth = [400,200,200]
 
 const commandsModifications = new DOMTable({css:'listing',colsWidth:colsWidth, rows:[
@@ -74,6 +45,8 @@ const commandsProximites = new DOMTable({css:'listing',colsWidth:colsWidth, rows
 
 const AIDE_COMMANDS = `
 ## Liste des commandes
+
+> Les commandes sont toujours exprimées par 1 à 3 caractères en début de ligne, suivis par une espace puis des valeurs si nécessaire.
 
 ### Modifications de la sélection
 
