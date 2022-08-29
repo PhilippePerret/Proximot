@@ -335,20 +335,6 @@ class TextFragment {
     }
   }
   
-
-  /**
-   * Méthode qui checke la proximité du +mot+ {Mot}
-   *
-   * @param mot {Mot} Instance du mot à checker
-   *            Noter qu'à ce moment du check, le contenu de ce mot
-   *            peut être composé de plusieurs mots et même de 
-   *            plusieurs paragraphes. 
-   */
-  checkProximityFor(mot, options) {
-    this.curMot = mot
-    Mot.getLemmaOf(mot.content, this.analyzeAround.bind(this) )
-  }
-
   /**
    * Méthode qui procède à l'analyse d'un extrait du fragment (après
    * changement du texte par exemple). Les options permettent de

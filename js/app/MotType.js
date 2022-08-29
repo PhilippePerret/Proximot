@@ -10,6 +10,208 @@
 class MotType extends TextElement {
 
 
+
+  /**
+  * Méthode appelée quand l'utilisateur veut remplacer le mot
+  * sélectionné par newContent. On doit vérifier si c'est possible et
+  * si cela génère une nouvelle proximité. Si c'est le cas, on le
+  * signale à l'utilisateur qui peut alors décider de le modifier ou
+  * pas.
+  * 
+  * Cette méthode est appelée plusieurs fois avec différentes données
+  * sauf si les mots sont connus. La première fois, +data+ est 
+  * simplement le string de remplacement. Les autres fois, ça peut 
+  * être les remontées du serveur avec les informations sur le ou les
+  * mots.
+  * 
+  */
+  checkAndReplaceWithContent(data) {
+
+    let tableMots;
+
+    if ( 'string' == typeof data ) {
+      /*
+      |  Tout premier appel
+      */
+      const newContent = data
+      /*
+      | Si le contenu est le même, on peut s'arrêter là
+      */
+      if ( newContent == this.content ) {
+        message("Contenu identique. Je renonce.")
+        return false
+      }
+      console.log("Contenu différent ('%s' ≠ '%s'), je poursuis", newContent, this.content)
+      /*
+      |  On fait une première découpe selon les espaces.
+      */
+      const mots = newContent.split(' ')
+      tableMots       = [] // toutes les données des mots dans l'ordre
+      const unknownDataMots = [] // Liste des mots inconnus
+      /*
+      |  Boucle sur les mots (peut-être un seul) pour voir ceux qui
+      |  sont connus et ceux qui sont à remonter
+      |  Produit la liste Array dataMots dont chaque élément contient
+      |  les données du mot, dans l'ordre.
+      */
+      for( var imot = 0, len = mots.length; imot < len; ++imot){
+        const motStr  = mots[imot]
+        const dataMot = {index: int(imot), str: motStr}
+        const dLemme  = MotType.getCountAndLemma(motStr)
+        if ( dLemme ) {
+          Object.assign(dataMot, dLemme)
+        } else {
+          unknownDataMots.push(dataMot)
+        }
+        tableMots.push(dataMot)
+      }
+      console.log("tableMots au départ : ", tableMots)
+      /*
+      |  On peut rechercher si nécessaire les mots non connus.
+      |  Mais tant qu'à faire, le plus simple reste d'envoyer tout
+      |  le nouveau contenu.
+      */
+      if ( unknownDataMots.length ) {
+        /* Données à envoyer */
+        WAA.send({class:'Proximot::TTAnalyzer', method:'findUnknowMots', data: {id:this.id, content:newContent}})
+        return 
+      }
+    } else {
+      /*
+      |  On revient de la recherche des lemmas des mots
+      */
+      tableMots = []
+      for ( var imot = 0, len = data.tokens.length; imot < len; ++ imot){
+        const dtoken = data.tokens[imot]
+        tableMots.push({index:int(imot), str:dtoken[0], lemma:dtoken[2], type: dtoken[1]})
+      }
+      // console.log("tableMots au retour : ", tableMots)
+    }
+
+    /*
+    |   À partir d'ici, on a une liste, tableMots, qui contient les 
+    |   données pour chaque mot (souvent un seul) avec un diction-
+    |   naire contenant :
+    |      str:     {String} Le mot lui-même, tel qu'il est écrit
+    |      lemma:   {String} Le lemme du mot
+    |      type:    {String} Le type Tree-tager du mot ('NOM', 'PUN')
+    |      index:   {Number} L'index du mot dans la liste
+    |
+    |   On est donc en mesure de chercher les proximités. En sachant
+    |   qu'elle n'existeront que pour les nouveaux lemmes (pas for-
+    |   cément les nouveaux mots : le lemme "devoir" peut être très
+    |   bien connu, mais le mot "dusse" pas encore employé)
+    |
+    |   On vérifie pour chaque mot.
+    */
+
+    tableMots.forEach( dmot => {
+      const {str, lemma} = dmot
+      const ilemma = this.fragment.lemmas.get(lemma, true /* ne pas instancier */)
+      console.log("ilemma = ", ilemma)
+      if ( ilemma ) {
+        /*
+        |  Le lemma existe, il peut y avoir proximité
+        */
+        console.log("Recherche de proximité dans : ", ilemma)
+      } else {
+        /*
+        |  Si le Lemma n'existe pas, il ne peut pas y avoir de proximité
+        */
+      }
+    })
+
+    /*
+    |  Traiter le cas où le premier mot de la liste des nouveaux
+    |  mot est le mot actuel.
+    |  (est une liste + premier mot = ce mot => ne pas toucher à cette
+    |  instance du tout)
+    */
+
+    /*
+    |  Réfléchir au fait que plutôt que de modifer cette instance,
+    |  peut-être vaut-il mieux approfondir une procédure de destruction
+    |  complète (du mot dans le DOM à ses proximités et son appartenance
+    |  à son lemma) plutôt que de la modifier.
+    |  !!! Ne la garder que lorsque le lemma est le même et que c'est
+    |  juste une modification de mot affiché (quand un "s" a été oublié
+    |  par exemple.) Donc :
+    | 
+    |  Si le nouveau premier mot a le même lemma que le mot actuel
+    |  => changer juste le contenu (content + mot)
+    |  Si le nouveau premier mot n'a pas le même lemma que le mot
+    |  actuel.
+    |  => Destruction profonde de cette instance et remplacement par
+    |     des toutes nouvelles
+    |     + Avec calcul des nouvelles longueurs.
+
+    */
+
+    /*
+    |  Si la longueur a changé, il faut actualiser tous les offests
+    |  suivant ainsi que les longueurs des paragraphes et fragments
+    */
+
+    /*
+    |  SI longueur différente : recompter les offsets des autres
+    |  fragment (App.data_fragments)
+    */
+  }
+
+  /**
+  * Retour de TTAnalyzer::findUnknowMots appelée ci-dessus
+  * 
+  * @param data {Hash}
+  *           data.id       : ID du mot (texel)
+  *           data.tokens   : les mots relevés
+  *           data.content  : le contenu initial envoyé.
+  */  
+  static onFindUnknownMots(data){
+    const mot = Texel.getById(int(data.id))
+    mot.checkAndReplaceWithContent(data)
+  }
+
+  /**
+  * Remplace le contenu du mot (c'est-à-dire tout, son content comme 
+  * son lemma, etc.) par les nouvelles données
+  * 
+  * Cette méthode n'est appelée que lorsque la proximité a été 
+  * vérifiée et approuvée par l'utilisateur.
+  */
+  replaceContentWith(newContent){
+    /*
+    |   On mémorise le content actuel pour le remettre en cas 
+    |   d'annulation
+    */
+    const oldContent = this.content
+    /*
+    |  TODO : sortir le nouveau mot du lemma s'il n'a pas le même 
+    |         lemme.
+    */    
+    /*
+    |   On consigne le nouveau contenu pour qu'il soit pris en 
+    |   compte par la relève de l'extrait à checker. Cela actualise
+    |   aussi son affichage.
+    */
+    this.content = newContent
+    /*
+    | Il peut y avoir trois sortes de contenu différents :
+    | 1.  Un simple mot comme le mot précédent.
+    |     => traitement normal
+    | 2.  Plusieurs mots (séparés ou non par des espaces, on le
+    |     sait à l'analyse).
+    |     => On crée autant de mots que nécessaire
+    |     => On actualise toutes les listes
+    | 3.  Un nouveau paragraphe (et au moins 2 mots)
+    |     => On crée le paragraphe et les mots
+
+    /*
+    |   Enregistrement dans l'historique d'annulation
+    */
+    // TODO Changement in CancelingManagement
+  }
+
+
   /**
    * @return lemma {String} Le lemme du mot +str_mot+
    * Soit il est déjà connu est retourné tout de suite, soit il doit
@@ -46,7 +248,7 @@ class MotType extends TextElement {
    * tous les coups ce lemme.
    */
   static getCountAndLemma(strMot){
-    console.info("this.byCountAndLemmas=", this.byCountAndLemmas)
+    // console.info("this.byCountAndLemmas=", this.byCountAndLemmas)
     return this.byCountAndLemmas[strMot]
   }
 
@@ -81,9 +283,8 @@ class MotType extends TextElement {
 
   constructor(fragment, dmot){
     super(fragment, dmot)
-    this.mot    = this.content
-    this.Klass  = 'Mot'
-    this.constructor.addInTableMots(this)
+    this.mot = this.content
+    MotType.addInTableMots(this)
   }
 
   // --- Public Methods ---

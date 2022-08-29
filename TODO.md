@@ -4,7 +4,6 @@
 
 * Pouvoir définir une distance minimale hors proximité pour chaque lemme
   (cf. la méthode Lemma#getDistanceMinimale)
-* Calcul des proximités lors d'un chargement depuis un texte
 * Autre fonctionnement pour "raccord" : on prend les 500 mots avant et après d'un fragment précédent et suivant
 * Changement du travail sur les proximités
   Maintenant :

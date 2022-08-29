@@ -1,12 +1,20 @@
 'use strict';
 
 /**
- * Gestion de sélection
- * 
+ * Gestionnaire de sélection quelconque
+ * ------------------------------------
+ * (pas forcément dans un champ de texte)
  * 
  * Un élément sélectionnable doit toujours répondre aux méthodes :
  *  - setSelected
  *  - unsetSelected
+ * 
+ * Si le propriétaire (owner) définit la méthode beforeSetSelection, 
+ * cette méthode sera appelée AVANT de définir la sélection.
+ * Si le propriétaire du gestionnaire de sélection définit la méthode
+ * afterSetSelection, cette méthode sera appelée APRÈS avoir défini
+ * la sélection.
+ * 
  */
 
 class SelectionManager {
@@ -34,10 +42,16 @@ class SelectionManager {
   get isUniq() { return this.liste.length == 1 }
 
   set(newListe){
+    if ( 'function' == typeof this.owner.beforeSetSelection ) {
+      this.owner.beforeSetSelection.call(this.owner)
+    }
     this.deselectAll()
     if ( not(Array.isArray(newListe)) ){ newListe = [newListe] }
     newListe.forEach( sel => this.add(sel) )
     this.index = 0
+    if ( 'function' == typeof this.owner.afterSetSelection ) {
+      this.owner.afterSetSelection.call(this.owner)
+    }
   }
 
   toggle(sel, keep){

@@ -45,6 +45,7 @@
 =end
 module Proximot
 class TTAnalyzer
+class << self
   WS = Regexp.new('[[:blank:]]+')
   private_constant :WS
   TREE_TAGGER_FOLDER = File.join(LIB_FOLDER,'third-party','tree-tagger')
@@ -112,6 +113,20 @@ class TTAnalyzer
     )
 
     return fragment_data
+  end
+
+  ##
+  # Méthode appelée par le client pour connaitre des mots de
+  # remplacement encore inconnus (lors du remplacement de texte)
+  # cf. Mot.checkAndReplaceWithContent dans Mot.js
+  # 
+  # @param data {Hash} Table des données envoyées
+  #         data['content'] Le texte à analyser
+  # 
+  def findUnknowMots(data)
+    tokens = tokenize(data['content'])
+    puts "Tokens renvoyés : #{tokens.inspect}"
+    WAA.send(class:'Mot', method:'onFindUnknownMots', data:data.merge!(tokens: tokens))
   end
 
   ##
@@ -318,6 +333,8 @@ class TTAnalyzer
     end
     return ary
   end
+
+end # / << self
 
 RETOUR_CHARIOT = "__RET#{Time.now.to_i}__"
 

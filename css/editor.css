@@ -8,7 +8,7 @@
   left: 0;
   right: 0;
   /*width: 100%;*/
-  height: calc(100% - 4em);
+  height: calc(100% - 5em);
 }
 
 #editor #content {

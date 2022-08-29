@@ -167,7 +167,7 @@ private
     # sous forme de données fragment telles que Proximot pourra les
     # utiliser côté client.
     # 
-    return TTAnalyzer.new.analyzeAsFragment(text_fragment, params)
+    return TTAnalyzer.analyzeAsFragment(text_fragment, params)
   end
 
 end #/<< self

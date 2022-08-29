@@ -2,6 +2,13 @@
 
 class EditorClass {
 
+  /**
+  * Méthode appelée avant de définir la sélection
+  */
+  beforeSetSelection(){
+    TextElement.unsetExergues()    
+  }
+
  /**
    * Sélectionner un élément textuel par son index
    * 

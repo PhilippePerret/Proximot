@@ -69,9 +69,9 @@ class Lemmas {
    * @return le {Lemma} de lemma +lemma+ ou l'instancie s'il 
    * n'existe pas.
    */
-  get(lemma){
+  get(lemma, nePasInstancier = false ){
     if ( undefined == this.table[lemma] ) {
-      return this.addLemma(lemma)
+      return nePasInstancier ? null : this.addLemma(lemma)
     } else {
       return this.table[lemma] 
     }

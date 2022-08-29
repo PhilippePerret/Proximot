@@ -38,8 +38,22 @@ class ConsoleCommandManager {
 
     switch(command){
     // --- COMMANDES GÉNÉRALES ---
-    case 'aide': case 'help':
-      Help.show()
+    case 'aide': case 'help': case 'h':
+      if ( value ) {
+        switch(value){
+        case 'commands':
+          return Help.display('commands')
+        case 'export':
+          return Help.display('export')
+        default:
+          Help.search(value)
+        }
+      } else {
+        Help.show()
+      }
+      break
+    case 'export':
+      console.warn("Je dois apprendre à exporter le texte")
       break
     // --- COMMANDES FICHIER ---
     case 'f': // Donne des informations sur le fichier
@@ -80,17 +94,21 @@ class ConsoleCommandManager {
       console.warn("Je dois apprendre à afficher la prochaine proximité.")
       break
 
-    case 'nl': // sélectionner le mot en proximité gauche
+    case 'p': // précédente proximité
+      console.warn("Je dois apprendre à afficher la proximité précédente.")
+      break
+
+    case 'pl': // sélectionner le mot en proximité gauche
       if ( this.currentMot.proxAvant ) {
-        Editor.Selection.set(this.currentMot.proxAvant)
+        Editor.Selection.set(this.currentMot.proxAvant.motAvant)
       } else {
         erreur("La sélection n'a pas de proximité avant.")
       }
       break
 
-    case 'nr': // sélectionner le mot en proximité gauche
+    case 'pr': // sélectionner le mot en proximité gauche
       if ( this.currentMot.proxApres ) {
-        Editor.Selection.set(this.currentMot.proxApres)
+        Editor.Selection.set(this.currentMot.proxApres.motApres)
       } else {
         erreur("La sélection n'a pas de proximité après.")
       }
@@ -101,7 +119,7 @@ class ConsoleCommandManager {
       break
 
     case 'r': // remplacement
-      this.currentMot.replaceContentWith(value)
+      this.currentMot.checkAndReplaceWithContent(value)
       break
 
     case 'r*': // remplacer tous
@@ -182,7 +200,7 @@ class ConsoleCommandManager {
     /*
     |  Retirer ceux qui peuvent être en exergue
     */
-    TextElement.unsetExergues()
+    // TextElement.unsetExergues()
     /*
     |  Suivant le cas, passer au suivant, au premier ou à rien
     */

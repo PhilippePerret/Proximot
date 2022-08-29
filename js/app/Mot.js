@@ -11,56 +11,6 @@ class Mot extends MotType {
 
   get type(){return 'mot'}
 
-  replaceContentWith(newContent){
-    /*
-    | Si le contenu est le même, on peut s'arrêter là
-    */
-    if ( newContent == this.content ) {
-      console.log("Contenu identique. Je renonce.")
-      return false
-    }
-    console.log("Contenu différent ('%s' ≠ '%s'), je poursuis", newContent, this.content)
-    /*
-    |   On mémorise le content actuel pour le remettre en cas 
-    |   d'annulation
-    */
-    const oldContent = this.content
-    /*
-    |   On consigne le nouveau contenu pour qu'il soit pris en 
-    |   compte par la relève de l'extrait à checker. Cela actualise
-    |   aussi son affichage.
-    */
-    this.content = newContent
-    
-    /*
-    |   Check de proximité
-    |
-    | On prend les 250 mots autour (index ± 2500) pour
-    | créer un texte qu'on envoie à l'analyse
-    |
-    | Mais en fait, le plus simple serait d'envoyer le ou les mots
-    | à l'analyse de texte pour obtenir leur lemma, puis de voir
-    | s'il n'y pas de problème de proximité.
-    |
-    */
-    this.fragment.checkProximityFor(this, {cancelable: true})
-    /*
-    | Il peut y avoir trois sortes de contenu différents :
-    | 1.  Un simple mot comme le mot précédent.
-    |     => traitement normal
-    | 2.  Plusieurs mots (séparés ou non par des espaces, on le
-    |     sait à l'analyse).
-    |     => On crée autant de mots que nécessaire
-    |     => On actualise toutes les listes
-    | 3.  Un nouveau paragraphe (et au moins 2 mots)
-    |     => On crée le paragraphe et les mots
-
-    /*
-    |   Enregistrement dans l'historique d'annulation
-    */
-    // TODO Changement in CancelingManagement
-  }
-
   /**
    * Surclasse la méthode TextElement pour écrire le mot dans le
    * texte.

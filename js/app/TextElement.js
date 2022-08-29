@@ -294,3 +294,5 @@ class TextElement {
   }
 
 }
+
+const Texel = TextElement

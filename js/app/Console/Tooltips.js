@@ -83,7 +83,7 @@ class ConsoleToolTipsManager {
         }
       , 'aide':{
             action:'Affichage de l’aide.'
-          , tip:'Pour une aide plus chirurgicale, utiliser "h".'
+          , tip:'Pour une aide plus chirurgicale, mettre des arguments.'
         }
       , 'f': {
             action:'lettre générique pour les fichiers + information sur texte courant'
@@ -130,12 +130,24 @@ class ConsoleToolTipsManager {
           , ifNoValue:'de la sélection.'
           , tip:'`ig` ignore les deux en même temps'
         }
+      , 'n': {
+            action:'Pour sélectionner le prochain mot en proximité'
+        }
+      , 'p': {
+            action:'Pour sélectionner le précédent mot en proximité'
+        }
       , 'pl':{
-            action:'Pour "proximité gauche", utiliser plutôt "nl" (next-left)'
+            action:'Pour sélectionner le mot en "proximité gauche"'
+          , ifValue:'%s.'
+          , valueFormater:this.formateNextPrevProximite.bind(this,'left')
+          , ifNoValue:'d’une sélection qui possède une proximité gauche.'
         }
       , 'pr':{
-            action:'Pour "proximité right", utiliser plutôt "nr" (next-right)'
-        }
+            action:'Pour sélectionner le mot en "proximité droite"'
+          , ifValue:'%s.'
+          , valueFormater:this.formateNextPrevProximite.bind(this,'right')
+          , ifNoValue:'d’une sélection qui possède une proximité droite.'
+       }
       , 'pref':{
             action:'Pour définir'
           , ifValue:'la préférence %s'
@@ -152,21 +164,6 @@ class ConsoleToolTipsManager {
           , ifValue: 'par %s.'
           , ifNoValue:'par la valeur spécifiée en argument.'
           , tip:'Utiliser "r" pour remplacer seulement la sélection'
-        }
-      , 'n': {
-            action:'Sélectionne la prochaine proximité'
-        }
-      , 'nl': {
-            action:'Sélectionne la proximité gauche'
-          , ifValue:'%s.'
-          , valueFormater:this.formateNextPrevProximite.bind(this,'left')
-          , ifNoValue:'d’une sélection qui possède une proximité gauche.'
-        }
-      , 'nr': {
-            action:'Sélectionne la proximité droite'
-          , ifValue:'%s.'
-          , valueFormater:this.formateNextPrevProximite.bind(this,'right')
-          , ifNoValue:'d’une sélection qui possède une proximité droite.'
         }
       , 's': {
             action:'Sélectionne'

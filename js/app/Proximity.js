@@ -168,15 +168,12 @@ class Proximity {
     const minOffset = int(this.motAvant.offset) - lemma.distance_minimale
     const maxOffset = int(this.motApres.offset) + lemma.distance_minimale
     var density = 0
-    console.log("Positions:", positions)
     for(var i = 0, len = positions.length; i < len; ++i){
       const position = int(positions[i])
-      console.log("Position = ", position)
       if ( position < minOffset ) { continue }
       else if ( position > maxOffset ) { break }
       else { density ++ }
     }
-    console.log("Calc densité entre %i et %i = %i", minOffset, maxOffset, density)
     return density
   }
 }
