@@ -14,3 +14,4 @@ end
 require_folder(File.join(LIB_FOLDER,'required','system'))
 require_folder(File.join(LIB_FOLDER,'required','app'))
 
+require_relative 'InsideTest/inside_test'

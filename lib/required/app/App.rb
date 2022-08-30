@@ -32,12 +32,16 @@ class << self
   # C'est cette méthode qui est appelée après le lancement de l'app
   # pour charger le texte à analyser (soit en version brut, soit en
   # version déjà analysée).
+  #
+  # @param data {Hash} Seulement utilisé pour les tests pour le 
+  #             moment.
   # 
-  def load
+  def load(data = nil)
+    # puts "data : #{data.pretty_inspect}".jaune
     #
     # On cherche un texte valide à proximité…
     # 
-    file_path = search_file_path
+    file_path = data.nil? ? search_file_path() : data['filepath']
     # puts "file_path: #{file_path}".jaune
 
     #

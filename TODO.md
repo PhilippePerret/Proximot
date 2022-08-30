@@ -2,6 +2,8 @@
 
 ## En cours
 
+* Poursuivre le lancement des tests sur un texte particulier
+  - puis faire les tests de suppression de mots
 * Pouvoir définir une distance minimale hors proximité pour chaque lemme
   (cf. la méthode Lemma#getDistanceMinimale)
 * Autre fonctionnement pour "raccord" : on prend les 500 mots avant et après d'un fragment précédent et suivant

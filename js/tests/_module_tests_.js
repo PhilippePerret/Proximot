@@ -1,8 +1,8 @@
 import {InsideTest} from '../system/InsideTest/inside-test.lib.js'
-// import {InsideTest} from '../system/InsideTest/inside-test.lib.js'
 
-import('./TextUtils.tests.js')
 
+// import('./TextUtils.tests.js')
+import('./Suppression_Mots.test.js')
 
 $(document).ready(async e => {
 

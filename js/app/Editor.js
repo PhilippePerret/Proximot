@@ -2,6 +2,11 @@
 
 class EditorClass {
 
+  reset(){
+    this.content.innerHTML = ''
+    delete this._selection
+  }
+
   /**
   * Méthode appelée avant de définir la sélection
   */
@@ -98,7 +103,7 @@ class EditorClass {
 
 
   get Selection(){
-    return this._sel || (this._sel = new SelectionManager(this))
+    return this._selection || (this._selection = new SelectionManager(this))
   }
   get content(){
     return this._content || (this._content = DGet('#editor #content'))
