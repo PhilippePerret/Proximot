@@ -292,13 +292,17 @@ class MotType extends TextElement {
   * On ajoute ce text-element de type Mot aux Lemma
   */
   addToLemmas(){
-    this.fragment.lemmas.get(this.lemma).addMot(this)
+    this.lemmaInstance.addMot(this)
   }
   /**
   * On retire ce texel des lemmas (destruction)
   */
   removeFromLemmas(){
-    console.warn("Je dois apprendre à supprimer le mot des Lemmes.")
+    this.lemmaInstance.removeMot(this)
+  }
+
+  get lemmaInstance(){
+    return this._ilemma || (this._ilemma = this.fragment.lemmas.get(this.lemma))
   }
 
   /**

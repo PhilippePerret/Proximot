@@ -159,6 +159,16 @@ class Lemma {
   }
 
   /**
+  * Suppression d'un texel de la liste des lemmas
+  */
+  removeMot(texel){
+    delete this.table[texel.offset]
+    this.positions = removeFromArray(
+      this.positions, t => {return t.offset == texel.offset}
+    )
+  }
+
+  /**
   * Pour définir toutes les proximités de ce lemme
   * 
   * On passe en revue tous les mots dans l'ordre des positions si

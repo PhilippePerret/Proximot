@@ -201,7 +201,9 @@ class TextElement {
     return this.constructor.PROPERTIES_KEYS.map(prop => {return this[prop]})
   }
   setData(data){
-    for(var prop in data){ if ( prop != 'type' ) this[prop] = data[prop]}    
+    for(var prop in data){ if ( prop != 'type' ) this[prop] = data[prop]}
+    this.id = int(this.id)
+    if ( isDefined(this.offset) ) { this.offset = int(this.offset) }
   }
 
   // --- Removing Methods ---
@@ -217,13 +219,6 @@ class TextElement {
   */
   destroy(options){
 
-    /*
-    |  Influence sur les TEXTELEMENTS
-    |                    ------------
-    |   - retrait de la liste (table) de classe
-    */
-    TextElement.destroy(this)
-
     /* par rapport aux longueurs */
 
     /*
@@ -236,7 +231,6 @@ class TextElement {
     */
     this.removeFromLemmas()
 
-    /* DOM */
     /*
     |  Influence sur le DOM
     |                   ---
@@ -251,7 +245,9 @@ class TextElement {
     |     avec ce mot. Mais elles doivent vérifier qu'il n'y est pas
     |     d'autre mot en proximité à la place.
     */
-    /* par rapport à la sélection et les exergues */
+    this.proxAvant && Proximity.remove(this.proxAvant, {ignore: this, update: this.proxAvant.motAvant})
+    this.proxApres && Proximity.remove(this.proxApres, {ignore: this, update: this.proxApres.motApres})
+
     /*
     |  Influence sur la SÉLECTION et les EXERGUES
     |                   --------------------------
@@ -263,9 +259,18 @@ class TextElement {
     |  Influence sur le PARAGRAPHE
     |                   ----------
     |   - retire le mot de son paragraphe (toutes les valeurs du
-    |     paragraphe sont à recalculer)
+    |     paragraphe sont à recalculer). Cela influence aussi la
+    |     longueur.
     */
     this.paragraph.remove(this)
+
+    /*
+    |  Influence sur les TEXTELEMENTS
+    |                    ------------
+    |   - retrait de la liste (table) de classe
+    */
+    TextElement.destroy(this)
+
 
   }
 

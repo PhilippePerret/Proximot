@@ -101,12 +101,13 @@ class Paragraph {
   * texel)
   */
   remove(texel){
-    console.warn("Je dois apprendre à détruire un texel d'un paragraphe.")
     this._mcount -- ;
     this._length -= texel.length
+    const condMethod = function(item){return item.id == texel.id}
     if ( texel.isMot ) {
-      this._mots = removeFromArray(this._mots, item => {return item.id == texel.id}, {onlyOne:true})
+      this._mots = removeFromArray(this._mots, condMethod, {onlyOne:true})
     }
+    this.texels = removeFromArray(this.texels, condMethod, {onlyOne:true})
   }
 
   // @return le DIV (DOM Element) du paragraphe

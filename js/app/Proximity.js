@@ -20,6 +20,47 @@ class Proximity {
   }
 
   /**
+  * Pour détruire une proximité (suite à la destruction d'un mot)
+  * 
+  * @param proxi {Proximity} La proximité à détruire
+  * @param params {Hash} Paramètres supplémentaires.
+  *          params.update 
+  *             {TextElement} Le texel qu'il faut actualiser, c'est-
+  *             à-dire dont il faut trouver les nouvelles proximités
+  *             si la proximité courante est supprimée.
+  *          params.ignore
+  *             {TextElement} Le texel qu'il faut ignorer au cours de
+  *             cette suppression, peut-être parce que c'est le texel
+  *             détruit qui produit cette suppression de proximité
+  */
+  static remove(proxi, params){
+    /*
+    |  Supprimer la proximité de la table
+    */
+    delete this.table[proxi.id]
+    /*
+    |  Supprimer la proximité de la liste des proximités
+    */
+    this.items = removeFromArray(this.items, px => { px.id == proxi.id })
+    /*
+    |  Supprimer la proximité des deux texels en proximité
+    */
+    if ( not(params.ignore) || proxi.motAvant.id != params.ignore.id ) {
+
+    }
+    if ( not(params.ignore) || proxi.motApres.id != params.ignore.id) {
+
+    }
+    /*
+    |  Resetter la densité (_density) des mots avec le même lemma
+    */
+    proxi.motAvant.lemmaInstance.forEachMot(mot => {
+      if ( mot.proxAvant ) { mot.proxAvant.resetDensity() }
+      if ( mot.proxApres ) { mot.proxApres.resetDensity() }
+    })
+  }
+
+  /**
   * Instancie les données remontée d'un package Proximot
   */
   static instanciate(fragment, data){
@@ -145,6 +186,7 @@ class Proximity {
 
   get density()         { return this._density || this.calcDensity() }
   set density(d)        { this._density = d }
+  resetDensity()        { this._density = undefined }
 
   // --- Private Methods ---
 

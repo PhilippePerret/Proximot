@@ -6,9 +6,13 @@
  * 
  * version 2.5
  * 
+ * @autotesté
+ * 
  * Cette librairie est autotestée. Il faut charger aussi le module
  * MiniTest (avant elle, sans defer)
  */
+
+var test; // la marque qu'un module est autotesté
 
 /**
 *   SUPPRIMER DES ÉLÉMENTS D'UNE LISTE
@@ -36,9 +40,18 @@
 *               attention : s'il y a plus d'un élément à supprimer
 *               cela produira un bug. Donc ça n'est à utiliser qu'
 *               avec l'option onlyOne
+*           options.inplace
+*               Si true, c'est la liste fournie qui est modifiée.
 */  
-function removeFromArray(array, condMethod, options){
+function removeFromArray(arrayInit, condMethod, options){
+  console.log("liste reçue par removeFromArray =" , arrayInit)
+  var array ;
   options = options || {}
+  if ( options.inplace ){
+    array = arrayInit
+  } else {
+    array = JSON.parse(JSON.stringify(arrayInit))
+  }
   if ( options.fromBeginning ) options.onlyOne = true
   var i = 0 ;
   const len = array.length
@@ -66,39 +79,57 @@ function removeFromArray(array, condMethod, options){
   return array
 }
 
-var ary, yra, act, exp ;
-ary = [1,2,3,4,5]
+
 const max = 3
-act = removeFromArray(ary, function(item){return item > max})
-exp = [1,2,3]
-if ( act.join('') != exp.join('') ) {
-  console.error('removeFromArray ne renvoie pas la bonne valeur (attendue, obtenue)', exp, act)
-}
+new MiniTest(function(exp, ary, condMethod, options){
+  this.expected = exp
+  this.actual   = removeFromArray(ary, condMethod, options)
+  this.failure_message = `removeFromArray avec les options ${JString(options)} ne retourne pas la bonne valeur.`
+}).evaluateValues([
+    [[1,2,3]  , [1,2,3,4,5], function(item){return item > max}]
+  , [[1,2,3,5], [1,2,3,4,5], function(item){return item > 3}, {fromBeginning:true} ]
+  , [[1,2,3,4], [1,2,3,4,5], function(item){return item > 3}, {onlyOne:true} ]
+])
 
-ary = [1,2,3,4,5]
-act = removeFromArray(ary, function(item){return item > 3}, {fromBeginning:true})
-exp = [1,2,3,5]
-if ( act.join('') != exp.join('') ) {
-  console.error('Avec l’option fromBeginning, removeFromArray ne renvoie pas la bonne valeur (attendue, obtenue)', exp, act)
-}
-
-
-ary = [1,2,3,4,5]
-act = removeFromArray(ary, function(item){return item > 3}, {onlyOne:true})
-exp = [1,2,3,4]
-if ( act.join('') != exp.join('') ) {
-  console.error('Avec l’option onlyOne, removeFromArray ne renvoie pas la bonne valeur (attendue, obtenue)', exp, act)
-}
-
-ary = [{foo:true, id:12}, {foo:false, id:5}, {foo:true, id:45}, {foo:true, id:2}]
-yra = removeFromArray(ary, item => { return item.foo })
-exp = [5]
-act = yra.map(i => {return i.id}) 
-if ( act.join('') != exp.join('') ) {
-  console.error('Avec une liste d’objets, removeFromArray ne renvoie pas la bonne valeur (attendue, obtenue)', exp, act)
-}
+const objetTest = [
+    {foo:true   , id:12 , str:'un texte long'}
+  , {foo:false  , id:5  , str:'des'}
+  , {foo:true   , id:45 , str:'court'}
+  , {foo:true   , id:2  , str:'as'}
+]
+new MiniTest(function(exp, ary, condMethod, options){
+  this.expected   = exp
+  const resultat  = removeFromArray(ary, condMethod, options)
+  console.log("résultat = ", resultat)
+  this.actual     = resultat.map(ite => {return ite.id})
+  this.failure_message = 'removeFromArray avec une liste d’objet ne retourne pas la bonne valeur.'
+}).evaluateValues([
+    [ [5]       , objetTest , function(item){return item.foo}, null]
+  , [ [12,45]   , objetTest , function(item){return item.str.length < 4}]  
+  , [ [12,5,45] , objetTest , function(item){return item.str.length < 4}, {onlyOne:true}]
+])
 
 // --- /Tests ---
+
+function isDefined(foo){
+  return not(undefined === foo)
+}
+var parVariable = "une variable"
+  , varNonDefinie ;
+
+new MiniTest(function(exp, foo){
+  this.expected = exp
+  this.actual   = isDefined(foo)
+  this.failure_message = "isDefined ne retourne pas la bonne valeur…"
+}).evaluateValues([
+    [true, 'string']
+  , [true, parVariable]
+  , [true, null]
+  , [true, false]
+  , [true, 0]
+  , [false, undefined]
+  , [false, varNonDefinie]
+])
 
 
 /**
@@ -113,7 +144,7 @@ function definedOr(primValue, elseValue){
     return primValue
   }
 }
-var test = new MiniTest(function(pvalue, expected){
+test = new MiniTest(function(pvalue, expected){
   this.expected         = expected
   this.actual           = definedOr(pvalue, 'oui')
   this.failure_message  = "definedOr ne retourne pas la bonne valeur"
