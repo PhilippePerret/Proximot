@@ -255,7 +255,7 @@ class TextElement {
     |                   --------------------------
     */
     this.unsetExergue()
-    this.isSelected && this.fragment.Selection.remove(this)
+    this.isSelected && Editor.Selection.remove(this)
 
     /*
     |  Influence sur le PARAGRAPHE

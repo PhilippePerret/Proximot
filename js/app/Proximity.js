@@ -210,12 +210,12 @@ class Proximity {
   */
   calcDensity(){
     const lemma     = TextFragment.current.getLemma(this.motAvant.lemma)
-    const positions = lemma.positions
-    const minOffset = int(this.motAvant.offset) - lemma.distance_minimale
-    const maxOffset = int(this.motApres.offset) + lemma.distance_minimale
+    const mots      = lemma.items
+    const minOffset = this.motAvant.offset - lemma.distance_minimale
+    const maxOffset = this.motApres.offset + lemma.distance_minimale
     var density = 0
-    for(var i = 0, len = positions.length; i < len; ++i){
-      const position = int(positions[i])
+    for(var i = 0, len = mots.length; i < len; ++i){
+      const position = mots[i].offset
       if ( position < minOffset ) { continue }
       else if ( position > maxOffset ) { break }
       else { density ++ }

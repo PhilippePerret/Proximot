@@ -9,10 +9,6 @@
 
 class MotType extends TextElement {
 
-  onConfirmSuppression(destroyIt){
-    destroyIt && this.destroy()
-  }
-
   /**
   * Méthode appelée quand l'utilisateur veut remplacer le mot
   * sélectionné par newContent. On doit vérifier si c'est possible et
@@ -32,10 +28,12 @@ class MotType extends TextElement {
     let tableMots;
 
     if ( 'string' == typeof data ) {
+
       /*
       |  Tout premier appel
       */
       const newContent = data
+
       /*
       |  Cas spécial d'une suppression pure et simple
       */
@@ -44,7 +42,7 @@ class MotType extends TextElement {
         |  Demander la confirmation qu'il faut bien supprimer le
         |  mot purement et simplement
         */
-        confirmer(
+        return confirmer(
             tp("Voulez-vous vraiment supprimer le mot '%s' ?", [this.mot])
           , {
                 poursuivre:   this.onConfirmSuppression.bind(this)
@@ -52,8 +50,8 @@ class MotType extends TextElement {
               , buttonCancel: {name:'Le garder'}
             }
         )
-        return
       }
+
       /*
       | Si le contenu est le même, on peut s'arrêter là
       */
@@ -61,6 +59,7 @@ class MotType extends TextElement {
         message("Contenu identique. Je renonce.")
         return false
       }
+
       console.log("Contenu différent ('%s' ≠ '%s'), je poursuis", newContent, this.content)
       /*
       |  On fait une première découpe selon les espaces.
@@ -245,31 +244,6 @@ class MotType extends TextElement {
     // TODO Changement in CancelingManagement
   }
 
-
-  /**
-   * @return lemma {String} Le lemme du mot +str_mot+
-   * Soit il est déjà connu est retourné tout de suite, soit il doit
-   * être demandé côté serveur.
-   * 
-   * @param strMot {String} Le mot dont on veut le lemme
-   * @param poursuivre  {Function} La fonction à appeler quand on 
-   *                    l'aura obtenu, d'ici ou du serveur
-   */
-  static getLemmaOf(strMot, poursuivre) {
-    let dLemme = this.getCountAndLemma(strMot)
-    if ( dLemme ) {
-      /*
-      | OK il est connu 
-      */
-      poursuivre.call(null, [ [strMot,dLemme.type, dLemme.lemma] ])
-    } else {
-      /*
-      | Ce mot est inconnu, il faut demander son lemme côté serveur
-      */
-      TextUtils.analyze(strMot, {poursuivre:poursuivre})
-    }
-  }
-
   /**
    * @return la table {:count, :lemma, :type} du mot +str_mot+ 
    * {String}
@@ -313,7 +287,6 @@ class MotType extends TextElement {
     */
     this.byCountAndLemmas[mot.mot].count ++ 
   }
-
 
   constructor(fragment, dmot){
     super(fragment, dmot)
@@ -369,6 +342,11 @@ class MotType extends TextElement {
       this.obj.classList.remove('too-close','pxavant','pxapres')
     }
   }
+
+  /**
+  * Confirmation de la destruction du texel courant
+  */
+  onConfirmSuppression(destroyIt){ destroyIt && this.destroy() }
 
   cssProximities(){
     const css = ['too-close']

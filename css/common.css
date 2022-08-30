@@ -12,5 +12,5 @@ button, input[type="text"], textarea {
   font-size: inherit;
 }
 button {
-  padding: 0 32px !important;
+  padding: 4px 32px !important;
 }

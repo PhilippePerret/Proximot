@@ -103,21 +103,13 @@ class Lemma {
     this.id         = lemma
     this.lemma      = lemma
     /*
-    | Liste des positions dans le fragment de texte
-    | DOIT DEVENIR OBSOLÈTE
-    */
-    this.positions  = []
-    /*
     |  Liste des texels (mots), dans l'ordre
     */
     this.items = []
-    /*
-    | Table avec en clé la position et en valeur une table contenant
-    | :mot et :index
-    | Avec :index qui est l'index dans la liste des positions.
-    | DOIT DEVENIR OBSOLÈTE
-    */
-    this.table      = {}
+  }
+
+  forEachMot(method){
+    this.items.forEach( mot => { method.call(null, mot) } )
   }
 
   addMot(mot){

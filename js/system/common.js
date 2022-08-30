@@ -44,38 +44,49 @@ var test; // la marque qu'un module est autotesté
 *               Si true, c'est la liste fournie qui est modifiée.
 */  
 function removeFromArray(arrayInit, condMethod, options){
-  var array ;
-  options = options || {}
-  if ( options.inplace ){
-    array = arrayInit
-  } else {
-    array = JSON.parse(JSON.stringify(arrayInit))
-  }
-  if ( options.fromBeginning ) options.onlyOne = true
-  var i = 0 ;
-  const len = array.length
-  if ( options.fromBeginning ) {
-    /*
-    |  À l'endroit : un seul item à supprimer plutôt au début
-    */
-    for (; i < len ; ++ i) {
-      if ( condMethod.call(null, array[i]) === true) {
-        array.splice(i, 1)
-        break
+  try {  
+    var array ;
+    options = options || {}
+    if ( options.inplace ){
+      array = arrayInit
+    } else {
+      try {
+        array = JSON.parse(JSON.stringify(arrayInit))
+      } catch(err) {
+        // Par exemple une erreur cyclic object value
+        array = [...arrayInit]
       }
     }
-  } else {
-    /*
-    |  À l'envers (plusieurs itemps à supprimer)
-    */
-    for(i = len - 1; i >= 0 ; -- i){
-      if ( condMethod.call( null, array[i] ) === true) {
-        array.splice(i, 1)
-        if ( options.onlyOne ) break
+    if ( options.fromBeginning ) options.onlyOne = true
+    var i = 0 ;
+    const len = array.length
+    if ( options.fromBeginning ) {
+      /*
+      |  À l'endroit : un seul item à supprimer plutôt au début
+      */
+      for (; i < len ; ++ i) {
+        if ( condMethod.call(null, array[i]) === true) {
+          array.splice(i, 1)
+          break
+        }
+      }
+    } else {
+      /*
+      |  À l'envers (plusieurs itemps à supprimer)
+      */
+      for(i = len - 1; i >= 0 ; -- i){
+        if ( condMethod.call( null, array[i] ) === true) {
+          array.splice(i, 1)
+          if ( options.onlyOne ) break
+        }
       }
     }
+    return array
+  } catch(err) {
+    console.error("[removeFromArray] Erreur avec la liste : ", arrayInit)
+    console.error("                  %s (voir la console)", err)
+    console.error(err)
   }
-  return array
 }
 
 

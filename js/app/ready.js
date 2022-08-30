@@ -6,6 +6,7 @@ $(document).ready(e => {
 
   
   Console.prepare()
+  Panel.reset()
   TextElement.reset()
 
   /*
