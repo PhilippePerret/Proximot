@@ -209,8 +209,10 @@ class TextElement {
   // --- Removing Methods ---
 
   /**
-  * DESTRUCTION DU TEXEL
-  * --------------------
+  * 
+  *   DESTRUCTION DU TEXEL
+  *   --------------------
+  * 
   * C'est une opération particulièrement complexe qui joue à beaucoup
   * de niveaux dans l'application.
   * 
@@ -219,7 +221,7 @@ class TextElement {
   */
   destroy(options){
 
-    /* par rapport aux longueurs */
+    /* par rapport aux longueurs (pour paragraphe, ok ) */
 
     /*
     |  Influence sur les LEMMAS

@@ -151,6 +151,17 @@ class MotType extends TextElement {
     */
 
     /*
+    |  GROS MORCEAU : puisque l'offset de tous les mots suivants
+    |  va changer, il faudrait aussi actualiser toutes les données
+    |  positions des Lemmas…
+    |  Il faudrait une méthode updatePositions qui reprenne les
+    |  offset des mots.
+    |  Note : la dépense d'énergie me semble énorme et mériterait de
+    |  se demander s'il ne faudrait pas mieux se passer de positions
+    |  et fonctionner plutôt avec la liste des mots.
+    */
+
+    /*
     |  SI longueur différente : recompter les offsets des autres
     |  fragment (App.data_fragments)
     */
@@ -303,6 +314,17 @@ class MotType extends TextElement {
 
   get lemmaInstance(){
     return this._ilemma || (this._ilemma = this.fragment.lemmas.get(this.lemma))
+  }
+
+  /**
+  * Actualise les proximités du mot en les calculant
+  * 
+  * Cette méthode est appelée après une suppression de mot qui a 
+  * supprimé une proximité ou qui peut en créer de nouvelles.
+  */
+  updateProximities(){
+    this.lemmaInstance.defineProximitiesOf(this)
+    this.showProximities()
   }
 
   /**

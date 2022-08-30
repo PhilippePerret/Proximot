@@ -39,17 +39,21 @@ class Proximity {
     */
     delete this.table[proxi.id]
     /*
-    |  Supprimer la proximité de la liste des proximités
+    |  Supprimer la proximité dans la liste des proximités
     */
-    this.items = removeFromArray(this.items, px => { px.id == proxi.id })
+    removeFromArray(this.items, px=>{return px.id == proxi.id }, {inplace:true})
     /*
     |  Supprimer la proximité des deux texels en proximité
     */
     if ( not(params.ignore) || proxi.motAvant.id != params.ignore.id ) {
-
+      delete proxi.motAvant.proxApres
+      /* Actualisation des proximités */
+      params.update.id == proxi.motAvant.id && proxi.motAvant.updateProximities()
     }
     if ( not(params.ignore) || proxi.motApres.id != params.ignore.id) {
-
+      delete proxi.motApres.proxAvant
+      /* Actualisation des proximités */
+      params.update.id == proxi.motApres.id && proxi.motApres.updateProximities()
     }
     /*
     |  Resetter la densité (_density) des mots avec le même lemma

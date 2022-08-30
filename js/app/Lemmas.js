@@ -104,34 +104,34 @@ class Lemma {
     this.lemma      = lemma
     /*
     | Liste des positions dans le fragment de texte
+    | DOIT DEVENIR OBSOLÈTE
     */
     this.positions  = []
+    /*
+    |  Liste des texels (mots), dans l'ordre
+    */
+    this.items = []
     /*
     | Table avec en clé la position et en valeur une table contenant
     | :mot et :index
     | Avec :index qui est l'index dans la liste des positions.
+    | DOIT DEVENIR OBSOLÈTE
     */
     this.table      = {}
   }
 
   addMot(mot){
-    var   index = null
-        , resetIndexes = true
-        , offset = int(mot.offset)
-        ;
+    const offset = mot.offset ;
     if ( not(this.hasMots) || offset > this.lastPosition ) {
       /*
       | Un mot à mettre au bout
       */
-      index = this.positions.length
-      this.positions.push(offset)
-      resetIndexes = false // inutile d'actualiser les indexs
+      this.items.push(mot)
     } else if ( offset < this.firstPosition ) {
       /*
       | Un mot à mettre au tout début
       */
-      index = 0
-      this.positions.unshift(offset)
+      this.items.unshift(mot)
     } else {
       /*
       | Un mot à glisser dans la liste
@@ -139,21 +139,13 @@ class Lemma {
       | Note : il est forcément "à l'intérieur", ni au début ni à la
       |        fin puisque ça a été traité avant.
       */
-      for (var ipos in this.positions){
-        if ( offset < this.positions[ipos] ) {
-          this.positions.slice(ipos, 0, offset)
+      // for (var ipos in this.positions){
+      for (var imot in this.items){
+        const posMot = this.items[imot].offset 
+        if ( offset < posMot ) {
+          this.items.slice(imot, 0, mot)
           break
         }
-      }
-    }
-    Object.assign(this.table, {[offset]: {mot:mot, index:index}})
-    /*
-    | Actualiser si nécessaire les propriétés index
-    |
-    */
-    if ( resetIndexes ) {
-      for(var ipos in this.positions ) {
-        this.table[this.positions[ipos]].index = parseInt(ipos,10)
       }
     }
   }
@@ -162,14 +154,52 @@ class Lemma {
   * Suppression d'un texel de la liste des lemmas
   */
   removeMot(texel){
-    delete this.table[texel.offset]
-    this.positions = removeFromArray(
-      this.positions, t => {return t.offset == texel.offset}
+    removeFromArray(
+        this.items
+      , item => { return item.id == texel.id}
+      , {inplace: true}
     )
   }
 
   /**
-  * Pour définir toutes les proximités de ce lemme
+   * @return true si le mot +mot+ {Mot} est trop prêt de son précédent
+   * ou de son suivant
+   * 
+   * Note : pour le moment, on ne retourne que les proximités directes
+   */
+  defineProximitiesOf(mot){
+    const proximites = []
+    var prox ;
+    if ( mot.proxAvant === null ) {
+      // Rien à faire, la proximité a déjà été éliminée
+    } else if ( mot.proxAvant ) {
+      proximites.push(mot.proxAvant)
+    } else {
+      /*
+      | Calcul de la proximité avant
+      */
+      if ( (prox = this.calcProximityAvant(mot)) ) {
+        proximites.push(prox)
+      }
+    }
+    if ( mot.proxApres === null ) {
+      // Rien à faire proximité déjà calculée
+    } else if ( mot.proxApres ) {
+      proximites.push(mot.proxApres)
+    } else {
+      /*
+      | Calcul de la proximité après
+      */
+      if ( (prox = this.calcProximityApres(mot, indexInLemma)) ) {
+        proximites.push(prox)
+      }
+    }
+    return proximites;
+  }
+
+  /**
+  * Pour définir toutes les proximités de ce lemme en une seule
+  * opération.
   * 
   * On passe en revue tous les mots dans l'ordre des positions si
   * elles sont inférieures au minimum de proximité
@@ -182,10 +212,12 @@ class Lemma {
     /*
     |  Sinon on boucle sur toutes les positions
     */
-    for (var i = 1, len = this.positions.length; i < len; ++i ){
-      const posPrev   = this.positions[i - 1]
-      const posCurr   = this.positions[i]
-      const distance  = posCurr - posPrev
+    for (var i = 1, len = this.items.length; i < len; ++i ){
+      const itemCur  = this.items[i]
+      const itemPre  = this.items[i - 1]
+      const posCur   = itemCur.offset
+      const posPre   = itemPre.offset
+      const distance = posCur - posPre
       /*
       |  Si les deux mots sont suffisamment éloignés dans leur
       |  définition propre, on les passe.
@@ -195,15 +227,18 @@ class Lemma {
       |  Si les deux mots arrivent ici, c'est qu'ils sont en 
       |  proximité
       */
-      this.newProximityFor(this.motAt(posPrev), this.motAt(posCurr), distance)
+      this.newProximityFor(itemPre, itemCur, distance)
     }
   }
 
   /**
   * Création d'une proximité entre le mot +motAvant+ et +motApres+
+  * 
+  * @return {Proximity} La proximité créée.
   */
   newProximityFor(motAvant, motApres, distance){
-    new Proximity({
+    distance = distance || motApres.offset - motAvant.offset
+    return new Proximity({
         motAvant    : motAvant
       , motApres    : motApres
       , state       : 1
@@ -225,70 +260,55 @@ class Lemma {
   }
 
   /**
-  * @return le mot {Mot|NomPropre} à la position +position+
+  * @return true si le mot +motavant+ est trop prêt de +motapres+
+  * en fonction de la distance propre au lemme.
   */
-  motAt(position){
-    return this.table[position].mot
+  areTooClose(motavant, motapres){
+    return motavant.offset + this.distance_minimale > motapres.offset
   }
 
   /**
-   * @return true si le mot +mot+ {Mot} est trop prêt de son précédent
-   * ou de son suivant
-   * 
-   * Note : pour le moment, on ne retourne que les proximités directes
+   * Calcule la proximité avant du mot +mot+ et l'instancie et la 
+   * retourne si nécessaire (si elle existe)
    */
-  defineProximitiesOf(mot){
-    const minDist = this.constructor.MinProximityDistance
-    const indexInLemma = this.table[mot.offset].index
-    const proximites = []
-    if ( mot.proxAvant || mot.proxAvant === null ) {
-      mot.proxAvant && proximites.push(mot.proxAvant)
-    } else {
-      /*
-      | Calcul de la proximité avant
-      */
-      const prox = this.calcProximityAvant(mot, indexInLemma)
-      prox && proximites.push(prox)
+  calcProximityAvant(mot){
+    const motAvant = this.getMotBefore(mot)
+    if ( motAvant && this.areTooClose(motAvant, mot) ) {
+      return this.newProximityFor(motAvant, mot)
     }
-    if ( mot.proxApres || mot.proxApres === null ) {
-      mot.proxApres && proximites.push(mot.proxApres)
-    } else {
-      /*
-      | Calcul de la proximité après
-      */
-      const prox = this.calcProximityApres(mot, indexInLemma)
-      prox && proximites.push(prox)
-    }
-    return proximites;
   }
 
   /**
-   * Calcule la proximité avant du mot +mot+ et la retourne
-   */
-  calcProximityAvant(mot, indexInLemma){
-    if ( indexInLemma > 0 ) {
-      const previousPos = this.positions[indexInLemma - 1]
-      if ( previousPos + Lemma.MinProximityDistance > mot.offset) {
-        /*
-        | Proximité avec le mot d'avant
-        */
-        const previousMot = this.table[previousPos].mot
-        return new Proximity({motAvant: previousMot, motApres: mot})
-      }
+  * Calcule la proximité éventuelle du mot +mot+ avec le mot après,
+  * l'instancie et la retourne le cas échéant
+  */
+  calcProximityApres(mot){
+    const motApres = this.getMotAfter(mot)
+    if ( motApres && this.areTooClose(mot, motApres) ) {
+      return this.newProximityFor(mot, motApres)
     }
   }
-  calcProximityApres(mot, indexInLemma){
-    this.proxApres = null
-    if ( indexInLemma < this.positions.length - 1) {
-      const nextPos = this.positions[indexInLemma + 1]
-      if ( mot.offset + Lemma.MinProximityDistance > nextPos ) {
-        /*
-        | Proximité avec le mot d'après
-        */
-        const nextMot = this.table[nextPos].mot
-        return new Proximity({motAvant: mot, motApres: nextMot})
-      }
-    }    
+
+  /**
+  * Retourne le mot avant +mot+ dans le Lemma (ou null si mot est le
+  * premier mot)
+  */
+  getMotBefore(mot){
+    for(var imot = 1, len = this.items.length; imot < len; ++ imot) {
+      if ( this.items[imot].id == mot.id ) { return this.items[imot - 1] }
+    }
+    return null
+  }
+  
+  /**
+  * Retourne le mot après +mot+ dans le Lemma (ou null si +mot+ est
+  * le dernier mot)
+  */
+  getMotAfter(mot){
+    for(var imot = 0, len = this.items.length - 1; imot < len; ++ imot) {
+      if ( this.items[imot].id == mot.id ) { return this.items[imot + 1] }
+    }
+    return null
   }
 
   get distance_minimale(){
@@ -300,18 +320,21 @@ class Lemma {
     return null // TODO: VOIR COMMENT RÉGLER UNE DISTANCE PROPRE PAR LEMME
   }
 
+  /**
+  * @return {Number} Le nombre de mots dans ce Lemme
+  */
+  get count(){return this.items.length }
 
   /** @return TRUE si le Lemma possède déjà des mots */
   get hasMots(){return this.count > 0}
 
-  get count(){return this.positions.length }
 
-  get hasOnlyOneMot(){return this.positions.length == 1}
+  get hasOnlyOneMot(){return this.count == 1}
   
   /** @return la première position */
-  get firstPosition(){ return this.positions[0] }
+  get firstPosition(){ return this.items[0].offset }
   
   /** @return la dernière position */
-  get lastPosition(){return this.positions[this.positions.length - 1]}
+  get lastPosition(){return this.items[this.count - 1].offset}
 
 } // class Lemma
