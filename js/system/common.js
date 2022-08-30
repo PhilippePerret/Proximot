@@ -4,9 +4,102 @@
  * 
  * Méthode communes
  * 
- * version 2.4
+ * version 2.5
  * 
+ * Cette librairie est autotestée. Il faut charger aussi le module
+ * MiniTest (avant elle, sans defer)
  */
+
+/**
+*   SUPPRIMER DES ÉLÉMENTS D'UNE LISTE
+*   ----------------------------------
+* 
+* Retire de +array+ le ou les éléments qui répondent à la fonction
+* condition +condMethod+
+* 
+* @autotestée
+* 
+* @exemples
+*         var ary = [1,2,3,4,5]
+*         ary = removeFromArray(ary, item => {return item > 3})
+*         // => [1,2,3]
+* 
+*         var ary = [obj1, obj2, obj3]
+*         ary = removeFromArray(ary, item => {return item.option == true})
+* 
+* @param options {Hash} Table permettant de spécifier les choses
+*           options.onlyOne     
+*               Mettre à true s'il n'y a qu'un seul élément à 
+*               trouver. Permet d'accélerer les choses.
+*           options.fromBeginning
+*               Mettre à true pour commencer depuis le départ. Mais
+*               attention : s'il y a plus d'un élément à supprimer
+*               cela produira un bug. Donc ça n'est à utiliser qu'
+*               avec l'option onlyOne
+*/  
+function removeFromArray(array, condMethod, options){
+  options = options || {}
+  if ( options.fromBeginning ) options.onlyOne = true
+  var i = 0 ;
+  const len = array.length
+  if ( options.fromBeginning ) {
+    /*
+    |  À l'endroit : un seul item à supprimer plutôt au début
+    */
+    for (; i < len ; ++ i) {
+      if ( condMethod.call(null, array[i]) === true) {
+        array.splice(i, 1)
+        break
+      }
+    }
+  } else {
+    /*
+    |  À l'envers (plusieurs itemps à supprimer)
+    */
+    for(i = len - 1; i >= 0 ; -- i){
+      if ( condMethod.call( null, array[i] ) === true) {
+        array.splice(i, 1)
+        if ( options.onlyOne ) break
+      }
+    }
+  }
+  return array
+}
+
+var ary, yra, act, exp ;
+ary = [1,2,3,4,5]
+const max = 3
+act = removeFromArray(ary, function(item){return item > max})
+exp = [1,2,3]
+if ( act.join('') != exp.join('') ) {
+  console.error('removeFromArray ne renvoie pas la bonne valeur (attendue, obtenue)', exp, act)
+}
+
+ary = [1,2,3,4,5]
+act = removeFromArray(ary, function(item){return item > 3}, {fromBeginning:true})
+exp = [1,2,3,5]
+if ( act.join('') != exp.join('') ) {
+  console.error('Avec l’option fromBeginning, removeFromArray ne renvoie pas la bonne valeur (attendue, obtenue)', exp, act)
+}
+
+
+ary = [1,2,3,4,5]
+act = removeFromArray(ary, function(item){return item > 3}, {onlyOne:true})
+exp = [1,2,3,4]
+if ( act.join('') != exp.join('') ) {
+  console.error('Avec l’option onlyOne, removeFromArray ne renvoie pas la bonne valeur (attendue, obtenue)', exp, act)
+}
+
+ary = [{foo:true, id:12}, {foo:false, id:5}, {foo:true, id:45}, {foo:true, id:2}]
+yra = removeFromArray(ary, item => { return item.foo })
+exp = [5]
+act = yra.map(i => {return i.id}) 
+if ( act.join('') != exp.join('') ) {
+  console.error('Avec une liste d’objets, removeFromArray ne renvoie pas la bonne valeur (attendue, obtenue)', exp, act)
+}
+
+// --- /Tests ---
+
 
 /**
 * Si la valeur +primValue+ est définie (même si elle est false ou 0,
@@ -20,8 +113,18 @@ function definedOr(primValue, elseValue){
     return primValue
   }
 }
+var test = new MiniTest(function(pvalue, expected){
+  this.expected         = expected
+  this.actual           = definedOr(pvalue, 'oui')
+  this.failure_message  = "definedOr ne retourne pas la bonne valeur"
+})
+;[
+  ['simple','simple'],[undefined,'oui'],[null,null],[false,false]
+].forEach( paire => { test.evaluate(...paire) })
+
 
 function not(v){ return ! v }
+
 
 /**
  * Pour benchmarker une méthode/opération

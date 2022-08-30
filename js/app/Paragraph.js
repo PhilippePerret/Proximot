@@ -96,6 +96,19 @@ class Paragraph {
     }
   }
 
+  /**
+  * Retrait du texel +texel+ du paragraphe (lors de la destruction du
+  * texel)
+  */
+  remove(texel){
+    console.warn("Je dois apprendre à détruire un texel d'un paragraphe.")
+    this._mcount -- ;
+    this._length -= texel.length
+    if ( texel.isMot ) {
+      this._mots = removeFromArray(this._mots, item => {return item.id == texel.id}, {onlyOne:true})
+    }
+  }
+
   // @return le DIV (DOM Element) du paragraphe
   get obj(){return this._obj || (this._obj = DGet(`#${this.domId}`) || this.build())}
 
@@ -123,8 +136,6 @@ class Paragraph {
   }
 
   // --- /Public Methods ---
-
-  // --- Listener Methods ---
 
   // --- DOM Methods ---
 

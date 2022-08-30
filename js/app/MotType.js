@@ -9,8 +9,6 @@
 
 class MotType extends TextElement {
 
-
-
   /**
   * Méthode appelée quand l'utilisateur veut remplacer le mot
   * sélectionné par newContent. On doit vérifier si c'est possible et
@@ -295,6 +293,12 @@ class MotType extends TextElement {
   */
   addToLemmas(){
     this.fragment.lemmas.get(this.lemma).addMot(this)
+  }
+  /**
+  * On retire ce texel des lemmas (destruction)
+  */
+  removeFromLemmas(){
+    console.warn("Je dois apprendre à supprimer le mot des Lemmes.")
   }
 
   /**

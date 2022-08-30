@@ -14,10 +14,6 @@ class NomPropre extends MotType {
 
   // --- Build Methods ---
   
-  observe(o){
-    o.addEventListener('click', this.onClick.bind(this))
-  }
-
   // --- Private Methods ---
 
   get css(){

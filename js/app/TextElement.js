@@ -25,6 +25,12 @@ class TextElement {
     Object.assign(TextElement.table, {[texel.id]: texel})
   }
 
+  /* Ne surtout pas appeler la méthode texel.destroy depuis ici
+     puisqu'elle appelle cette méthode. */
+  static destroy(texel){
+    delete TextElement.table[texel.id]
+  }
+
   static getNewId(){
     return TextElement.lastId ++ 
   }
@@ -198,13 +204,85 @@ class TextElement {
     for(var prop in data){ if ( prop != 'type' ) this[prop] = data[prop]}    
   }
 
-  // --- DOM Méthods ---
+  // --- Removing Methods ---
+
+  /**
+  * DESTRUCTION DU TEXEL
+  * --------------------
+  * C'est une opération particulièrement complexe qui joue à beaucoup
+  * de niveaux dans l'application.
+  * 
+  * @param options {Hash} Table des options de destruction
+  *           options.ignoreLength    Ne pas tenir compte du changement de longueur des textes
+  */
+  destroy(options){
+
+    /*
+    |  Influence sur les TEXTELEMENTS
+    |                    ------------
+    |   - retrait de la liste (table) de classe
+    */
+    TextElement.destroy(this)
+
+    /* par rapport aux longueurs */
+
+    /*
+    |  Influence sur les LEMMAS
+    |                    ------
+    |   - retrait de son lemma
+    |   - mais on le laisse dans la liste par mot qui permet de
+    |     retrouver rapidement un lemme de mot (sans interrogation
+    |     serveur)
+    */
+    this.removeFromLemmas()
+
+    /* DOM */
+    /*
+    |  Influence sur le DOM
+    |                   ---
+    |  - suppression de l'affichage du mot
+    */
+    this.unbuild()
+
+    /*
+    |  Influence sur les PROXIMITÉS
+    |                    ----------
+    |  -  les mots proches ne doivent plus afficher leur proximité
+    |     avec ce mot. Mais elles doivent vérifier qu'il n'y est pas
+    |     d'autre mot en proximité à la place.
+    */
+    /* par rapport à la sélection et les exergues */
+    /*
+    |  Influence sur la SÉLECTION et les EXERGUES
+    |                   --------------------------
+    */
+    this.unsetExergue()
+    this.isSelected && this.fragment.Selection.remove(this)
+
+    /*
+    |  Influence sur le PARAGRAPHE
+    |                   ----------
+    |   - retire le mot de son paragraphe (toutes les valeurs du
+    |     paragraphe sont à recalculer)
+    */
+    this.paragraph.remove(this)
+
+  }
+
+  // --- DOM Building Methods ---
 
   /**
   * Construction du texel
   */
   buildIn(container){
     container.appendChild(this.obj)
+  }
+
+  /**
+  * Destruction de l'objet dans le DOM
+  */
+  unbuild(){
+    this.obj.remove()
   }
 
   /* Raccourci */
