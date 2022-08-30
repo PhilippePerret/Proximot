@@ -119,11 +119,19 @@ class ConsoleCommandManager {
       break
 
     case 'r': // remplacement
-      this.currentMot.checkAndReplaceWithContent(value)
+      if ( this.currentMot ) {
+        this.currentMot.checkAndReplaceWithContent(value || '')
+      } else {
+        erreur("Il faut choisir le mot à remplacer !")
+      }
       break
 
     case 'r*': // remplacer tous
-      console.warn("Je dois apprendre à “remplacer tous”")
+      if ( this.currentMot ) {
+        console.warn("Je dois apprendre à “remplacer tous”")
+      } else {
+        erreur("Il faut choisir le mot à remplacer !")
+      }
       break
     
     case 's': // sélection

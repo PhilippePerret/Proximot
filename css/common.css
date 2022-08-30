@@ -4,3 +4,13 @@
 .tinier  {font-size: 0.6em}
 
 .bold {font-weight: bold}
+
+.fleft { float: left }
+
+button, input[type="text"], textarea {
+  font-family: Arial, Geneva, Helvetica;
+  font-size: inherit;
+}
+button {
+  padding: 0 32px !important;
+}

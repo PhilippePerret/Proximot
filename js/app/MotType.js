@@ -9,6 +9,10 @@
 
 class MotType extends TextElement {
 
+  onConfirmSuppression(destroyIt){
+    destroyIt && this.destroy()
+  }
+
   /**
   * Méthode appelée quand l'utilisateur veut remplacer le mot
   * sélectionné par newContent. On doit vérifier si c'est possible et
@@ -32,6 +36,24 @@ class MotType extends TextElement {
       |  Tout premier appel
       */
       const newContent = data
+      /*
+      |  Cas spécial d'une suppression pure et simple
+      */
+      if ( newContent == '' ) {
+        /*
+        |  Demander la confirmation qu'il faut bien supprimer le
+        |  mot purement et simplement
+        */
+        confirmer(
+            tp("Voulez-vous vraiment supprimer le mot '%s' ?", [this.mot])
+          , {
+                poursuivre:   this.onConfirmSuppression.bind(this)
+              , buttonOk:     {name: "Le supprimer"}
+              , buttonCancel: {name:'Le garder'}
+            }
+        )
+        return
+      }
       /*
       | Si le contenu est le même, on peut s'arrêter là
       */
@@ -74,10 +96,13 @@ class MotType extends TextElement {
         WAA.send({class:'Proximot::TTAnalyzer', method:'findUnknowMots', data: {id:this.id, content:newContent}})
         return 
       }
+
     } else {
+
       /*
       |  On revient de la recherche des lemmas des mots
       */
+
       tableMots = []
       for ( var imot = 0, len = data.tokens.length; imot < len; ++ imot){
         const dtoken = data.tokens[imot]

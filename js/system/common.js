@@ -44,7 +44,6 @@ var test; // la marque qu'un module est autotesté
 *               Si true, c'est la liste fournie qui est modifiée.
 */  
 function removeFromArray(arrayInit, condMethod, options){
-  console.log("liste reçue par removeFromArray =" , arrayInit)
   var array ;
   options = options || {}
   if ( options.inplace ){
@@ -100,7 +99,6 @@ const objetTest = [
 new MiniTest(function(exp, ary, condMethod, options){
   this.expected   = exp
   const resultat  = removeFromArray(ary, condMethod, options)
-  console.log("résultat = ", resultat)
   this.actual     = resultat.map(ite => {return ite.id})
   this.failure_message = 'removeFromArray avec une liste d’objet ne retourne pas la bonne valeur.'
 }).evaluateValues([
