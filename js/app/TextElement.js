@@ -31,6 +31,8 @@ class TextElement {
     delete TextElement.table[texel.id]
   }
 
+  static count(){return Object.keys(TextElement.table).length}
+
   static getNewId(){
     return TextElement.lastId ++ 
   }

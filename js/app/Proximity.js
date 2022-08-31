@@ -64,6 +64,8 @@ class Proximity {
     })
   }
 
+  static count(){return this.items.length }
+
   /**
   * Instancie les données remontée d'un package Proximot
   */

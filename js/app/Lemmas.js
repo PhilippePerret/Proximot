@@ -29,9 +29,12 @@ class Lemmas {
     return this._minlemmelength || (this._minlemmelength = Pref('min_word_length'))
   }
 
-  constructor(textfrag){
-    this.Klass = 'Lemmas'
-    this.textfragment = textfrag
+
+  //##############    INSTANCE Lemmas    ############### 
+
+  constructor(fragment){
+    this.Klass    = 'Lemmas'
+    this.fragment = fragment
     /*
     | Table qui contient en clé le lemma (le mot canonique) et en
     | valeur l'instance {Lemma} de ce mot canonique.
@@ -76,6 +79,9 @@ class Lemmas {
       return this.table[lemma] 
     }
   }
+
+  /* Attention : méthode */
+  count(){ return Object.keys(this.table).length }
 
   /**
    * Ajoute un Lemma à la liste des Lemmas du fragment de texte

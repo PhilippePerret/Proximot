@@ -25,7 +25,7 @@ class MotType extends TextElement {
   */
   checkAndReplaceWithContent(data) {
 
-    let tableMots;
+    let tblMots;
 
     if ( 'string' == typeof data ) {
 
@@ -65,7 +65,7 @@ class MotType extends TextElement {
       |  On fait une première découpe selon les espaces.
       */
       const mots = newContent.split(' ')
-      tableMots       = [] // toutes les données des mots dans l'ordre
+      tblMots       = [] // toutes les données des mots dans l'ordre
       const unknownDataMots = [] // Liste des mots inconnus
       /*
       |  Boucle sur les mots (peut-être un seul) pour voir ceux qui
@@ -82,9 +82,9 @@ class MotType extends TextElement {
         } else {
           unknownDataMots.push(dataMot)
         }
-        tableMots.push(dataMot)
+        tblMots.push(dataMot)
       }
-      console.log("tableMots au départ : ", tableMots)
+      console.log("tableMots au départ : ", tblMots)
       /*
       |  On peut rechercher si nécessaire les mots non connus.
       |  Mais tant qu'à faire, le plus simple reste d'envoyer tout
@@ -102,16 +102,16 @@ class MotType extends TextElement {
       |  On revient de la recherche des lemmas des mots
       */
 
-      tableMots = []
+      tblMots = []
       for ( var imot = 0, len = data.tokens.length; imot < len; ++ imot){
         const dtoken = data.tokens[imot]
-        tableMots.push({index:int(imot), str:dtoken[0], lemma:dtoken[2], type: dtoken[1]})
+        tblMots.push({index:int(imot), str:dtoken[0], lemma:dtoken[2], type: dtoken[1]})
       }
-      // console.log("tableMots au retour : ", tableMots)
+      // console.log("tblMots au retour : ", tblMots)
     }
 
     /*
-    |   À partir d'ici, on a une liste, tableMots, qui contient les 
+    |   À partir d'ici, on a une liste, tblMots, qui contient les 
     |   données pour chaque mot (souvent un seul) avec un diction-
     |   naire contenant :
     |      str:     {String} Le mot lui-même, tel qu'il est écrit
@@ -127,7 +127,7 @@ class MotType extends TextElement {
     |   On vérifie pour chaque mot.
     */
 
-    tableMots.forEach( dmot => {
+    tblMots.forEach( dmot => {
       const {str, lemma} = dmot
       const ilemma = this.fragment.lemmas.get(lemma, true /* ne pas instancier */)
       console.log("ilemma = ", ilemma)
@@ -272,11 +272,11 @@ class MotType extends TextElement {
    * 
    */
   static addInTableMots(mot){
-    if ( undefined == this.tableMots ) {
-      this.tableMots = {}
+    if ( undefined == MotType.tableMots ) {
+      MotType.tableMots = {}
       this.byCountAndLemmas = {}
     }
-    Object.assign(this.tableMots, {[mot.id]: mot})
+    Object.assign(MotType.tableMots, {[mot.id]: mot})
     if ( undefined == this.byCountAndLemmas[mot.mot] ) {
       Object.assign(this.byCountAndLemmas, {[mot.mot]: {
         count: 0, type: mot.ttTag, lemma:mot.lemma
@@ -288,10 +288,15 @@ class MotType extends TextElement {
     this.byCountAndLemmas[mot.mot].count ++ 
   }
 
+  static count(){return Object.keys(MotType.tableMots).length }
+
+
+  //#############        INSTANCES      ##################
+
   constructor(fragment, dmot){
     super(fragment, dmot)
     this.mot = this.content
-    MotType.addInTableMots(this)
+    MotType.addInTableMots.call(MotType, this)
   }
 
   // --- Public Methods ---

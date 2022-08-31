@@ -26,6 +26,27 @@ const CONSOLE_STYLE_ERROR = 'font-family:"Arial Narrow";color:red;'
 // Pour l'affichage final du lieu de la définition du test
 const CONSOLE_STYLE_FILENAME = 'font-style:italic;margin-left:10em;font-size:0.85em;color:#999;'
 
+export class ErrorTest extends Error {
+  constructor(...params){
+    super(...params)
+  }
+}
+
+export function itraise(message){
+  raise(new ErrorTest(message))
+}
+
+export function assert(expected, actual, thing){
+  var ok
+  if ( Array.isArray(expected) ) {
+    ok = JString(expected) == JString(actual)
+  } else {
+    ok = expected == actual
+  }
+  ok || raise(new ErrorTest(`Bad ${thing}.\n\tAttendu: ${expected}\n\tObtenu : ${actual}`, {parameters:"Mes paramètres propres"}))
+
+}
+
 class HTMLPageClass {
   contains(selector, innerText){
     const element = document.querySelector(selector)
@@ -212,7 +233,12 @@ export class InsideTest {
       */
       if ( 'function' == typeof test.data[poursuivre] ) {
         this.current = test
-        test.data[poursuivre].call(null, newServerResultat) || test.throwError()
+        var res ;
+        try { // pour pouvoir raiser dans les tests
+          res = test.data[poursuivre].call(null, newServerResultat)
+        } catch(err) {
+          test.traiteError(err)
+        }
       } else if ( not(result.ok) ) {
         /*
         |  Sinon, en cas d'erreur sur le serveur, on enregistre
@@ -242,10 +268,15 @@ export class InsideTest {
   static report(){
     const nombreSucces = this.nombreTests - this.nombreFailures
     const hasFailures = this.nombreFailures > 0
-    const duration = String(this.endTime - this.startTime) + ' ms';
+    let duration = this.endTime - this.startTime
+    if ( duration > 4000 ) {
+      duration = `${int(duration / 1000)}.${duration % 1000} s`
+    } else {
+      duration = String(duration) + ' ms';
+    }
     let style = 'display:block;width:100%;border-top:1px solid;color:'+(hasFailures?'red':'green')+';'
     console.log("%c  ", style)
-    if ( hasFailures && this.nombreTests > 2 ) {
+    if ( hasFailures && this.nombreTests > 1 ) {
       this.Failures.forEach(test => test.reportError())
     }
     console.log('%c' + `Durée: ${duration}` + '%c' + `INSIDE-TESTS\nTests: ${this.nombreTests} - Succès: ${nombreSucces} - Échecs: ${this.nombreFailures}`, 'float:right;font-style:italic;font-size:0.85em;padding-right:8em;', style)
@@ -329,6 +360,7 @@ export class InsideTest {
 
   runStack(){
     this.stack.forEach( dtest => {
+      this.constructor.nombreTests += 1
       try {
         const [test, args] = dtest
         if ( args ) {
@@ -336,12 +368,30 @@ export class InsideTest {
         } else {
           test.call(null)
         }
-        this.constructor.nombreTests += 1
       } catch (err) {
-        console.error("ERREUR APPLICATION : ", err)
-        this.throwError("ERREUR APPLICATION")
+        this.traiteError(err)
       }
     })
+  }
+
+  /**
+  * Traitement de l'erreur pouvant survenir au cours d'un test eval
+  * ou d'une autre méthode quand remontée de serveur
+  */
+  traiteError(err) {
+    if ( err instanceof ErrorTest ) {
+      /*
+      |  UNE ERREUR NORMALE DE TEST
+      */
+      this.error = err.message
+      this.throwError()
+    } else {
+      /*
+      |  ERREUR SYSTÉMATIQUE (problème d'implémentation)
+      */
+      console.error("ERREUR SYSTÉMIQUE : ", err)
+      this.throwError("ERREUR SYSTÉMIQUE")
+    }
   }
 
   addStack(test, args){
