@@ -113,7 +113,7 @@ class App {
   }
 
   static getDataOtherFragments(text_path){
-    console.info("[App::getDataOtherFragments] Recherche des informations sur autres fragments du texte.")
+    Log.in('App::getDataOtherFragments')
     const data = {
         fragments_data  : this.fragments_data
       , from_offset     : this.fragments_data[0].lenInFile
@@ -122,7 +122,7 @@ class App {
     WAA.send({class:'Proximot::App',method:'getDataOtherFragments', data: data})
   }
   static receiveDataOtherFragment(data){
-    console.info("[App::receiveDataOtherFragment] Données reçues pour les autres fragments", data)
+    Log.debug("[App::receiveDataOtherFragment] Données reçues pour les autres fragments", data)
     this.setFragmentsData(data)
   }
 

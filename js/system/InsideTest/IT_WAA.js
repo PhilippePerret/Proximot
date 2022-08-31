@@ -59,7 +59,7 @@ class IT_WAA {
     /*
     |  Transmission de la requête au serveur
     */
-    console.info("Données envoyées à WAA.send par IT_WAA:", data)
+    Log.info("Données envoyées à WAA.send par IT_WAA:", data)
     WAA.send(data)
   }
 
@@ -74,7 +74,6 @@ class IT_WAA {
     // console.log("Données reçues par IT_WAA.receive", data)
     data.__ITData__ || raise(IT_ERRORS.dataInsideTestRequired)
     const ITData = data.__ITData__
-    console.log("[IT_WAA.receive] ITData = ", ITData)
     const testId = ITData.testId
     isDefined(testId) || raise(IT_ERRORS.testIdRequired)
     // data.result || raise(IT_ERRORS.resultServerRequired)

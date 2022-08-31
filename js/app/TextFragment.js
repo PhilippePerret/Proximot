@@ -79,7 +79,8 @@ class TextFragment {
   * texte (pas celles d'un fichier Proximot)
   */
   static createFromTextData(data) {
-    console.info("CRÉATION DU FRAGMENT À PARTIR DU TEXTE. DONNÉES : ", data)
+    Log.in('TextFragment::createFromTextData')
+    Log.debug("CRÉATION DU FRAGMENT À PARTIR DU TEXTE. DONNÉES : ", data)
 
     /*
     |  Instanciation du fragment

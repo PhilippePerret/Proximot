@@ -73,7 +73,7 @@ class Waa {
       return false
     }
 
-    console.log("[WAA.receive] data_message = ", data_message)    
+    Log.debug("[WAA.receive] data_message = ", data_message)
     // return false
 
     // 

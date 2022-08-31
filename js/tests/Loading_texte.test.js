@@ -21,8 +21,6 @@ new InsideTest({
       return true
     }
   , afterAffichageTexte:(data) => {
-      // console.log("Éditeur contient : ", Editor.content.innerHTML)
-      console.log("Data retournée dans afterChargementTexte : ", data)
       /*
       |  On commence par contrôler le retour, c'est-à-dire la donnée
       |  renvoyée suite à la lecture du texte et qui servira à 
