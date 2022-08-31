@@ -33,21 +33,3 @@ new InsideTest({
 }).exec()
 //*/
 
-/**
-* Essai d'un test avec chargement direct du fichier
-*/
-new InsideTest({
-    error: 'Le chargement d’un texte simple est possible'
-  , eval:() => {
-      IT_WAA.send(InsideTest.current, {
-          class:'Proximot::App'
-        , method:'load'
-        , data: {filepath: ITFactory.File.textePath('texte_simple.txt')}
-      })
-      return true
-    }
-  , afterServerEval:(data)=>{
-      console.log("Data de retour du chargement du simple texte ", data)
-      return true
-    }
-}).exec()

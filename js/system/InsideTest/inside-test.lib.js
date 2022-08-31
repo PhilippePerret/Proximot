@@ -1,9 +1,14 @@
 'use strict';
 /**
+ * 
+ * class InsideTest
+ * ----------------
  * Pour des tests directement dans les fichiers (ou pas, d'ailleurs)
  * 
- * Consulter le manuel "InsideTest_Manuel" qui doit se trouver dans
- * tout dossier Manuel d'une application utilisant cette librairie
+ * Version 1.3
+ * 
+ * Cf. le manuel dans ~/Programmes/InsideTest/
+ *
  * 
  * @require JString  (common.js)
  * @require INSIDE_TESTS {Boolean}
@@ -186,10 +191,12 @@ export class InsideTest {
       /*
       |  On prend les données de ce retour serveur
       */
-      const testId = newServerResultat.testId
+      const ITData = newServerResultat.__ITData__
+      const testId = ITData.testId
       testId || raise(ITERRORS.itWaa.testIdRequiredInServerResultat)
       const result = newServerResultat.result
-      result || raise(ITERRORS.itWaa.resultRequiredInServerResultat)
+      // result || raise(ITERRORS.itWaa.resultRequiredInServerResultat)
+      const poursuivre = ITData.poursuivre || ITData.then || 'afterServerEval'
       
       /*
       |  Le test javascript {InsideTest}
@@ -203,9 +210,9 @@ export class InsideTest {
       |  serveur existe dans le test, c'est cette méthode qu'on doit
       |  appeler pour traiter le résultat.
       */
-      if ( 'function' == typeof test.data.afterServerEval ) {
+      if ( 'function' == typeof test.data[poursuivre] ) {
         this.current = test
-        test.data.afterServerEval.call(null, newServerResultat) || test.throwError()
+        test.data[poursuivre].call(null, newServerResultat) || test.throwError()
       } else if ( not(result.ok) ) {
         /*
         |  Sinon, en cas d'erreur sur le serveur, on enregistre
@@ -238,7 +245,7 @@ export class InsideTest {
     const duration = String(this.endTime - this.startTime) + ' ms';
     let style = 'display:block;width:100%;border-top:1px solid;color:'+(hasFailures?'red':'green')+';'
     console.log("%c  ", style)
-    if ( hasFailures ) {
+    if ( hasFailures && this.nombreTests > 2 ) {
       this.Failures.forEach(test => test.reportError())
     }
     console.log('%c' + `Durée: ${duration}` + '%c' + `INSIDE-TESTS\nTests: ${this.nombreTests} - Succès: ${nombreSucces} - Échecs: ${this.nombreFailures}`, 'float:right;font-style:italic;font-size:0.85em;padding-right:8em;', style)

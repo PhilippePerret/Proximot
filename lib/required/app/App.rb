@@ -33,24 +33,27 @@ class << self
   #   - le mode de fonctionnement (dev, prod ou test)
   #
   def prepare
-    main_code_path = File.join(APP_FOLDER,'MAIN.HTML')
-    main_code = File.read(main_code_path)
-    entree = main_code.index('<!-- jsmetadata -->') - 1
-    bal_sortie = '<!-- /jsmetadata -->'
-    sortie = main_code.index(bal_sortie) + bal_sortie.length
-    main_code_before = main_code[0..entree]
-    main_code_after  = main_code[sortie..-1]
-    metadata = <<~HTML.strip
-        <!-- jsmetadata -->
-        <script type="text/javascript">
-          const APP_FOLDER    = "#{APP_FOLDER}";
-          const INSIDE_TESTS  = #{test? ? 'true' : 'false' };
-        </script>
-        <!-- /jsmetadata -->
-      HTML
-    main_code = main_code_before + metadata + main_code_after
-    File.write(main_code_path, main_code)
+    prepare_dynamic_constants_file
   end
+
+  def prepare_dynamic_constants_file
+    constantes = DYNAMIC_JS_CONSTANTES.map do |cst, val| 
+      val = val.call() if val.is_a?(Proc)
+      "const #{cst} = #{val.inspect};" 
+    end.join("\n")
+    path_dyn_consts = File.join(APP_FOLDER,'js','dynamic_constants.js')
+    File.write(path_dyn_consts, PREAMBULE_DYNAMIC_CONSTANTES + constantes)
+  end
+
+  PREAMBULE_DYNAMIC_CONSTANTES = <<~JAVASCRIPT
+  /**
+  * Ce fichier est créé automatiquement, ne pas le modifier à la
+  * main.
+  * Pour ajouter des constantes, modifier la liste constante
+  * DYNAMIC_JS_CONSTANTES dans le fichier constants.rb de l'app.
+  */
+
+  JAVASCRIPT
 
   ##
   # Pour charger le texte à analyser/travailler
@@ -70,7 +73,7 @@ class << self
   #             a été appelée depuis un InsideTest.
   # 
   def load(data = nil)
-    puts "[App.load] data : #{data.pretty_inspect}".jaune
+    # puts "[App.load] data : #{data.pretty_inspect}".jaune
     #
     # On cherche un texte valide à proximité…
     # 

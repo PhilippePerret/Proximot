@@ -11,6 +11,8 @@
  * tests côté serveur et réceptionner les résultats pour les 
  * envoyer à InsideTest
  * 
+ * Cf. le manuel dans Programmes/InsideTest/
+ * 
  */
 const IT_ERRORS = {
     requireCurrentTest      : "Il faut impérativement un test courant pour appeler IT_WAA.send."
@@ -51,6 +53,9 @@ class IT_WAA {
     */
     if ( not(data.data) ) Object.assign(data, {data:{}})
     Object.assign(data.data, { __ITData__: { testId:test.id } })
+    if ( data.data.then ) {
+      Object.assign(data.data.__ITData__, {then: data.data.then })
+    }
     /*
     |  Transmission de la requête au serveur
     */
@@ -70,7 +75,8 @@ class IT_WAA {
     data.__ITData__ || raise(IT_ERRORS.dataInsideTestRequired)
     const ITData = data.__ITData__
     console.log("[IT_WAA.receive] ITData = ", ITData)
-    isDefined(ITData.testId) || raise(IT_ERRORS.testIdRequired)
+    const testId = ITData.testId
+    isDefined(testId) || raise(IT_ERRORS.testIdRequired)
     // data.result || raise(IT_ERRORS.resultServerRequired)
     /*
     |  On passe les résultats au test
@@ -79,7 +85,7 @@ class IT_WAA {
     /*
     |  On détruit ce worker
     */
-    delete this.workers[data.testId]
+    delete this.workers[testId]
   }
 
 

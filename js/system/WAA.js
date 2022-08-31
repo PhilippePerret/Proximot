@@ -3,7 +3,7 @@
 
   WAA.js
   ------
-  version 2.3
+  version 3.1
   
   Librairie permettant de gérer la WAA application. De façon simple,
   elle reçoit et elle transmet les données au script (ruby) qui a

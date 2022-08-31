@@ -10,3 +10,14 @@ APP_FOLDER = File.dirname(LIB_FOLDER)
 # 
 CURRENT_FOLDER = File.expand_path('.')
 
+
+#
+# Constantes à définir dynamiquement (à chaque chargement de l'app
+# au départ — mais pas au rechargement de la page HTML dans le 
+# browser)
+#
+DYNAMIC_JS_CONSTANTES = [
+  ['INSIDE_TESTS'   , Proc.new{ test? ? true : false } ],
+  ['APP_FOLDER'     , APP_FOLDER],
+  ['CURRENT_FOLDER' , CURRENT_FOLDER]
+]
