@@ -58,9 +58,8 @@ class Waa {
    * 
    */
   receive(data_message){
-    // console.log("data_message = ", data_message)
     // return false
-    try{
+    try {
       try {
         data_message = JSON.parse(data_message)  
       } catch(err){
@@ -73,8 +72,8 @@ class Waa {
       console.error("Impossible de dejissonner (JSON.parse) le message de retour : ", data_message, err)
       return false
     }
-    
-    // console.log("Je viens de recevoir le message: ", data_message)
+
+    console.log("[WAA.receive] data_message = ", data_message)    
     // return false
 
     // 
@@ -86,9 +85,23 @@ class Waa {
     // données définies (if any)
     // 
     classe[data_message.method].call(classe, data_message.data)
-    // 
-    // On retourne true pour le check
-    // 
+    /*
+    |  Cas spécial des tests InsideTest
+    |  --------------------------------
+    |  Si la propriété data_message.__ITData__ est définie, c'est 
+    |  qu'une méthode régulière (ie hors-tests, une méthode normale 
+    |  de l'application). Dans ce cas, il faut appeler la méthode
+    |  IT_WAA qui doit réceptionner le retour. 
+    |
+    |  NOTE : ça ne coûte rien d'envoyer toutes les données remontées
+    |  ça permettra au contraire de faire des tests dessus.
+    */
+    if ( isDefined(data_message.data.__ITData__) ) {
+      IT_WAA.receive(data_message.data)
+    }
+    /*
+    |  On retourne true pour le check
+    */
     return true
   }
 

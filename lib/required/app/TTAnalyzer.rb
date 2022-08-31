@@ -125,7 +125,7 @@ class << self
   # 
   def findUnknowMots(data)
     tokens = tokenize(data['content'])
-    puts "Tokens renvoyés : #{tokens.inspect}"
+    # puts "Tokens renvoyés : #{tokens.inspect}"
     WAA.send(class:'Mot', method:'onFindUnknownMots', data:data.merge!(tokens: tokens))
   end
 

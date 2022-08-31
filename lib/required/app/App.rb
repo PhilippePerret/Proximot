@@ -16,11 +16,40 @@ class << self
     clear
     # return if test 
     begin
+      Proximot::App.prepare
       WAA.goto File.join(APP_FOLDER,'MAIN.HTML')
       WAA.run
     ensure
       WAA.driver.quit
     end
+  end
+
+  ##
+  # Préparation de l'application
+  #
+  # Cette préparation consiste surtout à placer des informations dans
+  # le code HTML, notamment sur :
+  #   - le user courant
+  #   - le mode de fonctionnement (dev, prod ou test)
+  #
+  def prepare
+    main_code_path = File.join(APP_FOLDER,'MAIN.HTML')
+    main_code = File.read(main_code_path)
+    entree = main_code.index('<!-- jsmetadata -->') - 1
+    bal_sortie = '<!-- /jsmetadata -->'
+    sortie = main_code.index(bal_sortie) + bal_sortie.length
+    main_code_before = main_code[0..entree]
+    main_code_after  = main_code[sortie..-1]
+    metadata = <<~HTML.strip
+        <!-- jsmetadata -->
+        <script type="text/javascript">
+          const APP_FOLDER    = "#{APP_FOLDER}";
+          const INSIDE_TESTS  = #{test? ? 'true' : 'false' };
+        </script>
+        <!-- /jsmetadata -->
+      HTML
+    main_code = main_code_before + metadata + main_code_after
+    File.write(main_code_path, main_code)
   end
 
   ##
@@ -35,14 +64,20 @@ class << self
   #
   # @param data {Hash} Seulement utilisé pour les tests pour le 
   #             moment.
+  #         data['filepath'] Le fichier à charger, if any (surtout
+  #             utilisé pour les tests, pour le moment)
+  #         data['__ITData__']  Données des InsideTests si la méthode
+  #             a été appelée depuis un InsideTest.
   # 
   def load(data = nil)
-    # puts "data : #{data.pretty_inspect}".jaune
+    puts "[App.load] data : #{data.pretty_inspect}".jaune
     #
     # On cherche un texte valide à proximité…
     # 
     file_path = data.nil? ? search_file_path() : data['filepath']
     # puts "file_path: #{file_path}".jaune
+
+    data ||= {}
 
     #
     # Suivant l'extension, on lit le texte comme un document Proximot
@@ -54,8 +89,11 @@ class << self
       # Un fichier XML proximot à charger (.pxw)
       # 
 
-      load_data = {'prox_path' => file_path, 'loading_step'=>'app_state'}
-      IO.load_from_package(load_data)
+      # load_data = {'prox_path' => file_path, 'loading_step'=>'app_state'}
+      # IO.load_from_package(load_data)
+
+      data.merge!('prox_path' => file_path, 'loading_step'=>'app_state')
+      IO.load_from_package(data)
 
     else
       
@@ -63,8 +101,11 @@ class << self
       # Un fichier texte normal (.txt)
       # 
       
-      load_data = {'text_path' => file_path}
-      IO.load_from_text(load_data)
+      # load_data = {'text_path' => file_path}
+      # IO.load_from_text(load_data)
+
+      data.merge!('text_path' => file_path)
+      IO.load_from_text(data)
 
     end
   end
@@ -97,7 +138,7 @@ class << self
     file_size       = File.size(text_path).freeze
     current_offset  = last_break
     while current_offset < file_size
-      puts "current_offset = #{current_offset} (file_size = #{file_size})".bleu
+      # puts "current_offset = #{current_offset} (file_size = #{file_size})".bleu
       str_fragment = File.read(text_path, MAX_FRAGMENT_SIZE, current_offset += 1)
       break if str_fragment.nil? || str_fragment.empty?
       last_break    = str_fragment.rindex(/[\.\n]/)

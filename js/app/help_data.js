@@ -30,6 +30,10 @@ aide commands
 h commands
 help commands
 
+### Lancement des tests
+
+Pour lancer les tests InsideTest, ajouter l'option \`--test\` en ligne de commande.
+
 `
 
 const colsWidth = [400,200,200]

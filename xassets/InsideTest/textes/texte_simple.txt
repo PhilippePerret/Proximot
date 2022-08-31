@@ -1,1 +1,2 @@
-Un texte très simple.
+Un texte simple. 
+C'est un texte avec deux paragraphes et une première proximité.

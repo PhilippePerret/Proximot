@@ -35,10 +35,13 @@ class << self
   end
 
   def load_from_text(data)
+    puts "load_from_text(data=) #{data.pretty_inspect}".jaune
+    data.merge!(get_first_fragment_analyzed(data['text_path']))
+    puts "Après ajout get_first_fragment_analyzed, data = #{data.pretty_inspect}".bleu
     WAA.send(
       class:  'IO',
       method: 'loadAllFromText', 
-      data:   get_first_fragment_analyzed(data['text_path'])
+      data:   data
     )
   rescue Exception => e
     puts e.message.rouge

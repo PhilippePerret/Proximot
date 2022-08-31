@@ -10,7 +10,7 @@ class << self
   #
   # Note : tous les tests se trouvent dans xassets/InsideTest/textes/
   def load_text(data)
-    puts "data reçues : #{data.pretty_inspect}".bleu
+    # puts "data reçues : #{data.pretty_inspect}".bleu
     filename = data['path']
     filepath = File.join(folder_textes, filename)
 

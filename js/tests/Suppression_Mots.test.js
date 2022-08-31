@@ -1,10 +1,12 @@
 import { InsideTest, page, mouse } from '../system/InsideTest/inside-test.lib.js'
+import {ITFactory} from './utils/ITFactory.js'
 
 /**
 * Module de test pour s'assurer que la suppression de mots est
 * fonctionnelle.
 */
 
+/*
 new InsideTest({
     error: 'La suppression des mots %{devrait} fonctionner'
   , eval: function(){
@@ -16,11 +18,11 @@ new InsideTest({
             , classAfter:   'InsideTest.current'
             , methodAfter:  'afterEval'
         }})
-      return false
+      return true//pas de faux négatif
     }
   , afterServerEval:function(data){
       console.log("Données retournée:", data)
-      /* TODO : il faut tout resetter ici */
+      // TODO : il faut tout resetter ici
       Panel.reset()
       TextElement.reset()
       Editor.reset()
@@ -29,4 +31,23 @@ new InsideTest({
       }
     }
 }).exec()
+//*/
 
+/**
+* Essai d'un test avec chargement direct du fichier
+*/
+new InsideTest({
+    error: 'Le chargement d’un texte simple est possible'
+  , eval:() => {
+      IT_WAA.send(InsideTest.current, {
+          class:'Proximot::App'
+        , method:'load'
+        , data: {filepath: ITFactory.File.textePath('texte_simple.txt')}
+      })
+      return true
+    }
+  , afterServerEval:(data)=>{
+      console.log("Data de retour du chargement du simple texte ", data)
+      return true
+    }
+}).exec()

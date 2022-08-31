@@ -1,14 +1,23 @@
 'use strict';
 /**
+ * class IT_WAA
+ * -------------
+ * Pour une interaction avec le serveur depuis les tests. Cf. le 
+ * manuel dans Programmes/InsideTest/Manuel
+ * 
+ * version 1.2
+ * 
  * Pour faire attendre la fin des InsideTest quand il y a des 
  * tests côté serveur et réceptionner les résultats pour les 
  * envoyer à InsideTest
  * 
  */
 const IT_ERRORS = {
-    requireCurrentTest  : "Il faut impérativement un test courant pour appeler IT_WAA.send."
-  , testIdRequired      : "IT_WAA.receive attend impérativement data.testId."
-  , resultServerRequired: 'IT_WAA.receive attend impérativement le résultat du test serveur ({:ok, :errors}).'
+    requireCurrentTest      : "Il faut impérativement un test courant pour appeler IT_WAA.send."
+  , currentTestFirstArg     : "Le texte courant (InsideTest.current) doit impérativement être mis en premier argument de la méthode IT_WAA.send"  
+  , dataInsideTestRequired  : "Les données InsideTest sont requises. Si c'est une méthode régulière qui a été utilisée, ajoutez data['__ITData__'] à son retour." 
+  , testIdRequired          : "IT_WAA.receive attend impérativement data.testId."
+  , resultServerRequired    : 'IT_WAA.receive attend impérativement le résultat du test serveur ({:ok, :errors}).'
 
 }
 class IT_WAA {
@@ -24,6 +33,8 @@ class IT_WAA {
   }
 
   static send(test, data){
+    // console.log("-> IT_WAA.send(test, data) data = ", test, data)
+    data || raise(IT_ERRORS.currentTestFirstArg)
     test || raise(IT_ERRORS.requireCurrentTest)
     if ( undefined === this.stackServerResultats ) {
       this.workers = {}
@@ -38,10 +49,12 @@ class IT_WAA {
     |  On peut envoyer la requête serveur en ajoutant aux données
     |  l'identifiant du test.
     */
-    Object.assign(data.data, { testId:test.id });
+    if ( not(data.data) ) Object.assign(data, {data:{}})
+    Object.assign(data.data, { __ITData__: { testId:test.id } })
     /*
     |  Transmission de la requête au serveur
     */
+    console.info("Données envoyées à WAA.send par IT_WAA:", data)
     WAA.send(data)
   }
 
@@ -54,8 +67,11 @@ class IT_WAA {
    */
   static receive(data){
     // console.log("Données reçues par IT_WAA.receive", data)
-    data.testId || raise(IT_ERRORS.testIdRequired)
-    data.result || raise(IT_ERRORS.resultServerRequired)
+    data.__ITData__ || raise(IT_ERRORS.dataInsideTestRequired)
+    const ITData = data.__ITData__
+    console.log("[IT_WAA.receive] ITData = ", ITData)
+    isDefined(ITData.testId) || raise(IT_ERRORS.testIdRequired)
+    // data.result || raise(IT_ERRORS.resultServerRequired)
     /*
     |  On passe les résultats au test
     */

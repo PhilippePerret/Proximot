@@ -2,9 +2,6 @@
 
 $(document).ready(e => {
   
-  // const texte = "Mon tout premier texte.\nAvec des retours chariot.\nC’est l'été ça se sent !"
-
-  
   Console.prepare()
   Panel.reset()
   TextElement.reset()
@@ -14,12 +11,14 @@ $(document).ready(e => {
   | Soit celui contenu dans un fichier .txt du dossier courant, soit
   | un fichier .pxw (Proximot).
   */
-  try {
-    WAA.send({class:'Proximot::App',method:'load'})
-    console.log("Ready!")
-  } catch (err) {
-    console.error(err)
-    console.log("Not Ready…")
+  if ( not(INSIDE_TESTS) ) {  
+    try {
+      WAA.send({class:'Proximot::App',method:'load'})
+      console.log("Ready!")
+    } catch (err) {
+      console.error(err)
+      console.log("Not Ready…")
+    }
   }
 
   
