@@ -85,6 +85,11 @@ class ConsoleToolTipsManager {
             action:'Affichage de l’aide.'
           , tip:'Pour une aide plus chirurgicale, mettre des arguments.'
         }
+      , 'delete':{
+            action:'Supprime tous les mots sélectionnés'
+        }
+      , 'del':{action:'Supprime tous les mots sélectionnés'}
+      , 'sup':{action:'Supprime tous les mots sélectionnés'}
       , 'f': {
             action:'lettre générique pour les fichiers + information sur texte courant'
         }

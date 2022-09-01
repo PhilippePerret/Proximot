@@ -26,6 +26,10 @@ class SelectionManager {
     this.liste = []
   }
 
+  forEach(method){
+    this.liste.forEach(method)
+  }
+
   get(){
     return this.liste[this.index]
   }
@@ -46,8 +50,10 @@ class SelectionManager {
       this.owner.beforeSetSelection.call(this.owner)
     }
     this.deselectAll()
-    if ( not(Array.isArray(newListe)) ){ newListe = [newListe] }
-    newListe.forEach( sel => this.add(sel) )
+    if ( isDefined(newListe) ) {    
+      if ( not(Array.isArray(newListe)) ){ newListe = [newListe] }
+      newListe.forEach( sel => this.add(sel) )
+    }
     this.index = 0
     if ( 'function' == typeof this.owner.afterSetSelection ) {
       this.owner.afterSetSelection.call(this.owner)
@@ -65,6 +71,7 @@ class SelectionManager {
   }
 
   add(sel){
+    sel || raise("[SelectionManager#add] Il faut définir l'élément à sélectionner !")
     this.liste.push(sel)
     sel.setSelected()
     sel.isSelected = true

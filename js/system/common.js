@@ -222,6 +222,9 @@ function bool(foo){
  */
 function raise(foo, data4console) { 
   erreur(foo)
+  raiseSilently(foo, data4console)
+}
+function raiseSilently(foo, data4console){
   if ( data4console ) console.error("Données transmises par l'erreur :", data4console)
   throw foo 
 }

@@ -9,6 +9,14 @@ class EditorClass {
   resetAll(){return this.reset()}
 
   /**
+  * Suppression de tous les mots de la sélection
+  */
+  destroySelectedMots(){
+    this.Selection.forEach( mot => mot.destroy() )
+    this.Selection.set()
+  }
+
+  /**
   * Méthode appelée avant de définir la sélection
   */
   beforeSetSelection(){

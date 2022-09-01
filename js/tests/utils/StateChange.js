@@ -4,11 +4,42 @@ import { itraise } from '../../system/InsideTest/inside-test.lib.js'
 * Pour tester les changements opérés dans l'application de façon
 * simple
 * 
+* 
+
+@todo
+-----
+  - Transformer en une classe qui puisse servir pour n'importe quelle
+    application.
+    - l'app doit définir dans App.ITWatchableProperties les 
+      propriétés qui sont à surveiller et comment on obtient leurs
+      valeurs. Par exemple, pour Proximot :
+        {
+          nb_mots_fragment: ()=>{return TextFragment.current.mots.length}
+          ou :
+          nb_mots_fragment: this.getNombreMotsFragment.bind(this)
+        }
+        getNombreMotsFragment(){
+          return TextFragment.current.mots.length
+        }
 
 @usage
 ------
 
-  import {ITAppStateChange} from './utils/StateChange.js'
+  import {ITAppStateChange as TestChange} from './utils/StateChange.js'
+
+  new TestChange()
+    .preCheck(function(){
+      // vérifications à faire au départ
+    })
+    .operate(function(){
+      // L'opération à vérifier  
+    })
+    .postCheck(function(){
+      // Les vérifications (hasChanged, is, was, etc.)
+    })
+
+  On peut aussi faire (si on ne peut pas mettre l'opération ou 
+  les checks dans des méthodes qui seront dans le scope de l'instance)
 
   // Prendre l'état au départ (avant l'opération à tester)
   const state = new ITAppStateChange()
@@ -43,12 +74,21 @@ export class ITAppStateChange {
   constructor(){
     this.prevState = this.getCurrentState()
   }
+
+  preCheck(method){ method.call(this); return this }
+  operate(method){ method.call(this); return this }
+  postCheck(method){ 
+    this.postState = this.getCurrentState()
+    method.call(this); 
+    return this 
+  }
+
   get(what){
     return this.prevState[what]
   }
   equalOrRaise(){
     if ( not(this.expected == this.actual) ) {
-      itraise(`La propriété '${this.what}' est incorrecte.\n\tAttendue: ${this.expected}\n\tObtenue : ${this.actual}`)
+      itraise(`La propriété '${this.what}' est incorrecte.\n\tAvant opération : ${this.prevState[this.what]}\n\tAprès opération : ${this.postState[this.what]}\n\tAttendue: ${this.expected}`)
     }
   }
   was(what, value) {
@@ -77,11 +117,9 @@ export class ITAppStateChange {
     let ok ;
     switch(typeof how){
       case 'number':
-        console.log("Test avec un nombre")
         this.expected = prevValue + how
         break
       case 'function':
-        console.log("Tests avec une fonction")
         this.expected = how(prevValue)
         break
       default :
@@ -93,6 +131,8 @@ export class ITAppStateChange {
 
   /**
   * Pour définir l'état après l'opération
+  * OBSOLÈTE, l'état sera pris par propriété sans tout faire à 
+  * chaque fois. TODO
   */
   definePostState(){ this.postState = this.getCurrentState()}
 
@@ -101,23 +141,15 @@ export class ITAppStateChange {
   * et du fragment en édition
   */
   getCurrentState(){
-    const fragment = TextFragment.current
-    return {
-        nb_mots           : fragment.mots.length
-      , nb_texels         : fragment.texels.length
-      , nb_displayed_mots : this.getNombreDisplayedMots()
-      , nb_proximities    : Proximity.count()
+    const table = {}
+    for(var k in this.watchableProperties) {
+      Object.assign(table, {[k]: this.watchableProperties[k]() })
     }
+    return table
   }
 
-
-
-  // *- Private Methods -*
-
-  /**
-  * Retourne le nombre de mots affiché (il s'agit vraiment des mots)
-  */
-  getNombreDisplayedMots(){
-    return DGetAll('.texel.mot', Editor.content).length
+  get watchableProperties(){
+    return this._wprops || (this._wprops = App.ITWatchableProperties) 
   }
+
 }

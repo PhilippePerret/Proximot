@@ -478,7 +478,7 @@ class TextFragment {
   }
 
 
-  // --- Private Methods ---
+  // *--- Private Methods ---*
 
   getMots(){
     const ary_mots = []

@@ -21,7 +21,7 @@ class ConsoleCommandManager {
    * 
    */
   onSubmit(e, command){
-    console.info("Soumission de la command '%s'", command)
+    Log.info("Soumission de la command '"+command+"'")
 
     var value ;
     const init_command = command
@@ -51,6 +51,9 @@ class ConsoleCommandManager {
       } else {
         Help.show()
       }
+      break
+    case 'delete': case 'sup': case 'del': // suppression de la sélection
+      Editor.destroySelectedMots()
       break
     case 'export':
       console.warn("Je dois apprendre à exporter le texte")
@@ -146,9 +149,15 @@ class ConsoleCommandManager {
         /* Rechercher le premier mot contenant la valeur donnée */
         return Editor.selectFirstWordWith({text:value})
       } else {
-        indexMot = index
+        indexMot = index - 1
       }
-      Editor.Selection.set( Editor.mots[indexMot] )
+      const mot = Editor.mots[indexMot]
+      if ( mot && mot instanceof Mot ) {
+        Editor.Selection.set( mot )
+      } else {
+        erreur("Impossible de trouver le mot d'index " + indexMot + '…')
+        console.log("index, Editor.mots", indexMot, Editor.mots)
+      }
       break
     
     case '/': // recherche et sélectionne

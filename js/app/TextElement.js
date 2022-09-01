@@ -271,6 +271,7 @@ class TextElement {
     |   - retire le mot de son paragraphe (toutes les valeurs du
     |     paragraphe sont à recalculer). Cela influence aussi la
     |     longueur.
+    |   - provoque aussi la réinitialisation des mots du fragment (TODO)
     */
     this.paragraph.remove(this)
 

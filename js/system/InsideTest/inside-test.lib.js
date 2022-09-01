@@ -33,7 +33,7 @@ export class ErrorTest extends Error {
 }
 
 export function itraise(message){
-  raise(new ErrorTest(message))
+  raiseSilently(new ErrorTest(message))
 }
 
 export function assert(expected, actual, thing){
@@ -43,7 +43,7 @@ export function assert(expected, actual, thing){
   } else {
     ok = expected == actual
   }
-  ok || raise(new ErrorTest(`Bad ${thing}.\n\tAttendu: ${expected}\n\tObtenu : ${actual}`, {parameters:"Mes paramètres propres"}))
+  ok || raiseSilently(new ErrorTest(`Bad ${thing}.\n\tAttendu: ${expected}\n\tObtenu : ${actual}`, {parameters:"Mes paramètres propres"}))
 
 }
 
