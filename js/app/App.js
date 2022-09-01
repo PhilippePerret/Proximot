@@ -5,6 +5,31 @@ class App {
   /* TODO : la remonter du serveur */
   static get APP_VERSION(){ return '0.5.1' }
 
+  /**
+  * RÉINITIALISATION COMPLÈTE
+  * -------------------------
+  * Pour tout réinitialiser au chargement d'un nouveau texte par
+  * exemple (un texte qui n'est pas le fragment suivant d'un autre)
+  * C'est également cette méthode qui est appelée entre les tests.
+  * 
+  */
+  static resetAll(){
+    delete this._fragments_data
+    delete this._state
+    ZManager      .resetAll()
+    ConsoleClass  .resetAll()
+    AnyText       .resetAll()
+    Editor        .resetAll()
+    Lemmas        .resetAll()
+    MotType       .resetAll()
+    Paragraph     .resetAll()
+    Proximity     .resetAll()
+    TextElement   .resetAll()
+    Preferences   .resetAll_andApply()
+    TextFragment  .resetAll()
+    TextUtils     .resetAll()
+  }
+
   static get STATE_DATA(){
     if (undefined == this._statedata){
       this._statedata = {

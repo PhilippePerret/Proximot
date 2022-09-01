@@ -85,13 +85,14 @@ class IO {
   * La remontée se fait sequentiellement.
   */
   static loadAllFromPackage(data){
-
-   // console.log("[loadAllFromPackage] Je reçois ces données pour le chargement de '%s'", data.loading_step, data)
+   Log.debug("[loadAllFromPackage] Données (package) pour l'étape '" + data.loading_step + "'", data)
 
     var next_step, extra_data ;
 
     switch(data.loading_step){
     case 'app_state':
+      /* Par défaut, on réinitialise tout */
+      data.keepAll || App.resetAll()
       App.setState(data.loadData)
       next_step   = 'preferences'
       break
@@ -124,7 +125,13 @@ class IO {
 
   static loadAllFromText(data){
     try {    
-      // console.log("[IO::loadAllFromText] Je reçois ces données texte : ", data)
+      Log.debug("[IO::loadAllFromText] Données texte : ", data)
+      
+      /*
+      |  Par défaut, on réinitialise tout
+      */
+      data.keepAll || App.resetAll()
+
       App.lastOpenDate = new Date()
       /*
       |  Instanciation du fragment

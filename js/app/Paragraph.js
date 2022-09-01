@@ -2,6 +2,10 @@
 
 class Paragraph {
 
+  static resetAll(){
+
+  }
+
   /**
   * Instancie tous les paragraphes d'après les données +paragsData+
   * qui sont des données remontées d'un package.

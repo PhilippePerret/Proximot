@@ -11,6 +11,11 @@
 
 class Lemmas {
 
+  static resetAll(){
+    delete this._mindistprox
+    delete this._minlemmelength
+  }
+
   /**
   * Au dessus de cette distance, deux mots ne peuvent plus être en
   * proximité.

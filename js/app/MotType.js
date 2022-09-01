@@ -9,6 +9,11 @@
 
 class MotType extends TextElement {
 
+  resetAll(){
+    MotType.tableMots = {}
+    MotType.byCountAndLemmas
+  }
+
   /**
   * Méthode appelée quand l'utilisateur veut remplacer le mot
   * sélectionné par newContent. On doit vérifier si c'est possible et
@@ -256,8 +261,8 @@ class MotType extends TextElement {
    * tous les coups ce lemme.
    */
   static getCountAndLemma(strMot){
-    // console.info("this.byCountAndLemmas=", this.byCountAndLemmas)
-    return this.byCountAndLemmas[strMot]
+    // console.info("MotType.byCountAndLemmas=", MotType.byCountAndLemmas)
+    return MotType.byCountAndLemmas[strMot]
   }
 
   /**
@@ -274,18 +279,18 @@ class MotType extends TextElement {
   static addInTableMots(mot){
     if ( undefined == MotType.tableMots ) {
       MotType.tableMots = {}
-      this.byCountAndLemmas = {}
+      MotType.byCountAndLemmas = {}
     }
     Object.assign(MotType.tableMots, {[mot.id]: mot})
-    if ( undefined == this.byCountAndLemmas[mot.mot] ) {
-      Object.assign(this.byCountAndLemmas, {[mot.mot]: {
+    if ( undefined == MotType.byCountAndLemmas[mot.mot] ) {
+      Object.assign(MotType.byCountAndLemmas, {[mot.mot]: {
         count: 0, type: mot.ttTag, lemma:mot.lemma
       }})
     }
     /*
     | On compte ce mot
     */
-    this.byCountAndLemmas[mot.mot].count ++ 
+    MotType.byCountAndLemmas[mot.mot].count ++ 
   }
 
   static count(){return Object.keys(MotType.tableMots).length }

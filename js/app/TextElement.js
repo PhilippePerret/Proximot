@@ -12,6 +12,12 @@
  */
 class TextElement {
 
+  static resetAll(){
+    this.table  = {}
+    this.lastId = 0
+    delete this._properties
+  }
+
   static reset(){
     this.table  = {} 
     this.lastId = App.State.last_texel_id || 0

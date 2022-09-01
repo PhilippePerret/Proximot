@@ -11,6 +11,8 @@ class AnyText extends TextElement {
     super(fragment, data)
   }
 
+  resetAll(){super.resetAll()}
+
   get type(){return 'anytexel'}
 
   get css(){

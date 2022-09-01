@@ -57,6 +57,12 @@ const PREFERENCES_DATA = {
 
 class Preferences {
 
+  static resetAll_andApply(){
+    for (var prefId in PREFERENCES_DATA) {
+      delete PREFERENCES_DATA[prefId].value
+    }
+    this.apply()
+  }
   static get log(){
     return this._log || (this._log = new LogClass('Preferences'))
   }
@@ -144,12 +150,13 @@ class Preferences {
   }
 
   /**
-   * Pour appliquer les préférences au démarrage
+   * Pour appliquer les préférences au démarrage (ou au reset : on 
+   * applique alors les préférences par défaut)
    * 
    */
   static apply(){
     this.log.in('::apply')
-    for (var prefId in PREFERENCES_DATA) {    
+    for (var prefId in PREFERENCES_DATA) {
       const dPref = PREFERENCES_DATA[prefId]
       const value = PREFERENCES_DATA[prefId].value
       if ( dPref.onChange && undefined != value && value != dPref.defaultValue ) {

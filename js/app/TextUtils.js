@@ -10,6 +10,10 @@
 
 class TextUtils {
 
+  static resetAll(){
+    delete this.analyzeOptions
+  }
+
   /**
    * Pour analyser le texte +text+ côté serveur et remonter (dans la
    * méthode suivante) les tokens.

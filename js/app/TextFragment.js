@@ -17,8 +17,13 @@ const TTTAG_TYPES_NOT_MOT = ['ABR','PUN','SENT']
 
 class TextFragment {
 
-  static get current(){ return this._current /* || TODO */}
+  static resetAll(){
+    delete this._current
+  }
+
+  static get current(){ return this._current }
   static set current(frg){this._current = frg}
+  static setCurrent(fragment) { return (this._current = fragment) }
 
   /**
   * Méthode principale qui reçoit les données du fragment et retourne
@@ -43,7 +48,8 @@ class TextFragment {
   * Proximot.
   */
   static createFromPackageData(data){
-    console.info("CRÉATION DU FRAGMENT À PARTIR DU PACKAGE. DONNÉES : ", data)
+    Log.in('TextFragment::createFromPackageData')
+    Log.debug("CRÉATION DU FRAGMENT À PARTIR DU PACKAGE. DONNÉES : ", data)
 
     const fragment = new TextFragment(data.metadata)
 
@@ -180,11 +186,6 @@ class TextFragment {
     return not(TTTAG_TYPES_NOT_MOT.includes(ttag))
   }
 
-  static setCurrent(fragment){
-    this.current = fragment
-    return fragment
-  }
-
   /**
    * Instanciation d'un fragment de texte
    * 
@@ -256,7 +257,7 @@ class TextFragment {
    * 
    */
   analyzeProximities(){
-    console.log("-> Analyse des proximités")
+    Log.in('TextFragment#analyzeProximities')
     this.lemmas.analyzeProximites()
   }
 

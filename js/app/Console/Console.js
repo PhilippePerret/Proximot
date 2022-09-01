@@ -2,6 +2,10 @@
 
 class ConsoleClass {
 
+  static resetAll(){
+    window.Console = new ConsoleClass()
+  }
+
   /**
    * Préparation de la console (et ses outils)
    * 
@@ -64,4 +68,4 @@ class ConsoleClass {
     return this._field || (this._field = DGet('input#console'))
   }
 }
-const Console = new ConsoleClass()
+window.Console = new ConsoleClass()

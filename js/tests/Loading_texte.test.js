@@ -8,17 +8,10 @@ import {ITFactory} from './utils/ITFactory.js'
 * Essai d'un test avec chargement direct du fichier
 */
 new InsideTest({
-    error: 'Un texte brut %{doit} pourvoir être chargé et correctement analysé/affiché'
+    error: 'Un texte brut %{doit} pouvoir être chargé et correctement analysé/affiché'
   , eval:() => {
-      IT_WAA.send(InsideTest.current, {
-          class:'Proximot::App'
-        , method:'load'
-        , data: {
-              filepath: ITFactory.File.textePath('texte_simple.txt')
-            , then:     'afterAffichageTexte'
-          }
-      })
-      return true
+      ITFactory.load_texte(InsideTest.current, 'texte_simple.txt', {then: 'afterAffichageTexte'})
+      return true // pas de faux négatif
     }
   , afterAffichageTexte:(data) => {
       /*

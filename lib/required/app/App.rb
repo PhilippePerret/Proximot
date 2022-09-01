@@ -45,16 +45,6 @@ class << self
     File.write(path_dyn_consts, PREAMBULE_DYNAMIC_CONSTANTES + constantes)
   end
 
-  PREAMBULE_DYNAMIC_CONSTANTES = <<~JAVASCRIPT
-  /**
-  * Ce fichier est créé automatiquement, ne pas le modifier à la
-  * main.
-  * Pour ajouter des constantes, modifier la liste constante
-  * DYNAMIC_JS_CONSTANTES dans le fichier constants.rb de l'app.
-  */
-
-  JAVASCRIPT
-
   ##
   # Pour charger le texte à analyser/travailler
   #
@@ -71,6 +61,11 @@ class << self
   #             utilisé pour les tests, pour le moment)
   #         data['__ITData__']  Données des InsideTests si la méthode
   #             a été appelée depuis un InsideTest.
+  #         data['keepAll'] Pour savoir si l'application doit être
+  #             complètement réinitialisée avant le traitement du
+  #             texte remonté. Si cette valeur existe et est true,
+  #             côté client on n'appellera pas App.resetAll() comme
+  #             c'est le cas par défaut.
   # 
   def load(data = nil)
     # puts "[App.load] data : #{data.pretty_inspect}".jaune
@@ -266,5 +261,16 @@ class << self
   end
 
 end #/<< self
+
+  PREAMBULE_DYNAMIC_CONSTANTES = <<~JAVASCRIPT
+  /**
+  * Ce fichier est créé automatiquement, ne pas le modifier à la
+  * main.
+  * Pour ajouter des constantes, modifier la liste constante
+  * DYNAMIC_JS_CONSTANTES dans le fichier constants.rb de l'app.
+  */
+
+  JAVASCRIPT
+
 end #/class App
 end #/module Proximot

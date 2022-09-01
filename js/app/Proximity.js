@@ -1,20 +1,23 @@
 'use strict'
 class Proximity {
 
+  static resetAll(){
+      this.items  = []
+      this.table  = {}
+      this.lastId = 0
+  }
+
   static getById(id){ 
     return this.table[id] 
   }
 
   static getNewId(){
-    if ( undefined === this.lastId ) this.lastId = 0
-    return ++ this.lastId
+    this.lastId || this.resetAll()
+    return ++ this.lastId // le premier sera 1
   }
 
   static add(proxi){
-    if (undefined == this.items){ 
-      this.items = []
-      this.table = {}
-    }
+    this.items || this.resetAll()
     this.items.push(proxi)
     Object.assign(this.table, {[proxi.id]: proxi})
   }

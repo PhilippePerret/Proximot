@@ -135,14 +135,14 @@ class ConsoleCommandManager {
       break
     
     case 's': // sélection
-      const index = parseInt(value,10)
+      const index = int(value)
       const indexMotCurrent = this.currentMot ? this.currentMot.index : 0
       let indexMot ;
       if ( value.substring(0,1) == '+' ) {
         indexMot = indexMotCurrent + index
       } else if ( value.substring(0,1) == '-' ) {
         indexMot = indexMotCurrent - index
-      } else if ( NaN(index) ) {
+      } else if ( isNaN(index) ) {
         /* Rechercher le premier mot contenant la valeur donnée */
         return Editor.selectFirstWordWith({text:value})
       } else {

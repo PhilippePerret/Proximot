@@ -6,6 +6,7 @@ class EditorClass {
     this.content.innerHTML = ''
     delete this._selection
   }
+  resetAll(){return this.reset()}
 
   /**
   * Méthode appelée avant de définir la sélection

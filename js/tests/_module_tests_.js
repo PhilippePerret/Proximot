@@ -3,7 +3,7 @@ import {InsideTest} from '../system/InsideTest/inside-test.lib.js'
 
 // import('./TextUtils.tests.js')
 import('./Loading_texte.test.js')
-// import('./Suppression_Mots.test.js')
+import('./Suppression_Mots.test.js')
 // import('./offsets.test.js') // TODO Spécialement pour vérifier les offsets dans un texte
 
 $(document).ready(async e => {

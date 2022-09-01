@@ -153,6 +153,7 @@ function definedOr(primValue, elseValue){
     return primValue
   }
 }
+/* Autotest */
 test = new MiniTest(function(pvalue, expected){
   this.expected         = expected
   this.actual           = definedOr(pvalue, 'oui')
@@ -201,7 +202,7 @@ function int(foo){
   return parseInt(foo, 10)
 }
 function bool(foo){
-  return bool === true || bool == 'true'
+  return bool === true || bool == 'true' || bool == 1 || bool == '1'
 }
 
 /**
