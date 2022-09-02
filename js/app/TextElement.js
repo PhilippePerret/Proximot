@@ -205,6 +205,10 @@ class TextElement {
     return this._inspect || (this._inspect = `<<<${this.type} #${this.id} ${this.content.substring(0,20)}...>>>`)
   }
 
+  get to_json(){ /*-- tests --*/
+    return JString(this.getData())
+  }
+
   getData(){
     return this.constructor.PROPERTIES_KEYS.map(prop => {return this[prop]})
   }
@@ -282,7 +286,10 @@ class TextElement {
     */
     TextElement.destroy(this)
 
-
+    /*
+    |  Annulation possible
+    */
+    ZManager.add('DESTROY mot', this)
   }
 
   // --- DOM Building Methods ---
@@ -376,15 +383,18 @@ class TextElement {
 
   getCssClasses(classesCss){
     classesCss.push('texel')
-    this.hasSpaceBefore   && classesCss.push('space-before')
+    ;(this.hasSpaceBefore || this.hasInsecableBefore )&& classesCss.push('space-before')
     this.hasNoSpaceAfter  && classesCss.push('no-space-after')
     return classesCss.join(' ')
   }
   get hasSpaceBefore(){
-    return this._hasinsec || ( this._hasinsec = this.content.match(/[\(«»\!\?\;\:]/))
+    return this._has_sp_bef || ( this._has_spa_bef = !!this.content.match(/[\(«]/))
+  }
+  get hasInsecableBefore(){
+    return this._has_insec_bef || ( this._has_insec_bef = !!this.content.match(/[»\!\?\;\:]/) )
   }
   get hasNoSpaceAfter(){
-    return this._hasnospaf || ( this._hasnospaf = this.content.match(/[\(']$/))
+    return this._has_no_sp_aft || ( this._has_no_sp_aft = !!this.content.match(/[\(\[\{']$/))
   }
 
 }

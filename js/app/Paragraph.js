@@ -51,6 +51,10 @@ class Paragraph {
 
   // --- Public Methods ---
 
+  get to_json(){ /*-- tests --*/
+    return JString( this.getData() )
+  }
+
   /**
   * Pour faire une boucle sur tous les mots du paragraphe
   */
@@ -112,6 +116,10 @@ class Paragraph {
       this._mots = removeFromArray(this._mots, condMethod, {onlyOne:true})
     }
     this.texels = removeFromArray(this.texels, condMethod, {onlyOne:true})
+    /*
+    |  Pour forcer le recalcul du fragment
+    */
+    this.fragment.resetTexels()
   }
 
   // @return le DIV (DOM Element) du paragraphe

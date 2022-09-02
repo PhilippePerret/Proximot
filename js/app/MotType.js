@@ -264,6 +264,7 @@ class MotType extends TextElement {
     // console.info("MotType.byCountAndLemmas=", MotType.byCountAndLemmas)
     return MotType.byCountAndLemmas[strMot]
   }
+  static getByMot(strMot){return this.getCountAndLemma(strMot)}
 
   /**
    * Ajoute le mot (à l'instanciation). Cela a une double fonction :

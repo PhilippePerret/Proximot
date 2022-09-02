@@ -212,8 +212,11 @@ class TextFragment {
     this.Klass      = 'TextFragment'
   }
 
-
   // --- Public Methods ---
+
+  get to_json(){ /*- tests -*/
+    return JString(this.getData())
+  }
 
   /**
   * Affichage du fragment
@@ -457,7 +460,9 @@ class TextFragment {
 
   // --- /Public Methods ---
 
-
+  /* Longueur */
+  get length(){ return this.calcLength() }
+  
   /**
    * Gestion des Lemmas du fragment de texte
    * (voir les classes Lemmas et Lemma)
@@ -473,8 +478,23 @@ class TextFragment {
     return this._mots || (this._mots = this.getMots() )
   }
 
+  /**
+  * Retourne le texte du fragment (les espaces, normalement, ont été
+  * respectée)
+  */
   get text(){
-    return this._text || (this._text = this.getText() )
+    return this._text || (this._text = this.getText())
+  }
+
+  /* Les Texels */
+  get texels(){
+    return this._texels || (this._texels = this.getTexels() )
+  }
+  set texels(ary){ if ( ary.length ) this._texels = ary }
+  resetTexels(){
+    delete this._mots
+    delete this._texels
+    delete this._text
   }
 
 
@@ -485,14 +505,27 @@ class TextFragment {
     this.paragraphs.forEach(parag => {
       parag.forEachMot(mot => ary_mots.push(mot))
     })
-    return ary_mots
+    if (ary_mots.length) return ary_mots
   }
-  getText(){
+
+  getTexels(){
     const ary = []
-    this.paragraphs.forEach(parag => {
-      parag.content.forEach(texel => ary.push(texel.content))
+    this.paragraphs.forEach( parag => {
+      parag.forEachTexel(texel => { ary.push(texel) } )
     })
-    return ary.join('')
+    if ( ary.length ) return ary
+  }
+
+  getText(){
+    this.texels.map(texel => {
+      return ('') + texel.content + (texel.hasNoSpaceAfter ? '' : ' ')
+    }).join('')
+  }
+
+  calcLength(){
+    var s = 0;
+    this.paragraphs.forEach(p => s += p.length)
+    return s
   }
 
   /**

@@ -95,6 +95,8 @@ class App {
   }
   static set State(state){this._state = state}
 
+  static get fragment(){ return TextFragment.current }
+
   static get fragments_data(){
     if (undefined == this._fragments_data){
       this._fragments_data = {
@@ -151,27 +153,6 @@ class App {
     this.setFragmentsData(data)
   }
 
-
-
-  // ########## POUR INSIDE TESTS #############
-
-  // Pour les propriétés à surveiller
-  static get ITWatchableProperties(){
-    return {
-        nb_mots_fragment    : this.getNbMotsFragment.bind(this)
-      , nb_texels_fragment  : this.getNbTexelsFragment.bind(this)
-      , nb_displayed_mots   : this.getNbMotsDisplayed.bind(this)
-      , nb_proximites       : this.getNbProximities.bind(this)
-      , displayed_texte     : this.getDisplayedTexte.bind(this)
-    }
-  }
-  static get fragment(){ return TextFragment.current }
-  
-  static getNbMotsFragment()  {return this.fragment.mots.length }
-  static getNbTexelsFragment(){return this.fragment.texels.length}
-  static getNbMotsDisplayed() {return DGetAll('.texel.mot', Editor.content).length}
-  static getNbProximities()   {return Proximity.count() }
-  static getDisplayedTexte()    {console.error("Je dois apprendre à récupérer le texte");return ''}
-
-
 } // /class App
+
+

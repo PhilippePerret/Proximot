@@ -5,7 +5,7 @@
  * ----------------
  * Pour des tests directement dans les fichiers (ou pas, d'ailleurs)
  * 
- * Version 1.3
+ * Version 1.5
  * 
  * Cf. le manuel dans ~/Programmes/InsideTest/
  *
@@ -46,6 +46,36 @@ export function assert(expected, actual, thing){
   ok || raiseSilently(new ErrorTest(`Bad ${thing}.\n\tAttendu: ${expected}\n\tObtenu : ${actual}`, {parameters:"Mes paramètres propres"}))
 
 }
+
+/**
+* Classe doit doit hérité tout objet dont on fait un objet IT (Inside
+* Test) pour l'utiliser dans les tests avec les méthodes should et
+* shouldnot (ou should.not)
+*/
+export class ITClass {
+  constructor(subject){
+    this.subject = subject || raise("Il faut communiquer le sujet (humain) à ITClass.")
+  }
+  /* Pour inverser le sens */
+  get should()    { this.mustBeTrue = true; return this }
+  get shouldnot() { this.mustBeTrue = false ; return this }
+  get shouldnt()  { this.mustBeTrue = false ; return this }
+  get not(){ this.mustBeTrue = false; return this} // pour should.not.be
+
+  estimate(foo){
+    if ( this.mustBeTrue ) {
+      return !! foo
+    } else {
+      return ! foo
+    }
+  }
+
+  err(msg, ary = []){
+    const devrait = this.mustBeTrue ? 'devrait ' : 'ne devrait pas '
+    itraise(tp(this.subject + ' ' + devrait + msg + '…', [this.str].concat(ary) ))
+  }
+}
+
 
 class HTMLPageClass {
   contains(selector, innerText){
@@ -149,13 +179,13 @@ export class InsideTest {
    * 
    */
   static async run() {
-    if ( INSIDE_TESTS ){ 
+    // if ( INSIDE_TESTS ){ 
       this.resetCounters()
       this.runStack()
       await this.awaitForAllServerChecksDone()
       this.stopCounters()
       this.report()
-    }
+    // }
   }
 
   /**

@@ -10,9 +10,21 @@ import { itraise } from '../../system/InsideTest/inside-test.lib.js'
 -----
   - Transformer en une classe qui puisse servir pour n'importe quelle
     application.
-    - l'app doit définir dans App.ITWatchableProperties les 
+
+@usage
+------
+
+    - l'app doit définir App.InsideTest.getValues() une méthode qui
+      retourne la table des valeurs "surveillables" (watchable).
+
+    - l'app doit définir dans App.InsideTest.Watchables les 
       propriétés qui sont à surveiller et comment on obtient leurs
-      valeurs. Par exemple, pour Proximot :
+      valeurs. C'est la différence avec getValues() qui retourne la
+      même table mais avec les valeurs actuelles.
+      C'est une table (dictionnaire) avec en clé le nom de
+      la propriété (par exemple 'nb_mots_fragments') et en valeur une
+      méthode pour obtenir la valeur en direct.
+      Par exemple, pour Proximot :
         {
           nb_mots_fragment: ()=>{return TextFragment.current.mots.length}
           ou :
@@ -22,17 +34,18 @@ import { itraise } from '../../system/InsideTest/inside-test.lib.js'
           return TextFragment.current.mots.length
         }
 
-@usage
-------
+  - Ensuite, dans le module de test, on utilise :
 
   import {ITAppStateChange as TestChange} from './utils/StateChange.js'
+
+  - Dans le eval du test :
 
   new TestChange()
     .preCheck(function(){
       // vérifications à faire au départ
     })
     .operate(function(){
-      // L'opération à vérifier  
+      // L'opération à exécuter  
     })
     .postCheck(function(){
       // Les vérifications (hasChanged, is, was, etc.)
@@ -75,6 +88,9 @@ export class ITAppStateChange {
     this.prevState = this.getCurrentState()
   }
 
+  // *-- Public Methods --*
+
+  /* Les trois méthodes principales qui s'enchainent */
   preCheck(method){ method.call(this); return this }
   operate(method){ method.call(this); return this }
   postCheck(method){ 
@@ -98,13 +114,21 @@ export class ITAppStateChange {
     this.equalOrRaise()
     return this
   }
-  is(what, value){
-    if ( undefined === value ) {
-      [what, value] = [this.currentWhat, what]
+  /**
+  * @param ...args what, value ou seulement value (quand utilisation
+  *         après une autre méthode comme was qui mémorise la valeur
+  *         de what)
+  */
+  // is(what, value){
+  is(...args){
+    if ( args.length == 1 ) {
+      this.expected = args[0] 
+    } else {
+      this.what     = args[0]
+      this.expected = args[1]
     }
-    this.what     = what
-    this.expected = value
-    this.actual   = this.postState[what]
+    console.log("[is] what = %s, value = '%s'", this.what, this.expected)
+    this.actual   = this.postState[this.what]
     this.equalOrRaise()
   }
   /**
@@ -130,9 +154,7 @@ export class ITAppStateChange {
   }
 
   /**
-  * Pour définir l'état après l'opération
-  * OBSOLÈTE, l'état sera pris par propriété sans tout faire à 
-  * chaque fois. TODO
+  * Pour définir l'état après l'opération (2e utilisation)
   */
   definePostState(){ this.postState = this.getCurrentState()}
 
@@ -141,15 +163,11 @@ export class ITAppStateChange {
   * et du fragment en édition
   */
   getCurrentState(){
-    const table = {}
-    for(var k in this.watchableProperties) {
-      Object.assign(table, {[k]: this.watchableProperties[k]() })
-    }
-    return table
+    return App.InsideTest.getWatchableValues()
   }
 
   get watchableProperties(){
-    return this._wprops || (this._wprops = App.ITWatchableProperties) 
+    return this._wprops || (this._wprops = App.InsideTest.Watchables) 
   }
 
 }

@@ -84,6 +84,11 @@ class Lemmas {
       return this.table[lemma] 
     }
   }
+  /**
+  * @return L'instance {Lemma} du +lemme+, SANS L'INSTANCIER s'il
+  * n'existe pas.
+  */
+  getLemma(lemme){return this.get(lemme, true)}
 
   /* Attention : méthode */
   count(){ return Object.keys(this.table).length }
