@@ -49,6 +49,30 @@ class Paragraph {
     this.texels = texels
   }
 
+  // -- Offset Methods ---
+  updateOffsets(args){
+    const {fromOffset, diff} = args
+    /*
+    |  Actualisation dans les mots suivant l'offset fromOffset
+    */
+    for (var imot = 0, len = this.mots.length; imot < len; ++ imot){
+      if ( this.mots[imot].offsetInPara < fromOffset ) { continue }
+      else { this.mots[imot].addToOffsets(diff) }
+    }
+    /*
+    |  Actualisation dans les paragraphes suivants
+    */
+    this.fragment.updateOffsets({fromIndex: this.index + 1, diff:diff})  
+  }
+  addToOffsets(diff){
+    this.offsetInFrag = this.offsetInFrag + diff
+  }
+  get offsetInFrag(){ return this._offsetinfragment }
+  set offsetInFrag(o){ 
+    this._offsetinfragment = o 
+    delete this._offsetintexte
+  }
+
   // --- Public Methods ---
 
   get to_json(){ /*-- tests --*/

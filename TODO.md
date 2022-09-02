@@ -2,6 +2,36 @@
 
 ## En cours
 
+### Actualisation de l'offset d'un mot
+
+> Maintenant, l'offset est relatif au paragraphe. Le mot possède donc :
+  - offsetInParag
+  - offsetInFrag
+  - offsetAbs
+
+Quand on actualise un paragraphe, par exemple en supprimant un mot :
+  - il faut modifier le offsetInPar de tous les mots suivants du paragraphe
+  - il faut modifier le offsetInFra de tous les paragraphes suivants
+  - il faut modifier le offsetInTex (offsetAbs) de tous les fragments suivants
+
+La méthode pourrait être une méthode de Paragraph. `Paragraph.updateOffsets` qui
+attend en donnée : from: offset, value: <écart souhaité>
+  Par exemple, si on a supprimé un mot, on envoie à cette méthode :
+  mot.paragraph.updateOffsets(from: mot.offset, diff: (+) mot.length)
+
+Ce que fait la méthode :
+  - elle boucle sur ses mots jusqu'à trouver un offset supérieur ou égal à :from
+    à partir de là, elle augmente l'offset des mots (mot.addToOffset(diff))
+  - elle appelle ensuite son fragment pour faire la même chose avec les 
+    paragraphes suivant
+    this.fragment.updataOffsets(from: paragIndex + 1, diff: diff)
+  - Le fragment boucle sur ses paragraphes à partir de :from
+    elle ajoute la valeur paragraph.addToOffset(diff)
+  - le fragment appelle l'application pour modifier tous les fragments
+    suivant : App.updateOffsets(from: indexFragment + 1, diff: diff)
+  - l'application boucle sur tous les fragments à partir de indexFragment
+    fragment.addToOffset(diff)
+
 * Poursuivre le lancement des tests sur un texte particulier
   - puis faire les tests de suppression de mots
 * Pouvoir définir une distance minimale hors proximité pour chaque lemme

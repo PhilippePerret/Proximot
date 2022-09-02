@@ -1,10 +1,12 @@
 import { itraise, ITClass } from '../../system/InsideTest/inside-test.lib.js'
 
 /**
-* Librairie permettant de tester facilement le fragment courant avec
-* des méthodes should et should.not comme :
+* Librairie permettant de tester facilement le fragment courant (ou
+* le fragment donné à l'instanciation) avec des méthodes should et 
+* should.not comme :
 * 
 *   haveLength(<x>)
+*   haveTextOffset()
 *   haveNombreMots(<x>)
 * 
 * À faire :
@@ -16,9 +18,10 @@ import { itraise, ITClass } from '../../system/InsideTest/inside-test.lib.js'
 *     import {ITFragment} from './utils/IT_Mot.js'
 */
 class ITFragmentClass extends ITClass {
-  constructor(){
-    super('Le fragment courant')
-    this.frag = TextFragment.current
+  constructor(frag){
+    const nom = frag ? `Le fragment #${frag.index}` : 'Le fragment courant'
+    super(nom)
+    this.frag = frag || TextFragment.current
   }
 
   haveNombreMots(nb){
@@ -26,6 +29,9 @@ class ITFragmentClass extends ITClass {
   }
   haveLength(len) {
     this.estimate(this.frag.length == len) || this.err('avoir une longueur de '+len+' (sa longueur est '+this.frag.length+')')
+  }
+  haveTextOffset(nb){
+    this.estimate(this.frag.offsetInText == nb) || this.err('avoir un offset dans le texte de '+nb+' (son offsetInText vaut ' + this.frag.offsetInText + ').')
   }
 
 }

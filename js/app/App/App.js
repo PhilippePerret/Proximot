@@ -5,6 +5,15 @@ class App {
   /* TODO : la remonter du serveur */
   static get APP_VERSION(){ return '0.5.1' }
 
+  // --- Offset Methods ---
+  static updateOffsets(args){
+    const {fromIndex, diff} = args
+    const len = this.fragments_data.count
+    for(var ifrag = fromIndex; ifrag < len; ++ ifrag) {
+      this.fragments_data[ifrag].offset += diff
+    }
+  }
+
   /**
   * RÉINITIALISATION COMPLÈTE
   * -------------------------
@@ -70,7 +79,6 @@ class App {
     console.log("Table retournée par App.getState:", tbl)
     return tbl
   }
-
 
   static setState(data){
     this.lastOpenDate  = new Date()

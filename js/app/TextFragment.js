@@ -106,6 +106,7 @@ class TextFragment {
     var paragOffset = 0
     const texels    = []
     fragment.paragraphs = data.paragraphs.map(
+
       ary_texels => {
         /*
         |  +ary_texels+ est ici une liste de trinomes renvoyés par 
@@ -126,7 +127,8 @@ class TextFragment {
           |  Ajout de l'offset du texel, si c'est un mot
           */
           if ( isMot ) {
-            dtexel.push(paragOffset + currentMotOffset)
+            // dtexel.push(paragOffset + currentMotOffset) // on ne met plus cet offset
+            dtexel.push(currentMotOffset)                   // l'offset est maintenant par rapport au paragraph
           } else {
             /*
             |  Note : excommenter cette ligne pour voir tous les texels
@@ -155,7 +157,9 @@ class TextFragment {
         /*
         |  Offset du prochain paragraphe
         */
-        paragOffset += paragraph.length
+        console.log("paragOffset méthode 1 : ", paragOffset + paragraph.length)
+        paragOffset += currentMotOffset //+ paragraph.mots[paragraph.mots.length - 1].length
+        console.log("paragOffset méthode 2 : ", paragOffset)
 
         return paragraph    
       }
@@ -204,13 +208,40 @@ class TextFragment {
    * 
    */
   constructor(data) {
-    this.index      = int(definedOr(data.index, data.fragment_index))
-    this.lexicon    = data.lexicon
-    this.text_path  = data.text_path
-    this.prox_path  = data.prox_path || this.defineProxPath(this.text_path)
-    this.offset     = data.offset
-    this.Klass      = 'TextFragment'
+    this.index        = int(definedOr(data.index, data.fragment_index))
+    this.lexicon      = data.lexicon
+    this.text_path    = data.text_path
+    this.prox_path    = data.prox_path || this.defineProxPath(this.text_path)
+    this.offsetInText = data.offset
+    this.Klass        = 'TextFragment'
   }
+
+
+  // --- Offset Methods ---
+
+  updateOffsets(args){
+    const {formIndex, diff} = args
+    /*
+    |  Actualisation de tous les paragraphes du fragment à partir
+    |  de l'index +fromIndex+
+    */
+    const len = this.paragraphs.length
+    for (var ipara = fromIndex; ipara < len; ++ipara) {
+      this.paragraphs[ipara].addToOffsets(diff)
+    }
+    /*
+    |  Actualisation de tous les fragments suivants
+    */
+    App.updateOffsets({fromIndex: this.index + 1, diff: diff})
+  }
+
+  addToOffsets(diff){
+    this._offsetintext += diff
+  }
+
+  get offsetInText(){return this._offsetintext}
+  set offsetInText(o) { this._offsetintext = o }
+
 
   // --- Public Methods ---
 
@@ -334,6 +365,7 @@ class TextFragment {
           , paragraphs    : paragraphs
           , text_path     : this.text_path
           , prox_path     : this.prox_path
+          , offset        : this.offsetInText
         }
       , texels: all_texels
       , proxis: all_proxis

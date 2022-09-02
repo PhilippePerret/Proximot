@@ -305,7 +305,21 @@ class MotType extends TextElement {
     MotType.addInTableMots.call(MotType, this)
   }
 
+  // --- Offset Methods ---
+  addToOffsets(diff){
+    this.offsetInPara += diff
+  }
+
+  get offsetInPara(){return this._offsetinpara }
+  set offsetInPara(o) {
+    this._offsetinpara = o
+    delete this._offsetinfrag
+    delete this._offsetintext
+  }
+
+
   // --- Public Methods ---
+
   get isMot(){ return true }
 
   /**
