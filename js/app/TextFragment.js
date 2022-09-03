@@ -218,7 +218,7 @@ class TextFragment {
   // --- Offset Methods ---
 
   updateOffsets(args){
-    const {formIndex, diff} = args
+    const {fromIndex, diff} = args
     /*
     |  Actualisation de tous les paragraphes du fragment à partir
     |  de l'index +fromIndex+

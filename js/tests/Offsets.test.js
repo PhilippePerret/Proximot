@@ -48,14 +48,17 @@ new InsideTest({
     error: 'Le changement d’offset d’un mot modifie tout ce qui suit'
   , eval: evalForTexteMultiFragments
   , checkForDataFragment: checkForDataFragment
-  , checkForAllFragmentsLoaded: function(){return App.allFragmentLoaded= == true}
+  , checkForAllFragmentsLoaded: function(){
+      console.log("App.allFragmentLoaded = ", App.allFragmentLoaded)
+      return App.allFragmentLoaded == true 
+    }
   , apresChargementTexte:function(){
-      waitWhile('checkForDataFragment').then('chargeAllFragment') 
+      waitUntil('checkForDataFragment').then('chargeAllFragment') 
     }
   , chargeAllFragment:function(){
       /* Chargement des autres fragments */
       App.loadSilentlyAllFragments()
-      waitUntil(checkForAllFragmentsLoaded).then('checkChangementsOffsets')
+      waitUntil('checkForAllFragmentsLoaded').then('checkChangementsOffsets')
     }
   , checkChangementsOffsets:function(){
 
@@ -73,36 +76,41 @@ new InsideTest({
       const oldOffFrag3 = getOffsetFrag(3)
       const oldOffFrag4 = getOffsetFrag(4)
       // Des mots au hasard
-      const randMot1 = randomMotInFrag(2)
-      const randMot2 = randomMotInFrag(3)
-      const randMot3 = randomMotInFrag(4)
-      console.log("Mot 1 au hasard = ", randMot1)
-      console.log("Mot 2 au hasard = ", randMot2)
-      console.log("Mot 3 au hasard = ", randMot3)
-      const oldOffMot1  = int(randMot1.offsetInText)
-      const oldOffMot2  = int(randMot2.offsetInText)
-      const oldOffMot3  = int(randMot3.offsetInText)
+      // const randMot1 = randomMotInFrag(2)
+      // const randMot2 = randomMotInFrag(3)
+      // const randMot3 = randomMotInFrag(4)
+      // console.log("Mot 1 au hasard = ", randMot1)
+      // console.log("Mot 2 au hasard = ", randMot2)
+      // console.log("Mot 3 au hasard = ", randMot3)
+      // const oldOffMot1  = int(randMot1.offsetInText)
+      // const oldOffMot2  = int(randMot2.offsetInText)
+      // const oldOffMot3  = int(randMot3.offsetInText)
 
       // *-- Opération --*
       const diff = 4
+      const paragraph = TextFragment.current.paragraphs[4]
+      console.log("paragraph", paragraph)
+      const mot = paragraph.mots[6]
+      console.log("mot", mot)
+      paragraph.updateOffsets({fromOffset: mot.offsetInPara + 1, diff: diff})
 
+      // *-- Post-Check --*
       // *-- Valeurs post-opération --*
       const newOffFrag1 = getOffsetFrag(1)
       const newOffFrag2 = getOffsetFrag(2)
       const newOffFrag3 = getOffsetFrag(3)
       const newOffFrag4 = getOffsetFrag(4)
-      const newOffMot1 = int(randMot1.offsetInText)
-      const newOffMot2 = int(randMot2.offsetInText)
-      const newOffMot3 = int(randMot3.offsetInText)
-
-      // +-- Post-Check --*
       assert(oldOffFrag1, newOffFrag1, "Offset pour le fragment 1 (ne devrait pas avoir changé")
       assert(oldOffFrag2 - diff, newOffFrag2, "Offset du fragment 2")
       assert(oldOffFrag3 - diff, newOffFrag3, "Offset du fragment 3")
       assert(oldOffFrag4 - diff, newOffFrag4, "Offset du fragment 4")
-      assert(oldOffMot1 - diff, newOffMot1,   'Offset d’un mot au hasard du fragment 2')
-      assert(oldOffMot2 - diff, newOffMot2,   'Offset d’un mot au hasard du fragment 3')
-      assert(oldOffMot3 - diff, newOffMot3,   'Offset d’un mot au hasard du fragment 4')
+
+      // const newOffMot1 = int(randMot1.offsetInText)
+      // const newOffMot2 = int(randMot2.offsetInText)
+      // const newOffMot3 = int(randMot3.offsetInText)
+      // assert(oldOffMot1 - diff, newOffMot1,   'Offset d’un mot au hasard du fragment 2')
+      // assert(oldOffMot2 - diff, newOffMot2,   'Offset d’un mot au hasard du fragment 3')
+      // assert(oldOffMot3 - diff, newOffMot3,   'Offset d’un mot au hasard du fragment 4')
 
       return true
     }

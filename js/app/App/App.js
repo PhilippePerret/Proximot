@@ -110,7 +110,7 @@ class App {
   * ments que celui chargé au départ.
   */
   static loadSilentlyAllFragments(){
-
+    this.allFragmentLoaded = true
   }
   /* Méthode qui reçoit le chargement discret d'un fragment */
   static onLoadSilentlyFragment(data){

@@ -111,7 +111,7 @@ class Waiter {
     this.runThen()
   }
   checkCondition(){
-    if ( this.param() == ( this.type == 'while') ) {
+    if ( this.param() != ( this.type == 'while') ) {
       clearInterval(this.timer)
       delete this.timer
       this.runThen()

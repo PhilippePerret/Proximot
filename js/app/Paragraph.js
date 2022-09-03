@@ -21,8 +21,8 @@ class Paragraph {
   }
 
   /**
-  * Instanciation d'un paragraphe à partir de ses données remontées
-  * du package.
+  *   Instanciation d'un paragraphe à partir de ses données remontées
+  *   du package.
   */
   static createFromData(fragment, data){
     const texels = data.texel_ids.split(',').map( id => {
