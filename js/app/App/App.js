@@ -103,6 +103,20 @@ class App {
   }
   static set State(state){this._state = state}
 
+  // *-- Fragment Methods --*
+
+  /**
+  * Méthode qui procède discrètement au chargement des autres frag-
+  * ments que celui chargé au départ.
+  */
+  static loadSilentlyAllFragments(){
+
+  }
+  /* Méthode qui reçoit le chargement discret d'un fragment */
+  static onLoadSilentlyFragment(data){
+    console.log("Chargement du fragment de données : ", data)
+  }
+
   static get fragment(){ return TextFragment.current }
 
   static get fragments_data(){
@@ -117,7 +131,42 @@ class App {
     this._fragments_data = data
     this.State.fragments = data
   }
-  static setFragmentsData(data){ Object.assign(this.fragments_data, data)}
+  static setFragmentsData(data){
+    Object.assign(this.fragments_data, Object.assign(data, {calculated: true}))
+  }
+
+  /**
+  * @return l'instance TextFragment du fragment d'index +indexFrag+
+  * 
+  * Noter que le nombre est 1-start mais que dans this._fragments
+  * la valeur est 0-start comme dans toute liste.
+  */
+  static getFragment(indexFrag){
+    if ( undefined == this._fragments ) {
+      this._fragments = []
+      for(var ifrag = 0; ifrag < this.fragments_data.count; ++ifrag){
+        const dataFrag = this.fragments_data[ifrag]
+        this._fragments.push(new TextFragment({
+            index         : int(ifrag)
+          , lexicon       : dataFrag.lexicon    || this.lexicon
+          , text_path     : dataFrag.text_path  || this.text_path
+          , prox_path     : dataFrag.prox_path  || this.prox_path
+          , offsetInText  : dataFrag.offset
+        }))
+      }
+    }
+    return this._fragments[indexFrag - 1]
+  }
+
+  static get lexicon(){
+    return this._lex || (this._lex = TextFragment.current.lexicon )
+  }
+  static get text_path(){
+    return this.txpath || (this.txpath = TextFragment.current.text_path )
+  }
+  static get prox_path(){
+    return this.pxpath || (this.pxpath = TextFragment.current.prox_path )
+  }
 
   /**
   * Pour actualiser un fragment

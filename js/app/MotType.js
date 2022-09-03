@@ -306,8 +306,13 @@ class MotType extends TextElement {
   }
 
   // --- Offset Methods ---
+  
   addToOffsets(diff){
     this.offsetInPara += diff
+  }
+
+  get offsetInText(){ 
+    return this.offsetInPara + this.paragraph.offsetInText
   }
 
   get offsetInPara(){return this._offsetinpara }

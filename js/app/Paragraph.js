@@ -64,14 +64,18 @@ class Paragraph {
     */
     this.fragment.updateOffsets({fromIndex: this.index + 1, diff:diff})  
   }
+  
   addToOffsets(diff){
     this.offsetInFrag = this.offsetInFrag + diff
   }
+
   get offsetInFrag(){ return this._offsetinfragment }
   set offsetInFrag(o){ 
     this._offsetinfragment = o 
     delete this._offsetintexte
   }
+
+  get offsetInText(){ return this.offsetInFrag + this.fragment.offsetInText }
 
   // --- Public Methods ---
 

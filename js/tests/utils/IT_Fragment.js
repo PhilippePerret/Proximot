@@ -5,7 +5,7 @@ import { itraise, ITClass } from '../../system/InsideTest/inside-test.lib.js'
 * le fragment donné à l'instanciation) avec des méthodes should et 
 * should.not comme :
 * 
-*   haveLength(<x>)
+*   haveLength(<x>, sign)
 *   haveTextOffset()
 *   haveNombreMots(<x>)
 * 
@@ -27,11 +27,23 @@ class ITFragmentClass extends ITClass {
   haveNombreMots(nb){
     this.estimate(this.frag.mots.length == nb) || this.err('avoir '+nb+' mots (en a '+this.frag.mots.length+')')
   }
-  haveLength(len) {
-    this.estimate(this.frag.length == len) || this.err('avoir une longueur de '+len+' (sa longueur est '+this.frag.length+')')
+  haveLength(len, sign) {
+    const ok = this.evalNumber(this.frag.length, len, sign)
+    this.estimate(ok) || this.err('avoir une longueur de '+len+' (sa longueur est '+this.frag.length+')')
   }
   haveTextOffset(nb){
     this.estimate(this.frag.offsetInText == nb) || this.err('avoir un offset dans le texte de '+nb+' (son offsetInText vaut ' + this.frag.offsetInText + ').')
+  }
+
+  evalNumber(actual, expected, sign = '=') {
+    switch(sign){
+    case '='  : return actual == expected;
+    case '<'  : return actual < expected;
+    case '>'  : return actual > expected;
+    case '<=' : return actual <= expected;
+    case '>=' : return actual >= expected;
+    default: raise("Signe inconnu : ", sign)
+    }
   }
 
 }

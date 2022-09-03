@@ -157,9 +157,7 @@ class TextFragment {
         /*
         |  Offset du prochain paragraphe
         */
-        console.log("paragOffset méthode 1 : ", paragOffset + paragraph.length)
-        paragOffset += currentMotOffset //+ paragraph.mots[paragraph.mots.length - 1].length
-        console.log("paragOffset méthode 2 : ", paragOffset)
+        paragOffset += currentMotOffset
 
         return paragraph    
       }
@@ -212,7 +210,7 @@ class TextFragment {
     this.lexicon      = data.lexicon
     this.text_path    = data.text_path
     this.prox_path    = data.prox_path || this.defineProxPath(this.text_path)
-    this.offsetInText = data.offset
+    this.offsetInText = data.offset || data.offsetInText
     this.Klass        = 'TextFragment'
   }
 

@@ -5,7 +5,7 @@
  * ----------------
  * Pour des tests directement dans les fichiers (ou pas, d'ailleurs)
  * 
- * Version 1.5
+ * Version 1.6
  * 
  * Cf. le manuel dans ~/Programmes/InsideTest/
  *
@@ -32,6 +32,121 @@ export class ErrorTest extends Error {
   }
 }
 
+/**
+* Class Waiter
+* ------------
+* Private classe pour la gestion des "waiters". Cf. les méthodes
+* 'wait', 'waitUntil' et 'waitWhile'
+*/
+class Waiter {
+  /**
+  * @return TRUE si le waiter est en activité
+  */
+  static get waiting(){ return this.waiters && (this.waiters > 0) }
+  static addWaiter(){
+    if ( not(this.waiters) ) this.waiters = 0
+    this.waiters ++
+  }
+  static removeWaiter(){ 
+    this.waiters -- 
+  }
+
+  /**
+  * Méthode qui attend la fin de tous les waiters (pour mettre fin
+  * aux tests )
+  */
+  static waitForEnd(ok, ko){
+    this.endtimer = setInterval(this.checkForEnd.bind(this, ok), 500)
+  }
+  static checkForEnd(ok) {
+    if ( not(this.waiting) ) {
+      clearInterval(this.endtimer)
+      ok()
+    }
+  }
+
+  constructor(test, type, param){
+    this.test   = test
+    this.type   = type
+    this.param  = param
+    if ( (type == 'until' || type == 'while') && 'string' == typeof this.param) {
+      /*
+      |  Si la méthode donnée est un string, c'est une méthode du test
+      */
+      if ( 'function' == typeof this.test.data[param] ) {
+        this.param = this.test.data[param].bind(this.test)
+      } else {
+        raiseSilently("La méthode '"+param+"' n'existe pas dans le test " + test.inspect)
+      }
+    } else {
+      this.param = param
+    }
+    this.constructor.addWaiter()
+  }
+  /**
+  * On joue la boucle
+  */
+  run(){
+    switch(this.type){
+    case 'duration': 
+      this.timer = setTimeout(this.stopWaitDuration.bind(this), this.param * 1000) 
+      break
+    case 'until': case 'while':
+      this.timer = setInterval(this.checkCondition.bind(this), 500)
+      break
+    }
+  }
+  runThen(){
+    try {
+      this.test.data[this.methodTest].call(this.test) || this.test.throwError.call(this.test, false)
+    } catch(err) {
+      this.test.traiteError.call(this.test, err)      
+    } finally {
+      this.constructor.removeWaiter()
+    }
+  }
+  stopWaitDuration(){
+    clearTimeout(this.timer)
+    delete this.timer
+    this.runThen()
+  }
+  checkCondition(){
+    if ( this.param() == ( this.type == 'while') ) {
+      clearInterval(this.timer)
+      delete this.timer
+      this.runThen()
+    }
+  }
+  /**
+  * Définit le nom de la méthode du test à appeler
+  * Noter que c'est ça qui déclenche la boucle
+  */
+  then(methodName){
+    if ( not('function' == typeof this.test.data[methodName]) ) {
+      console.error("'%s()' n'est pas une fonction du test", methodName, this.test)
+    }
+    this.methodTest = methodName
+    this.run()
+  }
+
+}
+
+/* Pour attendre un certain nombre de secondes */
+export function wait(secondes){
+  return new Waiter(InsideTest.current, 'duration', secondes)
+}
+/* Attendre jusqu'à un certain état */
+export function waitUntil(method){
+  return new Waiter(InsideTest.current, 'until', method)
+}
+/* Attendre tant qu'un état est valide */
+export function waitWhile(method){
+  return new Waiter(InsideTest.current, 'while', method)
+}
+
+/**
+* Pour provoquer une erreur
+*/
 export function itraise(message){
   raiseSilently(new ErrorTest(message))
 }
@@ -62,12 +177,15 @@ export class ITClass {
   get shouldnt()  { this.mustBeTrue = false ; return this }
   get not(){ this.mustBeTrue = false; return this} // pour should.not.be
 
-  estimate(foo){
+  estimate(foo, msg){
+    var isOk ;
     if ( this.mustBeTrue ) {
-      return !! foo
+      isOk = !! foo
     } else {
-      return ! foo
+      isOk = ! foo
     }
+    if ( not(isOk) && isDefined(msg) ) { this.err(msg) }
+    return isOk
   }
 
   err(msg, ary = []){
@@ -179,13 +297,23 @@ export class InsideTest {
    * 
    */
   static async run() {
-    // if ( INSIDE_TESTS ){ 
-      this.resetCounters()
-      this.runStack()
-      await this.awaitForAllServerChecksDone()
-      this.stopCounters()
-      this.report()
-    // }
+    this.resetCounters()
+    this.runStack()
+    await this.awaitForAllServerChecksDone()
+    await this.awaitForAllWaiters()
+    this.stopCounters()
+    this.report()
+  }
+
+  /**
+  * Boucle d'attente sur les waiters éventuels
+  */
+  static awaitForAllWaiters(){
+    if ( not(Waiter.waiting) ) { 
+      return true 
+    } else {
+      return new Promise(Waiter.waitForEnd.bind(Waiter))
+    }
   }
 
   /**
@@ -386,6 +514,10 @@ export class InsideTest {
       this.fileName   = fileName
       this.lineNumber = lineNumber
     }
+  }
+
+  get inspect(){
+    return 'Test « ' + this.error + '» [dans ' + this.fileName + ':' + this.lineNumber + ']'
   }
 
   runStack(){

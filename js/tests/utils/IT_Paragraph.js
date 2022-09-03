@@ -40,7 +40,7 @@ class ITParagraphClass extends ITClass {
 }
 
 
-export function ITFragment(){
+export function ITParagraph(){
   return new ITParagraphClass()
 }
 
